@@ -35,6 +35,7 @@ function getAuthTokenClient(): string | null {
 }
 
 export const api = {
+<<<<<<< HEAD
   get: async <T = any>(endpoint: string): Promise<ApiResponse<T>> => {
     try {
       // Get auth token (server or client)
@@ -85,6 +86,8 @@ export const api = {
     }
   },
 
+=======
+>>>>>>> d747eddb0c27675245eb9d5c935e343067568430
   post: async <T = any>(endpoint: string, body?: any): Promise<ApiResponse<T>> => {
     try {
       // Get auth token (server or client)
@@ -122,6 +125,10 @@ export const api = {
           data: responseData,
         };
       }
+<<<<<<< HEAD
+=======
+
+>>>>>>> d747eddb0c27675245eb9d5c935e343067568430
       return {
         success: false,
         message: "Request failed",
