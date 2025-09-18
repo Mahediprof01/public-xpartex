@@ -1,0 +1,16 @@
+"use client"
+
+import { cn } from "@/lib/utils"
+
+interface DashboardLayoutProps {
+  children: React.ReactNode
+  className?: string
+}
+
+export function DashboardLayout({ children, className }: DashboardLayoutProps) {
+  return (
+    <div className={cn("flex min-h-screen bg-gray-50", className)}>
+      {children}
+    </div>
+  )
+}
