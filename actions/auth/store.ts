@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import { registerUser, loginUser } from "./server-action";
+import { registerUser, loginUser, storeAuthToken } from "./server-action";
 import { LoginRequest } from "./type";
 
 // Auth state interface
@@ -47,7 +47,7 @@ const initialState: AuthState = {
 
 
 export const useAuthStore = create<AuthStore>()(
-  immer((set, get) => ({
+  immer((set) => ({
 
     ...initialState,
 
@@ -83,8 +83,35 @@ export const useAuthStore = create<AuthStore>()(
       const response = await loginUser(data);
 
       set((state) => {
-        if (response.success) {
+        // Handle different possible response structures from your backend
+        const token = response.data?.accessToken ||
+                     response.data?.token ||
+                     (typeof response.data === 'string' ? response.data : null);
+
+        if (response.success && token && typeof token === 'string') {
           state.isAuthenticated = true;
+          // Store token in HTTP-only cookie (async call)
+          storeAuthToken(token, false).catch(console.error);
+
+          // Also store in localStorage as fallback for client-side requests
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('auth_token', token);
+            console.log('Token also stored in localStorage via Zustand');
+          }
+
+          // Use user data from API response if available, otherwise create mock user
+          const apiUser = response.data?.user;
+          state.user = {
+            id: apiUser?.id || "user-" + Date.now(),
+            email: apiUser?.email || data.email,
+            firstName: apiUser?.firstName || data.email.split("@")[0],
+            lastName: apiUser?.lastName || "User",
+            fullName: apiUser?.firstName && apiUser?.lastName
+              ? `${apiUser.firstName} ${apiUser.lastName}`
+              : data.email.split("@")[0] + " User",
+            role: apiUser?.role || "buyer",
+            avatar: apiUser?.avatar
+          };
         } else {
           state.error = response.error || "Login failed";
         }
@@ -100,6 +127,12 @@ export const useAuthStore = create<AuthStore>()(
         state.user = null;
         state.error = null;
       });
+
+      // Clear localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('auth_token');
+        sessionStorage.removeItem('auth_token');
+      }
     },
 
     clearError: () => {

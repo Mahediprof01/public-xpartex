@@ -3,6 +3,7 @@ export const AUTH_ENDPOINTS = {
   REGISTER: "/auth/signup",
   LOGIN: "/auth/signin",
   LOGOUT: "/auth/logout",
+  ME: "/auth/me",
 } as const;
 
 // Helper function to build endpoint with parameters
