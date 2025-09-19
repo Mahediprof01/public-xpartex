@@ -87,7 +87,7 @@ export function BuyerDashboardHome() {
 
             {/* Personalize Section */}
             <div className="mt-6 pt-4 border-t border-gray-200">
-              <h3 className="font-medium text-gray-900 mb-2">Personalize your Alibaba.com experience</h3>
+              <h3 className="font-medium text-gray-900 mb-2">Personalize your Xpartex.com experience</h3>
               <div className="flex gap-2">
                 <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
                 <div className="w-2 h-2 bg-gray-300 rounded-full"></div>

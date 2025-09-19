@@ -17,14 +17,6 @@ export function ContactSupplier({ supplier }: ContactSupplierProps) {
 
       <div className="space-y-4 mb-6">
         <div className="flex items-center gap-3">
-          <Phone className="h-5 w-5 text-gray-400" />
-          <span className="text-sm text-gray-700">{supplier.contact.phone}</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <Mail className="h-5 w-5 text-gray-400" />
-          <span className="text-sm text-gray-700">{supplier.contact.email}</span>
-        </div>
-        <div className="flex items-center gap-3">
           <Globe className="h-5 w-5 text-gray-400" />
           <span className="text-sm text-gray-700">{supplier.contact.website}</span>
         </div>

@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Star } from "lucide-react";
+import { Star, Package, ShoppingCart, Building2 } from "lucide-react";
 
-import { Product } from "@/types";
+import { Product, ProductType } from "@/types";
 
 interface ProductCardProps
   extends Omit<
@@ -66,6 +66,36 @@ export function ProductCard(props: ProductCardProps) {
     }
   };
 
+  const getEnabledProductTypes = () => {
+    if (!fullProduct.productTypes) return [];
+
+    return Object.entries(fullProduct.productTypes)
+      .filter(([_, config]) => config.enabled)
+      .map(([type, _]) => type as ProductType);
+  };
+
+  const getProductTypeIcon = (type: ProductType) => {
+    switch (type) {
+      case "wholesale":
+        return <Package className="h-3 w-3" />;
+      case "retail":
+        return <ShoppingCart className="h-3 w-3" />;
+      case "b2b":
+        return <Building2 className="h-3 w-3" />;
+    }
+  };
+
+  const getProductTypeColor = (type: ProductType) => {
+    switch (type) {
+      case "wholesale":
+        return "bg-blue-100 text-blue-700 border-blue-200";
+      case "retail":
+        return "bg-green-100 text-green-700 border-green-200";
+      case "b2b":
+        return "bg-purple-100 text-purple-700 border-purple-200";
+    }
+  };
+
   return (
     <div className="group bg-white border border-gray-200 hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden">
       {/* Image Section */}
@@ -120,9 +150,24 @@ export function ProductCard(props: ProductCardProps) {
         </div>
 
         {/* Supplier */}
-        <div className="text-xs text-gray-600 mb-3 truncate hover:text-sky-600">
+        <div className="text-xs text-gray-600 mb-2 truncate hover:text-sky-600">
           <Link href={`/suppliers/${supplierId}`}>{supplierName}</Link>
         </div>
+
+        {/* Product Types */}
+        {getEnabledProductTypes().length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-3">
+            {getEnabledProductTypes().map((type) => (
+              <div
+                key={type}
+                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${getProductTypeColor(type)}`}
+              >
+                {getProductTypeIcon(type)}
+                {type.charAt(0).toUpperCase() + type.slice(1)}
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Rating (simulated) */}
         <div className="flex items-center gap-1 mb-3">

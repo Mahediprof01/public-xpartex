@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { ShoppingCart, Heart, Share2, MessageCircle, Truck, Shield, Clock, Plus, Minus } from "lucide-react"
 import { useCart } from "@/contexts/cart-context"
 import { Product } from "@/types"
+import { ProductOrderingTabs } from "./product-ordering-tabs"
 
 interface ProductInfoProps {
   product: Product
@@ -36,8 +37,9 @@ export function ProductInfo({ product }: ProductInfoProps) {
     }
   };
 
-  const { pricePerUnit, tier } = calculateTieredPrice(product, quantity)
-  const totalPrice = quantity * pricePerUnit
+  // tiered price is calculated when adding to cart; UI no longer shows a total price here
+  // keep calculateTieredPrice available for cart logic or future use
+  const { pricePerUnit } = calculateTieredPrice(product, quantity)
 
   const handleAddToCart = async (cartType: "main" | "sample" = "main") => {
     setAddingToCart(true)
@@ -74,7 +76,8 @@ export function ProductInfo({ product }: ProductInfoProps) {
         <p className="text-gray-600">Product ID: {product.id}</p>
       </div>
 
-      {/* Price */}
+      {/* Price - Hidden as requested */}
+      {/* 
       <div className="border-t border-b border-gray-200 py-6">
         <div className="flex items-baseline gap-4 mb-2">
           <span className="text-3xl font-bold text-gray-900">
@@ -87,106 +90,31 @@ export function ProductInfo({ product }: ProductInfoProps) {
           {product.availableQuantity.toLocaleString()} pieces
         </p>
       </div>
+      */}
 
-      {/* Quantity Selector */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Quantity
-        </label>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center border border-gray-300 rounded-lg">
-            <button
-              onClick={() => setQuantity(Math.max(product.moq, quantity - 100))}
-              className="px-3 py-2 hover:bg-gray-50"
-              disabled={quantity <= product.moq}
-            >
-              -
-            </button>
-            <input
-              type="number"
-              value={quantity}
-              onChange={(e) =>
-                setQuantity(
-                  Math.max(
-                    product.moq,
-                    Number.parseInt(e.target.value) || product.moq
-                  )
-                )
-              }
-              className="w-24 px-3 py-2 text-center border-0 focus:ring-0"
-              min={product.moq}
-            />
-            <button
-              onClick={() => setQuantity(quantity + 100)}
-              className="px-3 py-2 hover:bg-gray-50"
-            >
-              +
-            </button>
-          </div>
-          <span className="text-sm text-gray-600">
-            Min order: {product.moq.toLocaleString()}
-          </span>
-        </div>
-        <div className="mt-2 space-y-1">
-          <div className="flex items-center justify-between">
-            <span className="text-lg font-semibold text-gray-900">
-              Total: {formatPrice(totalPrice, product.currency)}
-            </span>
-            {tier && (
-              <Badge variant="secondary" className="text-xs">
-                Tier price: {formatPrice(pricePerUnit, product.currency)} each
-              </Badge>
-            )}
-          </div>
-          {pricePerUnit !== product.price && (
-            <p className="text-sm text-green-600">
-              Savings: {formatPrice((product.price - pricePerUnit) * quantity, product.currency)}
-            </p>
-          )}
-        </div>
-      </div>
+      {/* Product Ordering Tabs */}
+      <ProductOrderingTabs product={product} />
 
-      {/* Action Buttons */}
-      <div className="space-y-3">
-        <div className="flex gap-3">
-          <Button 
-            className="flex-1 gradient-primary gradient-primary-hover text-white py-3"
-            onClick={() => handleAddToCart("main")}
-            disabled={addingToCart}
-          >
-            <ShoppingCart className="h-5 w-5 mr-2" />
-            {addingToCart ? "Adding..." : "Add to Cart"}
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            className="py-3 bg-transparent"
-            onClick={() => setIsFavorited(!isFavorited)}
-          >
-            <Heart
-              className={`h-5 w-5 ${
-                isFavorited ? "fill-red-500 text-red-500" : ""
-              }`}
-            />
-          </Button>
-          <Button variant="outline" size="icon" className="py-3 bg-transparent">
-            <Share2 className="h-5 w-5" />
-          </Button>
-        </div>
-        <div className="flex gap-3">
-          <Button 
-            variant="outline" 
-            className="flex-1 py-3 bg-transparent"
-            onClick={() => handleAddToCart("sample")}
-            disabled={addingToCart}
-          >
-            Request Sample
-          </Button>
-          <Button variant="outline" className="flex-1 py-3 bg-transparent">
-            <MessageCircle className="h-5 w-5 mr-2" />
-            Custom Quote
-          </Button>
-        </div>
+      {/* Quick Actions */}
+      <div className="flex gap-3 pt-4 border-t border-gray-200">
+        <Button
+          variant="outline"
+          size="icon"
+          className="bg-transparent"
+          onClick={() => setIsFavorited(!isFavorited)}
+        >
+          <Heart
+            className={`h-5 w-5 ${
+              isFavorited ? "fill-red-500 text-red-500" : ""
+            }`}
+          />
+        </Button>
+        <Button variant="outline" size="icon" className="bg-transparent">
+          <Share2 className="h-5 w-5" />
+        </Button>
+        <Button variant="outline" className="flex-1 bg-transparent">
+          Request Sample
+        </Button>
       </div>
 
       {/* Key Features */}
