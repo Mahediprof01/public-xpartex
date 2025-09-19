@@ -1,10 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ShoppingCart, Package, Building2, Plus, Minus, MessageCircle, FileText } from "lucide-react"
+import { ShoppingCart, Package, Building2} from "lucide-react"
 import { useCart } from "@/contexts/cart-context"
 import { Product, ProductType } from "@/types"
 import { WholesaleOrderingSection, RetailOrderingSection, B2BOrderingSection } from "./ordering-sections"
@@ -37,11 +35,20 @@ export function ProductOrderingTabs({ product }: ProductOrderingTabsProps) {
     if (!config?.enabled) return
 
     let validQuantity = newQuantity
-    
-    if (type === "wholesale" && config.moq) {
-      validQuantity = Math.max(newQuantity, config.moq)
-    } else if (type === "retail" && config.maxQuantity) {
-      validQuantity = Math.min(Math.max(newQuantity, 1), config.maxQuantity)
+    if (type === "wholesale") {
+      const wholesaleConfig = config as NonNullable<typeof product.productTypes.wholesale>
+      if (wholesaleConfig?.moq) {
+        validQuantity = Math.max(newQuantity, wholesaleConfig.moq)
+      } else {
+        validQuantity = Math.max(newQuantity, 1)
+      }
+    } else if (type === "retail") {
+      const retailConfig = config as NonNullable<typeof product.productTypes.retail>
+      if (retailConfig?.maxQuantity) {
+        validQuantity = Math.min(Math.max(newQuantity, 1), retailConfig.maxQuantity)
+      } else {
+        validQuantity = Math.max(newQuantity, 1)
+      }
     } else {
       validQuantity = Math.max(newQuantity, 1)
     }
@@ -57,13 +64,27 @@ export function ProductOrderingTabs({ product }: ProductOrderingTabsProps) {
     
     try {
       const quantity = quantities[type]
-      const price = config.price || product.price
+
+      // Determine price: wholesale and retail configs include `price`, b2b may not
+      let resolvedPrice = product.price
+      if (type === "wholesale") {
+        const wholesaleConfig = config as NonNullable<typeof product.productTypes.wholesale>
+        resolvedPrice = wholesaleConfig?.price ?? product.price
+      } else if (type === "retail") {
+        const retailConfig = config as NonNullable<typeof product.productTypes.retail>
+        resolvedPrice = retailConfig?.price ?? product.price
+      }
       
-      // Create a modified product for this type
+      let moqForCart = 1
+      if (type === "wholesale") {
+        const wholesaleConfig = config as NonNullable<typeof product.productTypes.wholesale>
+        moqForCart = wholesaleConfig?.moq ?? product.moq
+      }
+
       const productForCart = {
         ...product,
-        price,
-        moq: type === "wholesale" ? (config.moq || product.moq) : 1,
+        price: resolvedPrice,
+        moq: type === "wholesale" ? moqForCart : 1,
         orderType: type
       }
 
@@ -198,5 +219,3 @@ function DisabledSection({ type }: { type: ProductType }) {
     </div>
   )
 }
-
-// Individual ordering sections will be in separate components for better organization

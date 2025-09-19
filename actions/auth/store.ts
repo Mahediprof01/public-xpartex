@@ -2,11 +2,7 @@
 
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-<<<<<<< HEAD
 import { registerUser, loginUser, storeAuthToken } from "./server-action";
-=======
-import { registerUser, loginUser } from "./server-action";
->>>>>>> d747eddb0c27675245eb9d5c935e343067568430
 import { LoginRequest } from "./type";
 
 // Auth state interface
@@ -51,11 +47,7 @@ const initialState: AuthState = {
 
 
 export const useAuthStore = create<AuthStore>()(
-<<<<<<< HEAD
   immer((set) => ({
-=======
-  immer((set, get) => ({
->>>>>>> d747eddb0c27675245eb9d5c935e343067568430
 
     ...initialState,
 
@@ -91,7 +83,6 @@ export const useAuthStore = create<AuthStore>()(
       const response = await loginUser(data);
 
       set((state) => {
-<<<<<<< HEAD
         // Handle different possible response structures from your backend
         const token = response.data?.accessToken ||
                      response.data?.token ||
@@ -121,10 +112,6 @@ export const useAuthStore = create<AuthStore>()(
             role: apiUser?.role || "buyer",
             avatar: apiUser?.avatar
           };
-=======
-        if (response.success) {
-          state.isAuthenticated = true;
->>>>>>> d747eddb0c27675245eb9d5c935e343067568430
         } else {
           state.error = response.error || "Login failed";
         }
@@ -140,15 +127,12 @@ export const useAuthStore = create<AuthStore>()(
         state.user = null;
         state.error = null;
       });
-<<<<<<< HEAD
 
       // Clear localStorage
       if (typeof window !== 'undefined') {
         localStorage.removeItem('auth_token');
         sessionStorage.removeItem('auth_token');
       }
-=======
->>>>>>> d747eddb0c27675245eb9d5c935e343067568430
     },
 
     clearError: () => {

@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ShoppingCart, Heart, Share2, MessageCircle, Truck, Shield, Clock, Plus, Minus } from "lucide-react"
+import { Heart, Share2,Truck, Shield, Clock} from "lucide-react"
 import { useCart } from "@/contexts/cart-context"
 import { Product } from "@/types"
 import { ProductOrderingTabs } from "./product-ordering-tabs"
