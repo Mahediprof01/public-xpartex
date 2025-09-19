@@ -11,11 +11,51 @@ export async function registerUser(data: RegisterRequest): Promise<{ success: bo
 }
 
 
+<<<<<<< HEAD
+export async function loginUser(data: LoginRequest): Promise<{
+  success: boolean;
+  message: string;
+  data?: any; // Make this flexible to handle different backend response structures
+  error?: string
+}> {
+=======
 export async function loginUser(data: LoginRequest): Promise<{ success: boolean; message: string; data?: { accessToken: string }; error?: string }> {
+>>>>>>> d747eddb0c27675245eb9d5c935e343067568430
   const response = await api.post(AUTH_ENDPOINTS.LOGIN, data);
   return response;
 }
 
+<<<<<<< HEAD
+export async function getCurrentUser(): Promise<{
+  success: boolean;
+  message: string;
+  data?: any;
+  error?: string
+}> {
+  const response = await api.get(AUTH_ENDPOINTS.ME);
+  return response;
+}
+
+export async function storeAuthToken(token: string, rememberMe: boolean = false): Promise<void> {
+  try {
+    const cookieStore = await cookies();
+
+    const maxAge = rememberMe ? 30 * 24 * 60 * 60 : 24 * 60 * 60; // 30 days or 1 day
+
+    cookieStore.set("auth_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge,
+      path: "/",
+    });
+
+
+  } catch (error) {
+    console.error('Error storing auth token:', error);
+    throw error;
+  }
+=======
 export async function storeAuthToken(token: string, rememberMe: boolean = false): Promise<void> {
   const cookieStore = await cookies();
   
@@ -28,15 +68,28 @@ export async function storeAuthToken(token: string, rememberMe: boolean = false)
     maxAge,
     path: "/",
   });
+>>>>>>> d747eddb0c27675245eb9d5c935e343067568430
 }
 
 /**
  * Get authentication token from cookies
  */
 export async function getAuthToken(): Promise<string | null> {
+<<<<<<< HEAD
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("auth_token");
+
+    return token?.value || null;
+  } catch (error) {
+    console.error('Error getting auth token:', error);
+    return null;
+  }
+=======
   const cookieStore = await cookies();
   const token = cookieStore.get("auth_token");
   return token?.value || null;
+>>>>>>> d747eddb0c27675245eb9d5c935e343067568430
 }
 
 /**

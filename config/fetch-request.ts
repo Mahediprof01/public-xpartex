@@ -35,6 +35,59 @@ function getAuthTokenClient(): string | null {
 }
 
 export const api = {
+<<<<<<< HEAD
+  get: async <T = any>(endpoint: string): Promise<ApiResponse<T>> => {
+    try {
+      // Get auth token (server or client)
+      const token = await getAuthTokenServer() || getAuthTokenClient();
+
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+
+      // Add auth header if token exists
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`${HOST}${endpoint}`, {
+        method: "GET",
+        headers,
+        cache: 'no-store', // Prevent caching for authentication requests
+      });
+
+      let responseData: any;
+      const contentType = response.headers.get("content-type");
+
+      if (contentType && contentType.includes("application/json")) {
+        responseData = await response.json();
+      } else {
+        responseData = await response.text();
+      }
+
+      if (response.ok) {
+        return {
+          success: true,
+          message: "Request successful",
+          data: responseData,
+        };
+      }
+      return {
+        success: false,
+        message: "Request failed",
+        error: typeof responseData === "string" ? responseData : responseData?.message || "Unknown error",
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        message: "Network error",
+        error: error?.message || "Network error occurred",
+      };
+    }
+  },
+
+=======
+>>>>>>> d747eddb0c27675245eb9d5c935e343067568430
   post: async <T = any>(endpoint: string, body?: any): Promise<ApiResponse<T>> => {
     try {
       // Get auth token (server or client)
@@ -72,7 +125,10 @@ export const api = {
           data: responseData,
         };
       }
+<<<<<<< HEAD
+=======
 
+>>>>>>> d747eddb0c27675245eb9d5c935e343067568430
       return {
         success: false,
         message: "Request failed",

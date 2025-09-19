@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useAuth } from "@/contexts/auth-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -11,7 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { PasswordInput } from "@/components/auth/password-input"
 import { SocialAuthSection } from "@/components/auth/social-auth"
 import { Loader2} from "lucide-react"
-import { loginUser, storeAuthToken } from "@/actions/auth/server-action"
+import { getAuthToken } from "@/actions/auth/server-action"
 import toast from "react-hot-toast"
 import * as yup from "yup"
 
@@ -28,6 +29,7 @@ const loginSchema = yup.object({
 
 export function LoginForm() {
   const router = useRouter()
+  const { login: authLogin } = useAuth() // Use auth context login
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   
@@ -67,21 +69,25 @@ export function LoginForm() {
 
     setIsLoading(true)
 
-    const response = await loginUser({
-      email: formData.email.toLowerCase().trim(),
-      password: formData.password,
-    })
+    try {
+      // Use auth context login instead of direct server action
+      const success = await authLogin(formData.email, formData.password, formData.rememberMe)
 
-    if (response.success) {
-      toast.success("Welcome back! Redirecting to home page...")
-      
-      if (response.data?.accessToken) {
-
-        await storeAuthToken(response.data.accessToken, formData.rememberMe)
-        router.push("/")
+      if (success) {
+        toast.success("Welcome back! Redirecting to home page...")
+        // Small delay to ensure token is stored before redirect
+        setTimeout(async () => {
+          // Check if token was stored successfully
+          const storedToken = await getAuthToken()
+          console.log('Token check after login:', !!storedToken)
+          router.push("/")
+        }, 100)
+      } else {
+        toast.error("Invalid email or password. Please try again.")
       }
-    } else {
-      toast.error(response.error || "Invalid email or password. Please try again.")
+    } catch (error) {
+      console.error("Login error:", error)
+      toast.error("An unexpected error occurred. Please try again.")
     }
 
     setIsLoading(false)
