@@ -29,11 +29,7 @@ export function SupplierHeader({ supplier }: SupplierHeaderProps) {
               className="w-full h-full rounded-xl object-cover"
             />
           </div>
-          {supplier.verified && (
-            <div className="absolute -top-2 -right-2 w-8 h-8 gradient-primary rounded-full flex items-center justify-center">
-              <CheckCircle className="h-5 w-5 text-white" />
-            </div>
-          )}
+          {/* verified tick removed - Verified Supplier label remains */}
         </div>
 
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">

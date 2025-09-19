@@ -18,6 +18,23 @@ export function Products() {
       specs: [{ key: "Material", value: "100% Cotton" }],
       availableQuantity: 2000,
       leadTimeDays: 10,
+      primaryType: "wholesale",
+      productTypes: {
+        wholesale: {
+          enabled: true,
+          price: 650.0,
+          moq: 400
+        },
+        retail: {
+          enabled: true,
+          price: 750.0,
+          maxQuantity: 20
+        },
+        b2b: {
+          enabled: false,
+          rfqOnly: true
+        }
+      },
     },
     {
       id: "p2",
@@ -33,6 +50,24 @@ export function Products() {
       specs: [{ key: "Material", value: "Denim" }],
       availableQuantity: 800,
       leadTimeDays: 14,
+      primaryType: "retail",
+      productTypes: {
+        wholesale: {
+          enabled: false,
+          price: 1650.0,
+          moq: 150
+        },
+        retail: {
+          enabled: true,
+          price: 1850.0,
+          maxQuantity: 10
+        },
+        b2b: {
+          enabled: true,
+          rfqOnly: false,
+          customPricing: true
+        }
+      },
     },
     {
       id: "p3",
@@ -48,6 +83,12 @@ export function Products() {
       specs: [{ key: "Fabric", value: "Wool Blend" }],
       availableQuantity: 300,
       leadTimeDays: 21,
+      primaryType: "wholesale",
+      productTypes: {
+        wholesale: { enabled: true, price: 2250.0, moq: 100 },
+        retail: { enabled: true, price: 2450.0, maxQuantity: 5 },
+        b2b: { enabled: false, rfqOnly: true }
+      },
     },
     {
       id: "p4",
@@ -63,6 +104,12 @@ export function Products() {
       specs: [{ key: "Material", value: "Polyester" }],
       availableQuantity: 1200,
       leadTimeDays: 12,
+      primaryType: "retail",
+      productTypes: {
+        wholesale: { enabled: false, price: 1350.0, moq: 250 },
+        retail: { enabled: true, price: 1450.0, maxQuantity: 10 },
+        b2b: { enabled: false, rfqOnly: true }
+      },
     },
     {
       id: "p5",
@@ -78,6 +125,12 @@ export function Products() {
       specs: [{ key: "Material", value: "Linen" }],
       availableQuantity: 1500,
       leadTimeDays: 9,
+      primaryType: "wholesale",
+      productTypes: {
+        wholesale: { enabled: true, price: 780.0, moq: 350 },
+        retail: { enabled: true, price: 880.0, maxQuantity: 15 },
+        b2b: { enabled: false, rfqOnly: true }
+      },
     },
     {
       id: "p6",
@@ -93,6 +146,12 @@ export function Products() {
       specs: [{ key: "Material", value: "Cotton Blend" }],
       availableQuantity: 600,
       leadTimeDays: 18,
+      primaryType: "wholesale",
+      productTypes: {
+        wholesale: { enabled: true, price: 950.0, moq: 200 },
+        retail: { enabled: true, price: 1050.0, maxQuantity: 8 },
+        b2b: { enabled: false, rfqOnly: true }
+      },
     },
     {
       id: "p7",
@@ -108,6 +167,12 @@ export function Products() {
       specs: [{ key: "Material", value: "Cotton Twill" }],
       availableQuantity: 900,
       leadTimeDays: 11,
+      primaryType: "retail",
+      productTypes: {
+        wholesale: { enabled: false, price: 1050.0, moq: 300 },
+        retail: { enabled: true, price: 1150.0, maxQuantity: 12 },
+        b2b: { enabled: false, rfqOnly: true }
+      },
     },
     {
       id: "p8",
@@ -123,6 +188,12 @@ export function Products() {
       specs: [{ key: "Material", value: "Wool Blend" }],
       availableQuantity: 700,
       leadTimeDays: 20,
+      primaryType: "wholesale",
+      productTypes: {
+        wholesale: { enabled: true, price: 1650.0, moq: 180 },
+        retail: { enabled: true, price: 1750.0, maxQuantity: 6 },
+        b2b: { enabled: false, rfqOnly: true }
+      },
     },
   ]
 

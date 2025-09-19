@@ -19,7 +19,6 @@ export function RFQList() {
       quotesReceived: 5,
       createdDate: "2024-12-15",
       expiryDate: "2024-12-25",
-      targetPrice: 450,
       description: "Need high-quality cotton t-shirts with custom logo printing for corporate event...",
     },
     {
@@ -31,7 +30,6 @@ export function RFQList() {
       quotesReceived: 2,
       createdDate: "2024-12-12",
       expiryDate: "2024-12-22",
-      targetPrice: 680,
       description: "Looking for premium quality polo shirts in multiple colors and sizes...",
     },
     {
@@ -43,7 +41,6 @@ export function RFQList() {
       quotesReceived: 8,
       createdDate: "2024-12-08",
       expiryDate: "2024-12-18",
-      targetPrice: 1200,
       description: "Warm winter hoodies with fleece lining for seasonal collection...",
     },
     {
@@ -55,7 +52,6 @@ export function RFQList() {
       quotesReceived: 3,
       createdDate: "2024-12-01",
       expiryDate: "2024-12-11",
-      targetPrice: 1500,
       description: "Eco-friendly denim jeans made from sustainable materials...",
     },
   ]
@@ -136,8 +132,6 @@ export function RFQList() {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <span className="text-sm text-gray-600">Target Price:</span>
-                <span className="font-semibold text-gray-900">BDT {rfq.targetPrice.toLocaleString()}</span>
                 <span className="text-sm text-gray-600">Category:</span>
                 <span className="px-2 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">{rfq.category}</span>
               </div>

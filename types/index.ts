@@ -1,3 +1,24 @@
+export type ProductType = "wholesale" | "retail" | "b2b"
+
+export interface ProductTypeConfig {
+  wholesale?: {
+    enabled: boolean
+    price: number
+    moq: number
+    tieredPricing?: TierPricing[]
+  }
+  retail?: {
+    enabled: boolean
+    price: number
+    maxQuantity?: number
+  }
+  b2b?: {
+    enabled: boolean
+    rfqOnly?: boolean
+    customPricing?: boolean
+  }
+}
+
 export interface Product {
   id: string
   title: string
@@ -12,6 +33,9 @@ export interface Product {
   specs: { key: string; value: string }[]
   availableQuantity: number
   leadTimeDays: number
+  // Product type configuration
+  productTypes: ProductTypeConfig
+  primaryType: ProductType
   shippingInfo?: {
     freeShipping: boolean
     estimatedDelivery: string

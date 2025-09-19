@@ -5,14 +5,24 @@ import type React from "react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Upload, X, Plus } from "lucide-react"
+import { Combobox } from "@/components/ui/combobox"
 
 export function RFQForm() {
-  const [formData, setFormData] = useState({
+  type Spec = { key: string; value: string }
+  type FormData = {
+    title: string
+    category: string
+    quantity: string
+    leadTime: string
+    specifications: Spec[]
+    preferredSuppliers: string[]
+    attachments: any[]
+  }
+
+  const [formData, setFormData] = useState<FormData>({
     title: "",
     category: "",
-    description: "",
     quantity: "",
-    targetPrice: "",
     leadTime: "",
     specifications: [{ key: "", value: "" }],
     preferredSuppliers: [],
@@ -93,21 +103,10 @@ export function RFQForm() {
           </div>
         </div>
 
-        {/* Description */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Detailed Description *</label>
-          <textarea
-            required
-            rows={4}
-            value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            placeholder="Describe your requirements in detail including materials, colors, sizes, design specifications, etc."
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent resize-none"
-          />
-        </div>
+        {/* Note: Detailed Description removed per request */}
 
-        {/* Quantity and Pricing */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Quantity and lead time */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Quantity Required *</label>
             <input
@@ -119,18 +118,6 @@ export function RFQForm() {
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
             />
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Target Price (BDT per piece)</label>
-            <input
-              type="number"
-              value={formData.targetPrice}
-              onChange={(e) => setFormData({ ...formData, targetPrice: e.target.value })}
-              placeholder="e.g., 450"
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
-            />
-          </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Required Lead Time (days)</label>
             <input
@@ -199,17 +186,18 @@ export function RFQForm() {
           </div>
         </div>
 
-        {/* Preferred Suppliers */}
+        {/* Preferred Suppliers using Combobox */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Preferred Suppliers (Optional)</label>
-          <input
-            type="text"
-            placeholder="Enter supplier names or leave blank to send to all relevant suppliers"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+          <Combobox
+            options={[]}
+            value={formData.preferredSuppliers[0] ?? ""}
+            onChange={(v) => setFormData({ ...formData, preferredSuppliers: v ? [v] : [] })}
+            placeholder={""}
+            showChevron={false}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent text-left"
           />
-          <p className="text-xs text-gray-500 mt-1">
-            If left blank, your RFQ will be sent to all suppliers matching your category
-          </p>
+          <p className="text-xs text-gray-500 mt-1">If left blank, your RFQ will be sent to all suppliers matching your category</p>
         </div>
 
         {/* Submit Button */}

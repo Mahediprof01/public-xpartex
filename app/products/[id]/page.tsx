@@ -26,13 +26,37 @@ export default function ProductDetailPage() {
     ],
     supplierId: "supplier-1",
     supplierName: "Dhaka Textiles Ltd.",
-  price: 450.0,
-  currency: "BDT",
+    price: 450.0,
+    currency: "BDT",
     moq: 500,
-  badges: ["flash", "super"],
+    badges: ["flash", "super"],
     category: "Apparel & Textiles",
     subcategory: "T-Shirts",
     sku: "XT-001",
+    primaryType: "wholesale",
+    productTypes: {
+      wholesale: {
+        enabled: true,
+        price: 450.0,
+        moq: 500,
+        tieredPricing: [
+          { minQuantity: 500, pricePerUnit: 450 },
+          { minQuantity: 1000, pricePerUnit: 420 },
+          { minQuantity: 2000, pricePerUnit: 390 },
+          { minQuantity: 5000, pricePerUnit: 360 }
+        ]
+      },
+      retail: {
+        enabled: true,
+        price: 650.0,
+        maxQuantity: 50
+      },
+      b2b: {
+        enabled: false,
+        rfqOnly: true,
+        customPricing: true
+      }
+    },
     description: `High-quality 100% cotton t-shirt designed for comfort and durability. Perfect for casual wear, 
     promotional events, or as a base for custom printing. Our premium cotton blend ensures excellent breathability 
     and long-lasting color retention. Available in multiple sizes and colors to meet your specific requirements.`,

@@ -38,6 +38,28 @@ function ProductsContent() {
       ],
       availableQuantity: 10000,
       leadTimeDays: 15,
+      primaryType: "wholesale",
+      productTypes: {
+        wholesale: {
+          enabled: true,
+          price: 450.0,
+          moq: 500,
+          tieredPricing: [
+            { minQuantity: 500, pricePerUnit: 450 },
+            { minQuantity: 1000, pricePerUnit: 420 },
+            { minQuantity: 2000, pricePerUnit: 390 }
+          ]
+        },
+        retail: {
+          enabled: true,
+          price: 650.0,
+          maxQuantity: 50
+        },
+        b2b: {
+          enabled: false,
+          rfqOnly: true
+        }
+      },
     },
     {
       id: "2",
@@ -58,6 +80,24 @@ function ProductsContent() {
       ],
       availableQuantity: 5000,
       leadTimeDays: 20,
+      primaryType: "retail",
+      productTypes: {
+        wholesale: {
+          enabled: false,
+          price: 1650.0,
+          moq: 200
+        },
+        retail: {
+          enabled: true,
+          price: 1850.0,
+          maxQuantity: 20
+        },
+        b2b: {
+          enabled: true,
+          rfqOnly: false,
+          customPricing: true
+        }
+      },
     },
     {
       id: "3",
@@ -78,6 +118,24 @@ function ProductsContent() {
       ],
       availableQuantity: 8000,
       leadTimeDays: 12,
+      primaryType: "b2b",
+      productTypes: {
+        wholesale: {
+          enabled: true,
+          price: 580.0,
+          moq: 300
+        },
+        retail: {
+          enabled: true,
+          price: 780.0,
+          maxQuantity: 25
+        },
+        b2b: {
+          enabled: true,
+          rfqOnly: false,
+          customPricing: true
+        }
+      },
     },
     {
       id: "4",
@@ -97,6 +155,29 @@ function ProductsContent() {
       ],
       availableQuantity: 3000,
       leadTimeDays: 18,
+      primaryType: "wholesale",
+      productTypes: {
+        wholesale: {
+          enabled: true,
+          price: 1850.0,
+          moq: 100,
+          tieredPricing: [
+            { minQuantity: 100, pricePerUnit: 1850 },
+            { minQuantity: 200, pricePerUnit: 1750 },
+            { minQuantity: 500, pricePerUnit: 1650 }
+          ]
+        },
+        retail: {
+          enabled: false,
+          price: 2050.0,
+          maxQuantity: 5
+        },
+        b2b: {
+          enabled: true,
+          rfqOnly: true,
+          customPricing: true
+        }
+      },
     },
     // Add more products for pagination demo
     {
@@ -118,6 +199,23 @@ function ProductsContent() {
       ],
       availableQuantity: 6000,
       leadTimeDays: 14,
+      primaryType: "retail",
+      productTypes: {
+        wholesale: {
+          enabled: true,
+          price: 420.0,
+          moq: 500
+        },
+        retail: {
+          enabled: true,
+          price: 550.0,
+          maxQuantity: 30
+        },
+        b2b: {
+          enabled: false,
+          rfqOnly: true
+        }
+      },
     },
     {
       id: "6",
@@ -138,6 +236,29 @@ function ProductsContent() {
       ],
       availableQuantity: 4500,
       leadTimeDays: 16,
+      primaryType: "wholesale",
+      productTypes: {
+        wholesale: {
+          enabled: true,
+          price: 890.0,
+          moq: 250,
+          tieredPricing: [
+            { minQuantity: 250, pricePerUnit: 890 },
+            { minQuantity: 500, pricePerUnit: 850 },
+            { minQuantity: 1000, pricePerUnit: 800 }
+          ]
+        },
+        retail: {
+          enabled: true,
+          price: 1090.0,
+          maxQuantity: 15
+        },
+        b2b: {
+          enabled: true,
+          rfqOnly: false,
+          customPricing: true
+        }
+      },
     },
   ];
 
