@@ -23,6 +23,12 @@ export function RelatedProducts({ currentProductId, supplierId }: RelatedProduct
   specs: [{ key: "Material", value: "100% Cotton" }],
   availableQuantity: 2000,
   leadTimeDays: 10,
+  productTypes: {
+    wholesale: { enabled: true, price: 680, moq: 300 },
+    retail: { enabled: true, price: 700 },
+    b2b: { enabled: false }
+  },
+  primaryType: "wholesale",
     },
     {
       id: "related-2",
@@ -38,6 +44,12 @@ export function RelatedProducts({ currentProductId, supplierId }: RelatedProduct
   specs: [{ key: "Material", value: "Fleece" }],
   availableQuantity: 1000,
   leadTimeDays: 14,
+  productTypes: {
+    wholesale: { enabled: true, price: 1650, moq: 150 },
+    retail: { enabled: true, price: 1750 },
+    b2b: { enabled: false }
+  },
+  primaryType: "wholesale",
     },
     {
       id: "related-3",
@@ -53,6 +65,12 @@ export function RelatedProducts({ currentProductId, supplierId }: RelatedProduct
   specs: [{ key: "Material", value: "Cotton" }],
   availableQuantity: 5000,
   leadTimeDays: 7,
+  productTypes: {
+    wholesale: { enabled: true, price: 380, moq: 500 },
+    retail: { enabled: true, price: 420 },
+    b2b: { enabled: false }
+  },
+  primaryType: "wholesale",
     },
     {
       id: "related-4",
@@ -68,6 +86,12 @@ export function RelatedProducts({ currentProductId, supplierId }: RelatedProduct
   specs: [{ key: "Material", value: "Cotton" }],
   availableQuantity: 3000,
   leadTimeDays: 12,
+  productTypes: {
+    wholesale: { enabled: true, price: 520, moq: 400 },
+    retail: { enabled: true, price: 550 },
+    b2b: { enabled: false }
+  },
+  primaryType: "wholesale",
     },
   ]
 

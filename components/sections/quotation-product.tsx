@@ -18,6 +18,12 @@ export function QuotationProduct() {
       specs: [{ key: "Material", value: "100% Cotton" }],
       availableQuantity: 10000,
       leadTimeDays: 15,
+      productTypes: {
+        wholesale: { enabled: true, price: 450, moq: 500 },
+        retail: { enabled: true, price: 480 },
+        b2b: { enabled: false }
+      },
+      primaryType: "wholesale",
     },
     {
       id: "2",
@@ -33,6 +39,12 @@ export function QuotationProduct() {
       specs: [{ key: "Material", value: "Denim" }],
       availableQuantity: 5000,
       leadTimeDays: 20,
+      productTypes: {
+        wholesale: { enabled: true, price: 1250, moq: 200 },
+        retail: { enabled: true, price: 1300 },
+        b2b: { enabled: false }
+      },
+      primaryType: "wholesale",
     },
     {
       id: "3",
@@ -48,6 +60,12 @@ export function QuotationProduct() {
       specs: [{ key: "Material", value: "Cotton" }],
       availableQuantity: 3000,
       leadTimeDays: 14,
+      productTypes: {
+        wholesale: { enabled: true, price: 680, moq: 300 },
+        retail: { enabled: true, price: 720 },
+        b2b: { enabled: false }
+      },
+      primaryType: "wholesale",
     },
     {
       id: "4",
@@ -63,6 +81,12 @@ export function QuotationProduct() {
       specs: [{ key: "Material", value: "Fleece" }],
       availableQuantity: 1200,
       leadTimeDays: 7,
+      productTypes: {
+        wholesale: { enabled: true, price: 1850, moq: 100 },
+        retail: { enabled: true, price: 1950 },
+        b2b: { enabled: false }
+      },
+      primaryType: "wholesale",
     },
   ]
 
