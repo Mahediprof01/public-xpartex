@@ -24,9 +24,9 @@ export function EbookGrid({ searchQuery, selectedCategory, sortBy, viewMode }: E
       subtitle: "From Design to Production - Industry Best Practices",
       author: {
         name: "Industry Experts",
-        avatar: "/placeholder.svg?height=40&width=40&text=IE"
+        avatar: "/production-manager-man.jpg"
       },
-      cover: "/placeholder.svg?height=300&width=200&text=Garment+Manufacturing",
+      cover: "/garment-manufacturing-book-cover.jpg",
       category: "Manufacturing",
       rating: 4.9,
       totalReviews: 1247,
@@ -45,9 +45,9 @@ export function EbookGrid({ searchQuery, selectedCategory, sortBy, viewMode }: E
       subtitle: "Complete Market Research and Trend Forecasting",
       author: {
         name: "Fashion Research Team",
-        avatar: "/placeholder.svg?height=40&width=40&text=FRT"
+        avatar: "/fashion-designer-woman.jpg"
       },
-      cover: "/placeholder.svg?height=300&width=200&text=Fashion+Trends+2024",
+      cover: "/fashion-trends-book-cover.jpg",
       category: "Trends",
       rating: 4.7,
       totalReviews: 892,
@@ -66,9 +66,9 @@ export function EbookGrid({ searchQuery, selectedCategory, sortBy, viewMode }: E
       subtitle: "Eco-Friendly Manufacturing Practices",
       author: {
         name: "Green Manufacturing Co.",
-        avatar: "/placeholder.svg?height=40&width=40&text=GMC"
+        avatar: "/textile-engineer-woman.jpg"
       },
-      cover: "/placeholder.svg?height=300&width=200&text=Sustainable+Textile",
+      cover: "/sustainable-textile-book-cover.jpg",
       category: "Sustainability", 
       rating: 4.8,
       totalReviews: 654,
@@ -87,9 +87,9 @@ export function EbookGrid({ searchQuery, selectedCategory, sortBy, viewMode }: E
       subtitle: "International Trade and Compliance",
       author: {
         name: "Trade Specialists",
-        avatar: "/placeholder.svg?height=40&width=40&text=TS"
+        avatar: "/garment-factory-logo.jpg"
       },
-      cover: "/placeholder.svg?height=300&width=200&text=Export+Guidelines",
+      cover: "/export-guidelines-book-cover.jpg",
       category: "Export",
       rating: 4.6,
       totalReviews: 423,
@@ -229,7 +229,7 @@ export function EbookGrid({ searchQuery, selectedCategory, sortBy, viewMode }: E
 
   return (
     <motion.div
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
       variants={containerVariants}
       initial="hidden"
       animate="visible"

@@ -8,20 +8,13 @@ import {
   Grid3X3, 
   List, 
   Star, 
-  Download, 
-  BookOpen,
-  ChevronDown,
-  SlidersHorizontal
+  ChevronDown
 } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { EbookGrid } from "@/components/ebooks/ebook-grid"
 import { EbookStats } from "@/components/ebooks/ebook-stats"
 import { AnimatedCounter } from "@/components/ui/animated-counter"
-import Image from "next/image"
-import Link from "next/link"
 
 export default function EbooksPage() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -77,13 +70,13 @@ export default function EbooksPage() {
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/80 w-5 h-5 z-10 pointer-events-none" />
                 <Input
                   type="text"
                   placeholder="Search for e-books, authors, topics..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-12 pr-4 py-4 text-lg bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder-gray-300 focus:bg-white/20"
+                  className="pl-12 pr-4 py-4 text-lg bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder-gray-300 focus:bg-white/20 relative z-0"
                 />
               </div>
             </motion.div>
