@@ -16,6 +16,7 @@ interface StatsCardProps {
   className?: string
   iconClassName?: string
   gradient?: string
+  decimal?: number
 }
 
 export function StatsCard({
@@ -28,6 +29,7 @@ export function StatsCard({
   className,
   iconClassName,
   gradient = "from-blue-500 to-cyan-500"
+  , decimal
 }: StatsCardProps) {
   return (
     <motion.div
@@ -63,6 +65,7 @@ export function StatsCard({
                   prefix={prefix}
                   delay={delay + 0.2}
                   duration={2.5}
+                  decimal={decimal}
                 />
               </div>
               <p className="text-xs font-medium text-gray-600 leading-tight">

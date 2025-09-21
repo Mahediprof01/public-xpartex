@@ -6,7 +6,7 @@ import {
   Star, 
   Download, 
   BookOpen, 
-  Eye, 
+  Play, 
   Heart, 
   Share2,
   ChevronRight,
@@ -25,6 +25,7 @@ interface EbookHeroProps {
 
 export function EbookHero({ ebook }: EbookHeroProps) {
   const [isWishlisted, setIsWishlisted] = useState(false)
+  const [copied, setCopied] = useState(false)
 
   const breadcrumbs = [
     { label: "Home", href: "/" },
@@ -97,15 +98,36 @@ export function EbookHero({ ebook }: EbookHeroProps) {
                 )}
               </div>
 
-              {/* Preview Button */}
-              <div className="mt-6">
-                <Button 
-                  variant="outline" 
-                  className="w-full border-slate-600 text-slate-300 hover:bg-slate-800"
+              {/* Preview Overlay (play-style like course preview) */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="pointer-events-auto">
+                  <Button
+                    size="lg"
+                    onClick={() => {
+                      if ((ebook as any).previewUrl) {
+                        window.open((ebook as any).previewUrl, "_blank")
+                      }
+                    }}
+                    className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-2 border-white/30 rounded-full w-16 h-16 p-0"
+                  >
+                    <Play className="w-6 h-6 ml-1" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Small Preview Pages button (wishlist-like styling) */}
+              <div className="mt-6 flex justify-center lg:justify-start">
+                <button
+                  onClick={() => {
+                    if ((ebook as any).previewUrl) {
+                      window.open((ebook as any).previewUrl, "_blank")
+                    }
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-transform transform bg-transparent text-slate-300 border border-slate-600 hover:scale-105 hover:bg-slate-800"
                 >
-                  <Eye className="w-4 h-4 mr-2" />
+                  <Play className="w-4 h-4" />
                   Preview Pages
-                </Button>
+                </button>
               </div>
             </div>
           </motion.div>
@@ -231,20 +253,38 @@ export function EbookHero({ ebook }: EbookHeroProps) {
                 Buy Now - {formatPrice(ebook.price)}
               </Button>
               
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="border-slate-600 text-slate-300 hover:bg-slate-800"
-                onClick={() => setIsWishlisted(!isWishlisted)}
+              <button
+                onClick={() => setIsWishlisted((s) => !s)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-transform transform
+                  ${isWishlisted ? 'bg-red-600 text-white shadow-md' : 'bg-transparent text-slate-300 border border-slate-600'}
+                  hover:scale-105`}
+                aria-pressed={isWishlisted}
               >
-                <Heart className={`w-4 h-4 mr-2 ${isWishlisted ? 'fill-current text-red-400' : ''}`} />
-                Wishlist
-              </Button>
-              
-              <Button variant="outline" size="lg" className="border-slate-600 text-slate-300 hover:bg-slate-800">
-                <Share2 className="w-4 h-4 mr-2" />
-                Share
-              </Button>
+                <Heart className={`w-4 h-4 ${isWishlisted ? 'text-white' : 'text-slate-300'}`} />
+                {isWishlisted ? 'Wishlisted' : 'Wishlist'}
+              </button>
+
+              <button
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(window.location.href)
+                    setCopied(true)
+                    setTimeout(() => setCopied(false), 2000)
+                  } catch (e) {
+                    if ((navigator as any).share) {
+                      try {
+                        await (navigator as any).share({ title: ebook.title, url: window.location.href })
+                      } catch (err) {
+                        // ignore
+                      }
+                    }
+                  }
+                }}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-transparent text-slate-300 border border-slate-600 hover:bg-slate-800 hover:scale-105 transition-all"
+              >
+                <Share2 className="w-4 h-4" />
+                {copied ? 'Copied' : 'Share'}
+              </button>
             </div>
 
             {/* Key Features */}

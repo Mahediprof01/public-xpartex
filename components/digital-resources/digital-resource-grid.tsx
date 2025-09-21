@@ -119,108 +119,55 @@ export function DigitalResourceGrid({ searchQuery, selectedCategory, sortBy, vie
       >
         {filteredResources.map((resource) => {
           const TypeIcon = getTypeIcon(resource.type)
+          const discount = Math.round(((resource.originalPrice - resource.price) / resource.originalPrice) * 100)
           return (
             <motion.div key={resource.id} variants={itemVariants}>
-              <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  {/* Resource Image */}
-                  <div className="relative mb-4">
-                    <Image
-                      src={resource.thumbnail}
-                      alt={resource.title}
-                      width={400}
-                      height={240}
-                      className="w-full h-48 object-cover rounded-lg"
-                    />
-                    
-                    {/* Badges */}
-                    <div className="absolute top-3 left-3 flex gap-2">
-                      {resource.isNew && (
-                        <Badge className="bg-green-500 text-white">New</Badge>
-                      )}
-                      {resource.isBestseller && (
-                        <Badge className="bg-orange-500 text-white">Bestseller</Badge>
-                      )}
-                      {resource.isFeatured && (
-                        <Badge className="bg-purple-500 text-white">Featured</Badge>
-                      )}
+              <Link href={`/digital-resources/${resource.id}`}>
+                <div className="bg-white rounded-sm shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden">
+                  <div className="relative h-48">
+                    <Image src={resource.thumbnail || "/placeholder.svg"} alt={resource.title} fill className="object-cover" />
+
+                    {/* Type / Level badge */}
+                    <div className="absolute top-4 left-4">
+                      <span className="px-2 py-1 bg-white text-gray-700 text-xs rounded-full font-medium">
+                        {resource.type.charAt(0).toUpperCase() + resource.type.slice(1)}
+                      </span>
                     </div>
 
-                    {/* Type Icon */}
-                    <div className="absolute top-3 right-3">
-                      <div className="bg-white/90 backdrop-blur-sm rounded-full p-2">
-                        <TypeIcon className="w-4 h-4 text-gray-700" />
+                    {/* Discount Badge */}
+                    {discount > 0 && (
+                      <div className="absolute top-4 right-4 bg-red-500 text-white px-2 py-1 text-sm font-semibold rounded">
+                        {discount}% OFF
                       </div>
-                    </div>
-
-                    {/* Hover Actions */}
-                    <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
-                      <Button size="sm" variant="secondary" className="bg-white/90 text-gray-900">
-                        <Eye className="w-4 h-4 mr-1" />
-                        Preview
-                      </Button>
-                      <Button size="sm" variant="secondary" className="bg-white/90 text-gray-900">
-                        <Heart className="w-4 h-4" />
-                      </Button>
-                    </div>
+                    )}
                   </div>
 
-                  {/* Resource Info */}
-                  <div className="space-y-3">
-                    <div>
-                      <Badge variant="outline" className="text-xs mb-2">
-                        {resource.category}
-                      </Badge>
-                      <Link href={`/digital-resources/${resource.id}`}>
-                        <h3 className="font-semibold text-gray-900 line-clamp-2 hover:text-blue-600 transition-colors cursor-pointer">
-                          {resource.title}
-                        </h3>
-                      </Link>
-                      <p className="text-sm text-gray-600 mt-1">by {resource.author.name}</p>
-                    </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">{resource.title}</h3>
+                    <p className="text-sky-600 font-medium mb-3">by {resource.author.name}</p>
 
-                    {/* Rating and Stats */}
-                    <div className="flex items-center gap-4 text-sm text-gray-600">
-                      <div className="flex items-center">
-                        <Star className="w-4 h-4 text-yellow-400 fill-current mr-1" />
-                        <span className="font-medium">{resource.rating}</span>
-                        <span className="ml-1">({resource.totalReviews})</span>
+                    <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                      <div className="flex items-center gap-1">
+                        <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                        <span>{resource.rating}</span>
                       </div>
-                      <div className="flex items-center">
-                        <Download className="w-4 h-4 mr-1" />
+                      <div className="flex items-center gap-1">
+                        <Download className="h-4 w-4" />
                         <span>{resource.downloads.toLocaleString()}</span>
                       </div>
                     </div>
 
-                    {/* File Size */}
-                    <div className="text-sm text-gray-500">
-                      File size: {resource.fileSize}
-                    </div>
+                    <div className="text-sm text-gray-500 mb-3">File size: {resource.fileSize}</div>
 
-                    {/* Price */}
-                    <div className="flex items-center gap-2 pt-2">
-                      <span className="text-lg font-bold text-gray-900">
-                        {formatPrice(resource.price, resource.currency)}
-                      </span>
-                      {resource.originalPrice > resource.price && (
-                        <span className="text-sm text-gray-500 line-through">
-                          {formatPrice(resource.originalPrice, resource.currency)}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Action Button */}
-                    <div className="pt-3">
-                      <Button size="sm" className="w-full gradient-primary gradient-primary-hover text-white" asChild>
-                        <Link href={`/digital-resources/${resource.id}`}>
-                          <Download className="w-4 h-4 mr-1" />
-                          View Details
-                        </Link>
-                      </Button>
+                    <div className="flex items-center justify-between">
+                      <div className="text-xl font-bold text-gray-900">{formatPrice(resource.price, resource.currency)}</div>
+                      <div>
+                        <Button className="cursor-pointer gradient-primary gradient-primary-hover text-white">View Details</Button>
+                      </div>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </Link>
             </motion.div>
           )
         })}

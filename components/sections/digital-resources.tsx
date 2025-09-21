@@ -1,36 +1,12 @@
-import { FileText, Video, ImageIcon, Download, Calculator, Settings, CheckSquare } from "lucide-react"
+import { FileText, Video, ImageIcon, Download, Calculator, Settings, CheckSquare, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { digitalResourcesData } from "@/data/digital-resources"
+import Link from "next/link"
+import Image from "next/image"
 
 export function DigitalResources() {
-  // Transform digitalResourcesData to match the expected format for the home page
-  const resources = digitalResourcesData.slice(0, 6).map(resource => {
-    const getTypeIcon = (type: string) => {
-      switch (type) {
-        case "calculator":
-          return Calculator
-        case "template":
-          return FileText
-        case "tool":
-          return Settings
-        case "checklist":
-          return CheckSquare
-        default:
-          return FileText
-      }
-    }
-
-    return {
-      id: resource.id,
-      title: resource.title,
-      type: resource.type.charAt(0).toUpperCase() + resource.type.slice(1),
-      icon: getTypeIcon(resource.type),
-      description: resource.description.substring(0, 100) + "...",
-      downloads: resource.stats.totalDownloads,
-      format: resource.format.join(", "),
-      price: resource.price,
-    }
-  })
+  // Use the real resource objects so we can render thumbnails and price/discount
+  const resources = digitalResourcesData.slice(0, 6)
 
   return (
     <section className="py-16 bg-gray-50">
@@ -42,45 +18,56 @@ export function DigitalResources() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {resources.map((resource) => (
-            <div key={resource.id} className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-start gap-4">
-                <div className="gradient-primary p-3 rounded-xl">
-                  <resource.icon className="h-6 w-6 text-white" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-start justify-between mb-2">
-                    <a href={`/digital-resources/${resource.id}`}>
-                      <h3 className="font-semibold text-gray-900 hover:text-blue-600 transition-colors cursor-pointer">{resource.title}</h3>
-                    </a>
-                    <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{resource.type}</span>
-                  </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {resources.map((resource) => {
+            const discount = Math.round(((resource.originalPrice - resource.price) / (resource.originalPrice || 1)) * 100)
+            return (
+              <div key={resource.id}>
+                <Link href={`/digital-resources/${resource.id}`}>
+                  <div className="bg-white rounded-sm shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden">
+                    <div className="relative h-48">
+                      <Image src={resource.thumbnail || "/placeholder.svg"} alt={resource.title} fill className="object-cover" />
 
-                  <p className="text-sm text-gray-600 mb-3">{resource.description}</p>
+                      {discount > 0 && (
+                        <div className="absolute top-4 right-4 bg-red-500 text-white px-2 py-1 text-sm font-semibold rounded">
+                          {discount}% OFF
+                        </div>
+                      )}
 
-                  <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
-                    <div className="flex items-center gap-1">
-                      <Download className="h-4 w-4" />
-                      <span>{resource.downloads.toLocaleString()}</span>
+                      <div className="absolute top-4 left-4">
+                        <span className="px-2 py-1 bg-white text-gray-700 text-xs rounded-full font-medium">{resource.type.charAt(0).toUpperCase() + resource.type.slice(1)}</span>
+                      </div>
                     </div>
-                    <span>{resource.format}</span>
-                  </div>
 
-                  <div className="text-lg font-bold text-gray-900 mb-3">
-                    {resource.price === 0 ? "Free" : `৳${resource.price.toLocaleString()}`}
-                  </div>
+                    <div className="p-6">
+                      <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">{resource.title}</h3>
+                      <p className="text-sky-600 font-medium mb-3">by {resource.author?.name || 'Author'}</p>
 
-                  <Button size="sm" className="w-full gradient-primary gradient-primary-hover text-white" asChild>
-                    <a href={`/digital-resources/${resource.id}`}>
-                      <Download className="h-4 w-4 mr-1" />
-                      View Details
-                    </a>
-                  </Button>
-                </div>
+                      <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                        <div className="flex items-center gap-1">
+                          <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                          <span>{resource.stats?.rating ?? '-'}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Download className="h-4 w-4" />
+                          <span>{resource.stats?.totalDownloads?.toLocaleString() ?? 0}</span>
+                        </div>
+                      </div>
+
+                      <div className="text-sm text-gray-500 mb-3">File size: {resource.fileSize}</div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="text-xl font-bold text-gray-900">{resource.price === 0 ? 'Free' : `BDT ${resource.price.toLocaleString()}`}</div>
+                        <div>
+                          <Button className="cursor-pointer gradient-primary gradient-primary-hover text-white">View Details</Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
         <div className="text-center mt-12">

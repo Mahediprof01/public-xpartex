@@ -10,6 +10,7 @@ interface AnimatedCounterProps {
   className?: string
   suffix?: string
   prefix?: string
+  decimal?: number
 }
 
 export function AnimatedCounter({
@@ -19,6 +20,7 @@ export function AnimatedCounter({
   className = "",
   suffix = "",
   prefix = ""
+  , decimal
 }: AnimatedCounterProps) {
   const ref = useRef<HTMLSpanElement>(null)
   const motionValue = useMotionValue(0)
@@ -49,6 +51,9 @@ export function AnimatedCounter({
   }, [springValue])
 
   const formatNumber = (num: number) => {
+    if (typeof decimal === 'number' && decimal > 0) {
+      return num.toFixed(decimal)
+    }
     if (num >= 1000000) {
       return (num / 1000000).toFixed(1) + "M"
     }
