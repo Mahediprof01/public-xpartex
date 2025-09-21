@@ -1,3 +1,6 @@
+"use client"
+
+import { motion } from "framer-motion"
 import CourseCard from "./course-card"
 
 const mockCourses = [
@@ -40,24 +43,58 @@ const mockCourses = [
 ]
 
 export default function CourseGrid() {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  }
+
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <motion.div
+        className="flex justify-between items-center"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
         <h2 className="text-xl font-semibold">Available Courses ({mockCourses.length})</h2>
-        <select className="p-2 border border-gray-300 focus:ring-2 focus:ring-sky-500">
+        <select className="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors">
           <option>Sort by: Most Popular</option>
           <option>Sort by: Newest</option>
           <option>Sort by: Price Low to High</option>
           <option>Sort by: Price High to Low</option>
           <option>Sort by: Rating</option>
         </select>
-      </div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
         {mockCourses.map((course) => (
-          <CourseCard key={course.id} course={course} />
+          <motion.div
+            key={course.id}
+            variants={itemVariants}
+            whileHover={{
+              y: -5,
+              transition: { duration: 0.2 }
+            }}
+          >
+            <CourseCard course={course} />
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </div>
   )
 }
