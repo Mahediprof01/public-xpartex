@@ -8,7 +8,7 @@ import {
   Play, 
   FileText, 
   HelpCircle, 
-  Assignment,
+  Clipboard,
   Clock,
   Eye,
   Lock
@@ -52,7 +52,7 @@ export function EnhancedCurriculum({ course }: EnhancedCurriculumProps) {
       case 'quiz':
         return <HelpCircle className="w-4 h-4" />
       case 'assignment':
-        return <Assignment className="w-4 h-4" />
+        return <Clipboard className="w-4 h-4" />
       default:
         return <FileText className="w-4 h-4" />
     }

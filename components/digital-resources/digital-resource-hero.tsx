@@ -1,19 +1,21 @@
 "use client"
 
+import { useState } from "react"
 import { motion } from "framer-motion"
-import { 
-  Star, 
-  Download, 
-  Eye, 
-  Share2, 
-  Heart, 
+import {
+  Star,
+  Download,
+  Eye,
+  Share2,
+  Heart,
   ChevronRight,
   Calculator,
   FileText,
   Settings,
   CheckSquare,
-  HardDrive,
-  Users
+  CheckCircle,
+  Shield,
+  RefreshCw
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -27,6 +29,9 @@ interface DigitalResourceHeroProps {
 }
 
 export function DigitalResourceHero({ resource }: DigitalResourceHeroProps) {
+  const [wishlisted, setWishlisted] = useState(false)
+  const [copied, setCopied] = useState(false)
+
   const formatPrice = (price: number) => {
     if (resource.currency === 'BDT') {
       return `৳${price.toLocaleString()}`
@@ -172,39 +177,55 @@ export function DigitalResourceHero({ resource }: DigitalResourceHeroProps) {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 gap-4">
-              <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                <CardContent className="p-4 text-center">
-                  <div className="flex items-center justify-center mb-2">
-                    <Star className="w-5 h-5 text-yellow-400 fill-current mr-1" />
-                    <span className="text-2xl font-bold text-white">{resource.stats.rating}</span>
+            <div className="grid grid-cols-3 gap-3">
+              <Card className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 backdrop-blur-sm border-blue-400/30">
+                <CardContent className="p-3 text-center">
+                  <div className="flex items-center justify-center mb-1">
+                    <Star className="w-4 h-4 text-yellow-400 fill-current mr-1" />
+                    <span className="text-lg font-bold text-white">{resource.stats.rating}</span>
                   </div>
-                  <p className="text-sm text-slate-300">{resource.stats.totalReviews} reviews</p>
+                  <p className="text-xs text-blue-200">{resource.stats.totalReviews} reviews</p>
                 </CardContent>
               </Card>
 
-              <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                <CardContent className="p-4 text-center">
-                  <div className="flex items-center justify-center mb-2">
-                    <Download className="w-5 h-5 text-blue-400 mr-1" />
-                    <span className="text-2xl font-bold text-white">
-                      {resource.stats.totalDownloads.toLocaleString()}
+              <Card className="bg-gradient-to-br from-green-500/20 to-green-600/20 backdrop-blur-sm border-green-400/30">
+                <CardContent className="p-3 text-center">
+                  <div className="flex items-center justify-center mb-1">
+                    <Download className="w-4 h-4 text-green-400 mr-1" />
+                    <span className="text-lg font-bold text-white">
+                      {resource.stats.totalDownloads > 1000 ? `${(resource.stats.totalDownloads / 1000).toFixed(1)}k` : resource.stats.totalDownloads}
                     </span>
                   </div>
-                  <p className="text-sm text-slate-300">downloads</p>
+                  <p className="text-xs text-green-200">downloads</p>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 backdrop-blur-sm border-purple-400/30">
+                <CardContent className="p-3 text-center">
+                  <div className="flex items-center justify-center mb-1">
+                    <FileText className="w-4 h-4 text-purple-400 mr-1" />
+                    <span className="text-lg font-bold text-white">{resource.fileSize}</span>
+                  </div>
+                  <p className="text-xs text-purple-200">file size</p>
                 </CardContent>
               </Card>
             </div>
 
             {/* Key Features */}
-            <div className="space-y-3">
-              <h3 className="font-semibold text-white">Key Features:</h3>
-              <div className="grid grid-cols-1 gap-2">
+            <div className="space-y-4">
+              <h3 className="font-semibold text-white text-lg">What's Included:</h3>
+              <div className="grid grid-cols-1 gap-3">
                 {resource.keyFeatures.slice(0, 4).map((feature, index) => (
-                  <div key={index} className="flex items-center text-slate-300">
-                    <div className="w-2 h-2 bg-blue-400 rounded-full mr-3 flex-shrink-0"></div>
-                    <span className="text-sm">{feature}</span>
-                  </div>
+                  <motion.div
+                    key={index}
+                    className="flex items-center text-blue-100 bg-white/5 rounded-lg p-3 hover:bg-white/10 transition-all duration-200"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                  >
+                    <CheckCircle className="w-5 h-5 text-green-400 mr-3 flex-shrink-0" />
+                    <span className="text-sm font-medium">{feature}</span>
+                  </motion.div>
                 ))}
               </div>
             </div>
@@ -228,51 +249,92 @@ export function DigitalResourceHero({ resource }: DigitalResourceHeroProps) {
             </div>
 
             {/* Pricing */}
-            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl font-bold text-white">
-                      {formatPrice(resource.price)}
-                    </span>
-                    {resource.originalPrice > resource.price && (
-                      <>
-                        <span className="text-lg text-slate-400 line-through">
-                          {formatPrice(resource.originalPrice)}
-                        </span>
-                        <Badge className="bg-red-500/20 text-red-300 border-red-500/30">
-                          {discountPercentage}% OFF
-                        </Badge>
-                      </>
-                    )}
-                  </div>
+            <motion.div
+              className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/20 rounded-2xl p-8 shadow-2xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <div className="text-center mb-6">
+                <div className="flex items-center justify-center gap-3 mb-2">
+                  <span className="text-4xl font-bold text-white">
+                    {formatPrice(resource.price)}
+                  </span>
                   {resource.originalPrice > resource.price && (
-                    <p className="text-sm text-green-400 mt-1">
-                      Save {formatPrice(resource.originalPrice - resource.price)} today!
-                    </p>
+                    <>
+                      <span className="text-xl text-slate-400 line-through">
+                        {formatPrice(resource.originalPrice)}
+                      </span>
+                      <Badge className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1 text-sm font-bold animate-pulse">
+                        {discountPercentage}% OFF
+                      </Badge>
+                    </>
                   )}
                 </div>
+                {resource.originalPrice > resource.price && (
+                  <p className="text-green-400 font-medium">
+                    🎉 Save {formatPrice(resource.originalPrice - resource.price)} today!
+                  </p>
+                )}
               </div>
 
-                {/* Action Buttons */}
-              <div className="space-y-3">
-                <Button size="lg" className="w-full gradient-primary gradient-primary-hover text-white">
+              {/* Action Buttons */}
+              <div className="space-y-4">
+                <Button size="lg" className="w-full bg-gradient-to-r from-sky-500 to-cyan-400 hover:from-sky-600 hover:to-cyan-500 text-white font-semibold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                   <Download className="w-5 h-5 mr-2" />
-                  Download Now - {formatPrice(resource.price)}
+                  Download Now
                 </Button>
 
-                <div className="flex gap-3">
-                  <Button variant="outline" size="lg" className="flex-1 border-white/20 text-white hover:bg-white/10">
-                    <Heart className="w-5 h-5 mr-2" />
-                    Add to Wishlist
-                  </Button>
-                  <Button variant="outline" size="lg" className="flex-1 border-white/20 text-white hover:bg-white/10">
-                    <Share2 className="w-5 h-5 mr-2" />
-                    Share
-                  </Button>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => setWishlisted((s) => !s)}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-transform transform
+                      ${wishlisted ? 'bg-red-600 text-white shadow-md' : 'bg-transparent text-white border border-white/30'}
+                      hover:scale-105`}
+                    aria-pressed={wishlisted}
+                  >
+                    <Heart className={`w-4 h-4 ${wishlisted ? 'text-white' : 'text-white'}`} />
+                    {wishlisted ? 'Wishlisted' : 'Wishlist'}
+                  </button>
+
+                  <button
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(window.location.href)
+                        setCopied(true)
+                        setTimeout(() => setCopied(false), 2000)
+                      } catch (e) {
+                        if ((navigator as any).share) {
+                          try {
+                            await (navigator as any).share({ title: resource.title, url: window.location.href })
+                          } catch (err) {
+                            // ignore
+                          }
+                        }
+                      }
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-transparent text-white border border-white/30 hover:bg-white/5 hover:scale-105 transition-all"
+                  >
+                    <Share2 className="w-4 h-4" />
+                    {copied ? 'Copied' : 'Share'}
+                  </button>
                 </div>
               </div>
-            </div>
+
+              {/* Trust Indicators */}
+              <div className="mt-6 pt-6 border-t border-white/10">
+                <div className="flex items-center justify-center gap-6 text-sm text-blue-200">
+                  <div className="flex items-center gap-1">
+                    <Shield className="w-4 h-4 text-green-400" />
+                    <span>Secure Download</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <RefreshCw className="w-4 h-4 text-blue-400" />
+                    <span>Free Updates</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
         </div>
       </div>
