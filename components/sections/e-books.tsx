@@ -75,7 +75,9 @@ export function EBooks() {
               </div>
 
               <div className="p-4">
-                <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2">{ebook.title}</h3>
+                <a href={`/ebooks/${ebook.id}`}>
+                  <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2 hover:text-sky-600 transition-colors cursor-pointer">{ebook.title}</h3>
+                </a>
                 <p className="text-sm text-gray-600 mb-3">by {ebook.author}</p>
 
                 <div className="flex items-center gap-3 text-sm text-gray-600 mb-3">
@@ -94,10 +96,12 @@ export function EBooks() {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <div className="text-lg font-bold text-gray-900">BDT {ebook.price.toLocaleString()}</div>
-                  <Button size="sm" className="gradient-primary gradient-primary-hover text-white">
-                    <Download className="h-4 w-4 mr-1" />
-                    Buy
+                  <div className="text-lg font-bold text-gray-900">৳{ebook.price.toLocaleString()}</div>
+                  <Button size="sm" className="gradient-primary gradient-primary-hover text-white" asChild>
+                    <a href={`/ebooks/${ebook.id}`}>
+                      <Download className="h-4 w-4 mr-1" />
+                      View Details
+                    </a>
                   </Button>
                 </div>
               </div>
@@ -106,8 +110,10 @@ export function EBooks() {
         </div>
 
         <div className="text-center mt-12">
-          <Button variant="outline" className="px-8 py-3 bg-transparent">
-            Browse All E-Books
+          <Button variant="outline" className="px-8 py-3 bg-transparent" asChild>
+            <a href="/ebooks">
+              Browse All E-Books
+            </a>
           </Button>
         </div>
       </div>
