@@ -72,7 +72,12 @@ export function AuthorProfile({ author }: AuthorProfileProps) {
             
             <div className="flex-1 text-center sm:text-left">
               <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                {author.name}
+                <a
+                  href={`/authors/dr-james-wilson`}
+                  className="hover:text-blue-600 transition-colors cursor-pointer"
+                >
+                  {author.name}
+                </a>
               </h3>
               <p className="text-lg text-sky-600 font-medium mb-3">
                 {author.title}

@@ -70,7 +70,12 @@ export function InstructorProfile({ instructor }: InstructorProfileProps) {
 
             <div className="flex-1 text-center sm:text-left">
               <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                {instructor.name}
+                <a
+                  href={`/instructors/sarah-johnson`}
+                  className="hover:text-blue-600 transition-colors cursor-pointer"
+                >
+                  {instructor.name}
+                </a>
               </h3>
               <p className="text-xs text-sky-600 font-medium mb-2">
                 {instructor.title}
