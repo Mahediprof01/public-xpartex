@@ -6,6 +6,20 @@ export const AUTH_ENDPOINTS = {
   ME: "/auth/me",
 } as const;
 
+// Product management endpoints
+export const PRODUCT_ENDPOINTS = {
+  CREATE: "/product",
+  LIST: "/product",
+  GET_BY_ID: "/product/{id}",
+  UPDATE: "/product/{id}",
+  DELETE: "/product/{id}",
+} as const;
+
+// Category management endpoints
+export const CATEGORY_ENDPOINTS = {
+  LIST: "/category",
+} as const;
+
 // Helper function to build endpoint with parameters
 export const buildEndpoint = (endpoint: string, params?: Record<string, string | number>) => {
   if (!params) return endpoint;
@@ -18,5 +32,7 @@ export const buildEndpoint = (endpoint: string, params?: Record<string, string |
   return url;
 };
 
-// Export type for the endpoints
+// Export types for the endpoints
 export type AuthEndpoint = keyof typeof AUTH_ENDPOINTS;
+export type ProductEndpoint = keyof typeof PRODUCT_ENDPOINTS;
+export type CategoryEndpoint = keyof typeof CATEGORY_ENDPOINTS;
