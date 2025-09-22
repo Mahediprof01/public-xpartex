@@ -2,9 +2,10 @@
 
 import { Card, CardContent } from "../ui/card"
 import { Button } from "../ui/button"
-import { 
-  ShoppingCart, 
-  Package, 
+import { ProductType } from "@/actions/product/type"
+import {
+  ShoppingCart,
+  Package,
   Building2,
   Users,
   TrendingUp,
@@ -12,7 +13,7 @@ import {
 } from "lucide-react"
 
 interface ProductTypeSelectorProps {
-  onSelect: (type: "wholesale" | "retail" | "b2b") => void
+  onSelect: (type: ProductType) => void
 }
 
 export function ProductTypeSelector({ onSelect }: ProductTypeSelectorProps) {

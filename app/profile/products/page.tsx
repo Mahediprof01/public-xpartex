@@ -1,23 +1,29 @@
 "use client"
 
+import { useEffect } from "react"
 import { UnifiedLayout } from "../../../components/dashboard/unified-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card"
 import { Button } from "../../../components/ui/button"
 import { Badge } from "../../../components/ui/badge"
 import { Input } from "../../../components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui/tabs"
+import { Alert, AlertDescription } from "../../../components/ui/alert"
+import { useProductStore } from "../../../actions/product/store"
+import { formatPrice } from "../../../actions/product/business"
 import Image from "next/image"
-import { 
-  Search, 
-  Filter, 
-  Plus, 
-  Package, 
-  Eye, 
+import Link from "next/link"
+import {
+  Search,
+  Filter,
+  Plus,
+  Package,
+  Eye,
   Edit,
   MoreHorizontal,
   TrendingUp,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
+  Loader2
 } from "lucide-react"
 
 const productData = [
@@ -66,6 +72,51 @@ const productData = [
 ]
 
 export default function ProductsPage() {
+  const {
+    products,
+    isLoading,
+    error,
+    successMessage,
+    fetchProducts,
+    clearError,
+    clearSuccess
+  } = useProductStore()
+
+  // Helper function to safely render category
+  const getCategoryName = (category: any) => {
+    if (typeof category === 'string') {
+      return category || 'No Category'
+    }
+    if (typeof category === 'object' && category) {
+      return category.title || category.name || 'No Category'
+    }
+    return 'No Category'
+  }
+
+  // Helper function to safely render any value as string
+  const safeRender = (value: any, fallback: string = 'N/A') => {
+    if (value === null || value === undefined) {
+      return fallback
+    }
+    if (typeof value === 'object') {
+      return fallback
+    }
+    return String(value)
+  }
+
+  // Fetch products on component mount
+  useEffect(() => {
+    fetchProducts()
+  }, [fetchProducts])
+
+  // Clear messages after some time
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => clearSuccess(), 5000)
+      return () => clearTimeout(timer)
+    }
+  }, [successMessage, clearSuccess])
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active": return "bg-green-100 text-green-800"
@@ -98,15 +149,29 @@ export default function ProductsPage() {
                 <Button variant="outline">
                   Import Products
                 </Button>
-                <Button 
-                  className="gradient-primary gradient-primary-hover text-white"
-                  onClick={() => window.location.href = '/profile/products/add'}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add New Product
-                </Button>
+                <Link href="/profile/products/add">
+                  <Button className="gradient-primary gradient-primary-hover text-white">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add New Product
+                  </Button>
+                </Link>
               </div>
             </div>
+
+            {/* Alert Messages */}
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{String(error)}</AlertDescription>
+              </Alert>
+            )}
+
+            {successMessage && (
+              <Alert className="border-green-500 text-green-700">
+                <CheckCircle className="h-4 w-4" />
+                <AlertDescription>{String(successMessage)}</AlertDescription>
+              </Alert>
+            )}
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -115,7 +180,9 @@ export default function ProductsPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600">Total Products</p>
-                      <p className="text-2xl font-bold text-gray-900">148</p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {isLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : products.length}
+                      </p>
                     </div>
                     <Package className="h-8 w-8 text-blue-600" />
                   </div>
@@ -130,7 +197,9 @@ export default function ProductsPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600">Active</p>
-                      <p className="text-2xl font-bold text-green-600">89</p>
+                      <p className="text-2xl font-bold text-green-600">
+                        {isLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : products.filter(p => p.stockQuantity > 0).length}
+                      </p>
                     </div>
                     <CheckCircle className="h-8 w-8 text-green-600" />
                   </div>
@@ -191,14 +260,31 @@ export default function ProductsPage() {
               <TabsContent value="all" className="space-y-4">
                 {/* Product List */}
                 <div className="space-y-4">
-                  {productData.map((product) => (
-                    <Card key={product.id} className="hover:shadow-md transition-shadow">
+                  {isLoading ? (
+                    <div className="flex justify-center py-8">
+                      <Loader2 className="h-8 w-8 animate-spin" />
+                    </div>
+                  ) : products.length === 0 ? (
+                    <div className="text-center py-8">
+                      <Package className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No products yet</h3>
+                      <p className="text-gray-600 mb-4">Start by adding your first product</p>
+                      <Link href="/profile/products/add">
+                        <Button className="gradient-primary text-white">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add Product
+                        </Button>
+                      </Link>
+                    </div>
+                  ) : (
+                    products.map((product) => (
+                      <Card key={product.id} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-6">
                         <div className="flex items-start gap-4">
                           {/* Product Image */}
                           <div className="relative w-20 h-20 flex-shrink-0">
                             <Image
-                              src={product.image}
+                              src={product.img}
                               alt={product.name}
                               fill
                               className="object-cover rounded-lg"
@@ -213,13 +299,16 @@ export default function ProductsPage() {
                                   {product.name}
                                 </h3>
                                 <p className="text-sm text-gray-600">
-                                  ID: {product.id} • {product.category}
+                                  ID: {product.id} • {getCategoryName(product.category)}
                                 </p>
+                                <Badge variant="outline" className="mt-1">
+                                  {product.productType}
+                                </Badge>
                               </div>
-                              <Badge className={getStatusColor(product.status)}>
+                              <Badge className={getStatusColor(product.stockQuantity > 0 ? "active" : "inactive")}>
                                 <span className="flex items-center gap-1">
-                                  {getStatusIcon(product.status)}
-                                  {product.status.charAt(0).toUpperCase() + product.status.slice(1)}
+                                  {getStatusIcon(product.stockQuantity > 0 ? "active" : "inactive")}
+                                  {product.stockQuantity > 0 ? "Active" : "Out of Stock"}
                                 </span>
                               </Badge>
                             </div>
@@ -227,33 +316,35 @@ export default function ProductsPage() {
                             <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-4">
                               <div>
                                 <p className="text-xs text-gray-500">Price</p>
-                                <p className="text-sm font-semibold text-blue-600">{product.price}</p>
+                                <p className="text-sm font-semibold text-blue-600">{formatPrice(product.price)}</p>
                               </div>
-                              <div>
-                                <p className="text-xs text-gray-500">MOQ</p>
-                                <p className="text-sm font-medium">{product.moq} pcs</p>
-                              </div>
+                              {(product.productType === "wholesale" || product.productType === "b2b") && (
+                                <div>
+                                  <p className="text-xs text-gray-500">MOQ</p>
+                                  <p className="text-sm font-medium">{safeRender((product as any).moq)} pcs</p>
+                                </div>
+                              )}
                               <div>
                                 <p className="text-xs text-gray-500">Stock</p>
-                                <p className="text-sm font-medium">{product.stock}</p>
+                                <p className="text-sm font-medium">{product.stockQuantity}</p>
                               </div>
                               <div>
-                                <p className="text-xs text-gray-500">Views</p>
-                                <p className="text-sm font-medium">{product.views}</p>
+                                <p className="text-xs text-gray-500">Created</p>
+                                <p className="text-sm font-medium">{new Date(product.createdAt).toLocaleDateString()}</p>
                               </div>
                               <div>
                                 <p className="text-xs text-gray-500">Orders</p>
-                                <p className="text-sm font-medium">{product.orders}</p>
+                                <p className="text-sm font-medium">{safeRender((product as any).orders)}</p>
                               </div>
                               <div>
                                 <p className="text-xs text-gray-500">Rating</p>
-                                <p className="text-sm font-medium">⭐ {product.rating}</p>
+                                <p className="text-sm font-medium">⭐ {safeRender((product as any).rating)}</p>
                               </div>
                             </div>
 
                             <div className="flex items-center justify-between">
                               <p className="text-sm text-gray-500">
-                                Last updated: {product.lastUpdated}
+                                Last updated: {safeRender((product as any).lastUpdated, 'Unknown')}
                               </p>
                               <div className="flex gap-2">
                                 <Button variant="outline" size="sm">
@@ -273,7 +364,8 @@ export default function ProductsPage() {
                         </div>
                       </CardContent>
                     </Card>
-                  ))}
+                    ))
+                  )}
                 </div>
               </TabsContent>
 
