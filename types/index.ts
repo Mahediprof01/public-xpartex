@@ -267,7 +267,7 @@ export interface RegisterData {
   lastName: string
   confirmPassword: string
   agreeToTerms: boolean
-  role: "buyer" | "supplier" | "both"
+  role?: "buyer" | "supplier" | "both" // Made optional since it's not required in registration
 }
 
 export interface AuthResponse {

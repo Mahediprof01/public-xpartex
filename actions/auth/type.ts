@@ -5,7 +5,7 @@ export interface RegisterRequest {
   email: string;
   password: string;
   phoneNumber: string;
-  role: string;
+  role?: string; // Made optional since it's not required
   address: string;
   registrationdate: string;
 }

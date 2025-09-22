@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
 import { PasswordInput } from "@/components/auth/password-input"
 import { SocialAuthSection } from "@/components/auth/social-auth"
 import { Loader2 } from "lucide-react"
@@ -24,7 +24,6 @@ interface FormData {
   password: string
   confirmPassword: string
   phoneNumber: string
-  role: "buyer" | "supplier" | "both"
   address: string
   agreeToTerms: boolean
 }
@@ -39,7 +38,6 @@ const validationSchema = yup.object({
     .oneOf([yup.ref('password')], 'Passwords must match')
     .required('Confirm password is required'),
   phoneNumber: yup.string().matches(/^[+]?[\d\s()-]{10,}$/, "Invalid phone number").required("Phone number is required"),
-  role: yup.string().oneOf(["buyer", "supplier", "both"]).required("Role is required"),
   address: yup.string().min(10, "Address too short").required("Address is required"),
   agreeToTerms: yup.boolean().oneOf([true], "You must agree to terms")
 })
@@ -56,7 +54,6 @@ export function RegistrationForm() {
     password: "",
     confirmPassword: "",
     phoneNumber: "",
-    role: "buyer",
     address: "",
     agreeToTerms: false
   })
@@ -98,7 +95,6 @@ export function RegistrationForm() {
       email: formData.email.toLowerCase().trim(),
       password: formData.password,
       phoneNumber: formData.phoneNumber.trim(),
-      role: formData.role,
       address: formData.address.trim(),
       registrationdate: new Date().toISOString()
     })
@@ -206,25 +202,6 @@ export function RegistrationForm() {
               className={errors.phoneNumber ? "border-red-500" : ""}
             />
             {errors.phoneNumber && <p className="text-sm text-red-500">{errors.phoneNumber}</p>}
-          </div>
-
-          {/* Role */}
-          <div className="space-y-2">
-            <Label htmlFor="role">Account Type</Label>
-            <Select
-              value={formData.role}
-              onValueChange={(value: "buyer" | "supplier" | "both") => updateField("role", value)}
-              disabled={isLoading}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select account type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="buyer">Buyer</SelectItem>
-                <SelectItem value="supplier">Supplier</SelectItem>
-                <SelectItem value="both">Both</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
 
           {/* Address */}
