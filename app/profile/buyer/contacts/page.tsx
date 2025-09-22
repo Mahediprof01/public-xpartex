@@ -1,6 +1,6 @@
 "use client"
 
-import { BuyerLayout } from "../../../../components/dashboard/buyer-layout"
+import { UnifiedLayout } from "../../../../components/dashboard/unified-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../components/ui/card"
 import { Button } from "../../../../components/ui/button"
 import { Input } from "../../../../components/ui/input"
@@ -15,7 +15,7 @@ const contacts = [
 
 export default function ContactsPage() {
   return (
-    <BuyerLayout>
+    <UnifiedLayout>
       <div className="p-6 bg-gray-50 min-h-screen">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-6">
@@ -56,6 +56,6 @@ export default function ContactsPage() {
           </div>
         </div>
       </div>
-    </BuyerLayout>
+    </UnifiedLayout>
   )
 }

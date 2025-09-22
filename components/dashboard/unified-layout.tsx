@@ -1,18 +1,18 @@
 "use client"
 
-import { BuyerSidebar } from "./buyer-sidebar"
-import { BuyerHeader } from "./buyer-header"
+import { UnifiedSidebar } from "./unified-sidebar"
+import { UnifiedHeader } from "./unified-header"
 
-interface BuyerLayoutProps {
+interface UnifiedLayoutProps {
   children: React.ReactNode
 }
 
-export function BuyerLayout({ children }: BuyerLayoutProps) {
+export function UnifiedLayout({ children }: UnifiedLayoutProps) {
   return (
     <div className="flex h-screen bg-gray-50">
-      <BuyerSidebar />
+      <UnifiedSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <BuyerHeader />
+        <UnifiedHeader />
         <main className="flex-1 overflow-auto">
           {children}
         </main>

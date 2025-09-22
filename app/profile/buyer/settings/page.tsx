@@ -1,6 +1,6 @@
 "use client"
 
-import { BuyerLayout } from "../../../../components/dashboard/buyer-layout"
+import { UnifiedLayout } from "../../../../components/dashboard/unified-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../components/ui/card"
 import { Button } from "../../../../components/ui/button"
 import { Input } from "../../../../components/ui/input"
@@ -15,7 +15,7 @@ export default function BuyerSettingsPage() {
   const { user } = useAuth()
 
   return (
-    <BuyerLayout>
+    <UnifiedLayout>
       <div className="p-6 bg-gray-50 min-h-screen">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
@@ -284,6 +284,6 @@ export default function BuyerSettingsPage() {
           </Tabs>
         </div>
       </div>
-    </BuyerLayout>
+    </UnifiedLayout>
   )
 }
