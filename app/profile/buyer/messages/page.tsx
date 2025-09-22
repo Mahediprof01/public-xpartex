@@ -1,6 +1,6 @@
 "use client"
 
-import { BuyerLayout } from "../../../../components/dashboard/buyer-layout"
+import { UnifiedLayout } from "../../../../components/dashboard/unified-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../components/ui/card"
 import { Button } from "../../../../components/ui/button"
 import { Input } from "../../../../components/ui/input"
@@ -39,7 +39,7 @@ const messageData = [
 
 export default function MessagesPage() {
   return (
-    <BuyerLayout>
+    <UnifiedLayout>
       <div className="p-6 bg-gray-50 min-h-screen">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
@@ -210,6 +210,6 @@ export default function MessagesPage() {
           </div>
         </div>
       </div>
-    </BuyerLayout>
+    </UnifiedLayout>
   )
 }

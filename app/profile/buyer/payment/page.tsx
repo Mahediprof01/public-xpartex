@@ -1,6 +1,6 @@
 "use client"
 
-import { BuyerLayout } from "../../../../components/dashboard/buyer-layout"
+import { UnifiedLayout } from "../../../../components/dashboard/unified-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../components/ui/card"
 import { Button } from "../../../../components/ui/button"
 import { Badge } from "../../../../components/ui/badge"
@@ -13,7 +13,7 @@ const payments = [
 
 export default function PaymentPage() {
   return (
-    <BuyerLayout>
+    <UnifiedLayout>
       <div className="p-6 bg-gray-50 min-h-screen">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-6">
@@ -48,6 +48,6 @@ export default function PaymentPage() {
           </div>
         </div>
       </div>
-    </BuyerLayout>
+    </UnifiedLayout>
   )
 }

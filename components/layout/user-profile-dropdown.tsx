@@ -166,9 +166,6 @@ export function UserProfileDropdown({ className }: UserProfileDropdownProps) {
                   <p className="text-sm text-gray-600 truncate">
                     {user.email}
                   </p>
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 mt-1">
-                    {user.role === "buyer" ? "Buyer" : "Supplier"}
-                  </span>
                 </div>
               </div>
             </div>

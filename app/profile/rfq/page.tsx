@@ -1,8 +1,6 @@
 "use client"
 
-import { DashboardLayout } from "../../../components/dashboard/dashboard-layout"
-import { DashboardHeader } from "../../../components/dashboard/dashboard-header"
-import { DashboardSidebar } from "../../../components/dashboard/dashboard-sidebar"
+import { UnifiedLayout } from "../../../components/dashboard/unified-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card"
 import { Button } from "../../../components/ui/button"
 import { Badge } from "../../../components/ui/badge"
@@ -74,11 +72,8 @@ export default function RFQPage() {
   }
 
   return (
-    <DashboardLayout>
-      <DashboardSidebar />
-      <div className="flex-1 flex flex-col min-h-screen">
-        <DashboardHeader />
-        <main className="flex-1 p-6 bg-gray-50">
+    <UnifiedLayout>
+      <div className="p-6 bg-gray-50">
           <div className="space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
@@ -219,8 +214,7 @@ export default function RFQPage() {
               ))}
             </div>
           </div>
-        </main>
       </div>
-    </DashboardLayout>
+    </UnifiedLayout>
   )
 }
