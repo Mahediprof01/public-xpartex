@@ -16,6 +16,10 @@ import {
   Users,
   Calendar,
   Target,
+  Trophy,
+  Brain,
+  Zap,
+  Rocket,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -120,108 +124,208 @@ export default function LearningDashboard() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Learning Dashboard</h1>
-        <p className="text-gray-600 mt-2">
-          Track your learning progress and access your educational resources
-        </p>
+    <div className="space-y-8 animate-in fade-in-50 duration-700">
+      {/* Hero Header */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 rounded-2xl p-8 text-white">
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="relative z-10">
+          <div className="flex items-center justify-between">
+            <div className="space-y-2">
+              <h1 className="text-4xl font-bold tracking-tight">Welcome back, Learner! 🎓</h1>
+              <p className="text-lg text-indigo-100 max-w-2xl">
+                Continue your learning journey and unlock new skills. You're making great progress!
+              </p>
+            </div>
+            <div className="hidden lg:block">
+              <div className="w-32 h-32 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
+                <Brain className="h-16 w-16 text-white" />
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                  <BookOpen className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-sm text-indigo-100">Active Courses</p>
+                  <p className="text-2xl font-bold">4</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                  <Trophy className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-sm text-indigo-100">Certificates</p>
+                  <p className="text-2xl font-bold">2</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                  <Zap className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-sm text-indigo-100">Learning Streak</p>
+                  <p className="text-2xl font-bold">12 days</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Animated background elements */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32"></div>
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-24 -translate-x-24"></div>
       </div>
 
-      {/* Stats Overview */}
+      {/* Enhanced Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Enrolled Courses</CardTitle>
-            <BookOpen className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{enrolledCourses.length}</div>
-            <p className="text-xs text-muted-foreground">
-              {enrolledCourses.length - completedCourses} in progress
-            </p>
+        <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-gradient-to-br from-blue-50 to-indigo-100 border-blue-200">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-blue-600 font-medium">Enrolled Courses</p>
+                <p className="text-3xl font-bold text-blue-900 mt-1">{enrolledCourses.length}</p>
+                <p className="text-xs text-blue-600 mt-1">
+                  {enrolledCourses.length - completedCourses} in progress
+                </p>
+              </div>
+              <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <BookOpen className="h-6 w-6 text-white" />
+              </div>
+            </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Overall Progress</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{Math.round(totalProgress)}%</div>
-            <Progress value={totalProgress} className="mt-2" />
+        <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-gradient-to-br from-emerald-50 to-green-100 border-emerald-200">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-emerald-600 font-medium">Overall Progress</p>
+                <p className="text-3xl font-bold text-emerald-900 mt-1">{Math.round(totalProgress)}%</p>
+                <div className="mt-2">
+                  <Progress value={totalProgress} className="h-2" />
+                </div>
+              </div>
+              <div className="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <TrendingUp className="h-6 w-6 text-white" />
+              </div>
+            </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Certificates</CardTitle>
-            <Award className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalCertificates}</div>
-            <p className="text-xs text-muted-foreground">
-              Earned certificates
-            </p>
+        <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-gradient-to-br from-purple-50 to-violet-100 border-purple-200">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-purple-600 font-medium">Certificates</p>
+                <p className="text-3xl font-bold text-purple-900 mt-1">{totalCertificates}</p>
+                <p className="text-xs text-purple-600 mt-1">
+                  Earned certificates
+                </p>
+              </div>
+              <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Award className="h-6 w-6 text-white" />
+              </div>
+            </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Digital Assets</CardTitle>
-            <Download className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{recentAssets.length}</div>
-            <p className="text-xs text-muted-foreground">
-              eBooks & resources
-            </p>
+        <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-gradient-to-br from-orange-50 to-amber-100 border-orange-200">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-orange-600 font-medium">Digital Assets</p>
+                <p className="text-3xl font-bold text-orange-900 mt-1">{recentAssets.length}</p>
+                <p className="text-xs text-orange-600 mt-1">
+                  eBooks & resources
+                </p>
+              </div>
+              <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Download className="h-6 w-6 text-white" />
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
 
       {/* Current Courses */}
-      <Card>
-        <CardHeader>
+      <Card className="overflow-hidden bg-gradient-to-br from-slate-50 to-gray-100 border-slate-200">
+        <CardHeader className="bg-white/50 backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Continue Learning</CardTitle>
-              <CardDescription>Pick up where you left off</CardDescription>
+              <CardTitle className="text-xl text-gray-900 flex items-center gap-2">
+                <Rocket className="h-5 w-5 text-indigo-600" />
+                Continue Learning
+              </CardTitle>
+              <CardDescription className="text-gray-600">Pick up where you left off and keep growing</CardDescription>
             </div>
             <Link href="/profile/learning/courses">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="hover:bg-indigo-50 hover:border-indigo-300 transition-colors duration-200">
                 View All Courses
               </Button>
             </Link>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {enrolledCourses.slice(0, 2).map((course) => (
-              <div key={course.id} className="border rounded-lg p-4 space-y-4">
+            {enrolledCourses.slice(0, 2).map((course, index) => (
+              <div
+                key={course.id}
+                className="group relative bg-white border border-gray-200 rounded-xl p-6 space-y-4 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 hover:-translate-y-1"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                {/* Course Header */}
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <h3 className="font-semibold text-lg">{course.title}</h3>
-                    <p className="text-sm text-gray-600">by {course.instructor}</p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <Badge variant="secondary">{course.category}</Badge>
+                    <h3 className="font-bold text-lg text-gray-900 group-hover:text-indigo-900 transition-colors duration-200">
+                      {course.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 mt-1">by {course.instructor}</p>
+                    <div className="flex items-center gap-3 mt-3">
+                      <Badge
+                        variant="secondary"
+                        className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors duration-200"
+                      >
+                        {course.category}
+                      </Badge>
                       <div className="flex items-center gap-1">
-                        <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                        <span className="text-xs">{course.rating}</span>
+                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                        <span className="text-sm font-medium text-gray-700">{course.rating}</span>
                       </div>
                     </div>
                   </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Progress</span>
-                    <span>{course.completedLessons}/{course.totalLessons} lessons</span>
+                  <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <Play className="h-6 w-6 text-white" />
                   </div>
-                  <Progress value={course.progress} />
-                  <p className="text-xs text-gray-500">{course.estimatedTime}</p>
+                </div>
+
+                {/* Progress Section */}
+                <div className="space-y-3">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600 font-medium">Progress</span>
+                    <span className="text-indigo-600 font-semibold">{course.completedLessons}/{course.totalLessons} lessons</span>
+                  </div>
+                  <div className="relative">
+                    <Progress value={course.progress} className="h-3 bg-gray-200" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full transition-all duration-500"
+                         style={{ width: `${course.progress}%` }}></div>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <p className="text-xs text-gray-500 flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      {course.estimatedTime}
+                    </p>
+                    <span className="text-sm font-bold text-indigo-600">{Math.round(course.progress)}%</span>
+                  </div>
                 </div>
 
                 <div className="flex gap-2">
