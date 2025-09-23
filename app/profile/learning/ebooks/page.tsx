@@ -191,13 +191,77 @@ export default function MyEBooksPage() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">My eBooks</h1>
-        <p className="text-gray-600 mt-2">
-          Access your purchased digital books and resources
-        </p>
+    <div className="space-y-8 animate-in fade-in-50 duration-700">
+      {/* Hero Header */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600 rounded-2xl p-8 text-white">
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="relative z-10">
+          <div className="flex items-center justify-between">
+            <div className="space-y-2">
+              <h1 className="text-4xl font-bold tracking-tight">My Digital Library 📖</h1>
+              <p className="text-lg text-emerald-100 max-w-2xl">
+                Access your purchased eBooks and expand your knowledge with our digital collection
+              </p>
+            </div>
+            <div className="hidden lg:block">
+              <div className="w-32 h-32 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
+                <BookOpen className="h-16 w-16 text-white" />
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                  <BookOpen className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-sm text-emerald-100">Total eBooks</p>
+                  <p className="text-2xl font-bold">{ebooks.length}</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                  <Download className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-sm text-emerald-100">Downloaded</p>
+                  <p className="text-2xl font-bold">{ebooks.filter(e => e.downloadCount > 0).length}</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                  <Eye className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-sm text-emerald-100">Reading</p>
+                  <p className="text-2xl font-bold">{ebooks.filter(e => e.readingProgress > 0 && e.readingProgress < 100).length}</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                  <Star className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-sm text-emerald-100">Avg Rating</p>
+                  <p className="text-2xl font-bold">{(ebooks.reduce((acc, e) => acc + e.rating, 0) / ebooks.length || 0).toFixed(1)}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Animated background elements */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32"></div>
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-24 -translate-x-24"></div>
       </div>
 
       {/* Stats */}

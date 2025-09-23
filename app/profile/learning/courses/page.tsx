@@ -17,6 +17,7 @@ import {
   Calendar,
   User,
   Award,
+  CheckCircle,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -177,13 +178,77 @@ export default function MyCoursesPage() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">My Courses</h1>
-        <p className="text-gray-600 mt-2">
-          Manage and continue your learning journey
-        </p>
+    <div className="space-y-8 animate-in fade-in-50 duration-700">
+      {/* Hero Header */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-2xl p-8 text-white">
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="relative z-10">
+          <div className="flex items-center justify-between">
+            <div className="space-y-2">
+              <h1 className="text-4xl font-bold tracking-tight">My Learning Journey 📚</h1>
+              <p className="text-lg text-blue-100 max-w-2xl">
+                Explore your enrolled courses, track progress, and continue building your skills
+              </p>
+            </div>
+            <div className="hidden lg:block">
+              <div className="w-32 h-32 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
+                <BookOpen className="h-16 w-16 text-white" />
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                  <BookOpen className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-sm text-blue-100">Total Courses</p>
+                  <p className="text-2xl font-bold">{courses.length}</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                  <Clock className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-sm text-blue-100">In Progress</p>
+                  <p className="text-2xl font-bold">{courses.filter(c => c.status === 'in-progress').length}</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                  <CheckCircle className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-sm text-blue-100">Completed</p>
+                  <p className="text-2xl font-bold">{courses.filter(c => c.status === 'completed').length}</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                  <Award className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-sm text-blue-100">Avg Progress</p>
+                  <p className="text-2xl font-bold">{Math.round(courses.reduce((acc, c) => acc + c.progress, 0) / courses.length || 0)}%</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Animated background elements */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32"></div>
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-24 -translate-x-24"></div>
       </div>
 
       {/* Filters */}
