@@ -193,13 +193,13 @@ export default function MyEBooksPage() {
   return (
     <div className="space-y-8 animate-in fade-in-50 duration-700">
       {/* Hero Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600 rounded-2xl p-8 text-white">
+      <div className="relative overflow-hidden bg-gradient-to-br from-sky-500 via-cyan-400 to-blue-500 rounded-2xl p-8 text-white">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative z-10">
           <div className="flex items-center justify-between">
             <div className="space-y-2">
               <h1 className="text-4xl font-bold tracking-tight">My Digital Library 📖</h1>
-              <p className="text-lg text-emerald-100 max-w-2xl">
+              <p className="text-lg text-sky-100 max-w-2xl">
                 Access your purchased eBooks and expand your knowledge with our digital collection
               </p>
             </div>
@@ -218,7 +218,7 @@ export default function MyEBooksPage() {
                   <BookOpen className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-emerald-100">Total eBooks</p>
+                  <p className="text-sm text-sky-100">Total eBooks</p>
                   <p className="text-2xl font-bold">{ebooks.length}</p>
                 </div>
               </div>
@@ -229,7 +229,7 @@ export default function MyEBooksPage() {
                   <Download className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-emerald-100">Downloaded</p>
+                  <p className="text-sm text-sky-100">Downloaded</p>
                   <p className="text-2xl font-bold">{ebooks.filter(e => e.downloadCount > 0).length}</p>
                 </div>
               </div>
@@ -240,7 +240,7 @@ export default function MyEBooksPage() {
                   <Eye className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-emerald-100">Reading</p>
+                  <p className="text-sm text-sky-100">Reading</p>
                   <p className="text-2xl font-bold">{ebooks.filter(e => e.readingProgress > 0 && e.readingProgress < 100).length}</p>
                 </div>
               </div>
@@ -251,7 +251,7 @@ export default function MyEBooksPage() {
                   <Star className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-emerald-100">Avg Rating</p>
+                  <p className="text-sm text-sky-100">Avg Rating</p>
                   <p className="text-2xl font-bold">{(ebooks.reduce((acc, e) => acc + e.rating, 0) / ebooks.length || 0).toFixed(1)}</p>
                 </div>
               </div>

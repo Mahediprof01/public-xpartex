@@ -126,13 +126,13 @@ export default function LearningDashboard() {
   return (
     <div className="space-y-8 animate-in fade-in-50 duration-700">
       {/* Hero Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 rounded-2xl p-8 text-white">
+      <div className="relative overflow-hidden bg-gradient-to-br from-sky-500 via-cyan-400 to-blue-500 rounded-2xl p-8 text-white">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative z-10">
           <div className="flex items-center justify-between">
             <div className="space-y-2">
               <h1 className="text-4xl font-bold tracking-tight">Welcome back, Learner! 🎓</h1>
-              <p className="text-lg text-indigo-100 max-w-2xl">
+              <p className="text-lg text-sky-100 max-w-2xl">
                 Continue your learning journey and unlock new skills. You're making great progress!
               </p>
             </div>
@@ -151,7 +151,7 @@ export default function LearningDashboard() {
                   <BookOpen className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-indigo-100">Active Courses</p>
+                  <p className="text-sm text-sky-100">Active Courses</p>
                   <p className="text-2xl font-bold">4</p>
                 </div>
               </div>
@@ -162,7 +162,7 @@ export default function LearningDashboard() {
                   <Trophy className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-indigo-100">Certificates</p>
+                  <p className="text-sm text-sky-100">Certificates</p>
                   <p className="text-2xl font-bold">2</p>
                 </div>
               </div>
@@ -173,7 +173,7 @@ export default function LearningDashboard() {
                   <Zap className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-indigo-100">Learning Streak</p>
+                  <p className="text-sm text-sky-100">Learning Streak</p>
                   <p className="text-2xl font-bold">12 days</p>
                 </div>
               </div>
@@ -188,68 +188,68 @@ export default function LearningDashboard() {
 
       {/* Enhanced Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-gradient-to-br from-blue-50 to-indigo-100 border-blue-200">
+        <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-gradient-to-br from-sky-50 to-cyan-100 border-sky-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-blue-600 font-medium">Enrolled Courses</p>
-                <p className="text-3xl font-bold text-blue-900 mt-1">{enrolledCourses.length}</p>
-                <p className="text-xs text-blue-600 mt-1">
+                <p className="text-sm text-sky-600 font-medium">Enrolled Courses</p>
+                <p className="text-3xl font-bold text-sky-900 mt-1">{enrolledCourses.length}</p>
+                <p className="text-xs text-sky-600 mt-1">
                   {enrolledCourses.length - completedCourses} in progress
                 </p>
               </div>
-              <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <div className="w-12 h-12 bg-gradient-to-r from-sky-500 to-cyan-400 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <BookOpen className="h-6 w-6 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-gradient-to-br from-emerald-50 to-green-100 border-emerald-200">
+        <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-gradient-to-br from-cyan-50 to-blue-100 border-cyan-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-emerald-600 font-medium">Overall Progress</p>
-                <p className="text-3xl font-bold text-emerald-900 mt-1">{Math.round(totalProgress)}%</p>
+                <p className="text-sm text-cyan-600 font-medium">Overall Progress</p>
+                <p className="text-3xl font-bold text-cyan-900 mt-1">{Math.round(totalProgress)}%</p>
                 <div className="mt-2">
                   <Progress value={totalProgress} className="h-2" />
                 </div>
               </div>
-              <div className="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-400 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <TrendingUp className="h-6 w-6 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-gradient-to-br from-purple-50 to-violet-100 border-purple-200">
+        <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-gradient-to-br from-blue-50 to-sky-100 border-blue-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-purple-600 font-medium">Certificates</p>
-                <p className="text-3xl font-bold text-purple-900 mt-1">{totalCertificates}</p>
-                <p className="text-xs text-purple-600 mt-1">
+                <p className="text-sm text-blue-600 font-medium">Certificates</p>
+                <p className="text-3xl font-bold text-blue-900 mt-1">{totalCertificates}</p>
+                <p className="text-xs text-blue-600 mt-1">
                   Earned certificates
                 </p>
               </div>
-              <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-sky-400 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <Award className="h-6 w-6 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-gradient-to-br from-orange-50 to-amber-100 border-orange-200">
+        <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-gradient-to-br from-slate-50 to-gray-100 border-slate-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-orange-600 font-medium">Digital Assets</p>
-                <p className="text-3xl font-bold text-orange-900 mt-1">{recentAssets.length}</p>
-                <p className="text-xs text-orange-600 mt-1">
+                <p className="text-sm text-slate-600 font-medium">Digital Assets</p>
+                <p className="text-3xl font-bold text-slate-900 mt-1">{recentAssets.length}</p>
+                <p className="text-xs text-slate-600 mt-1">
                   eBooks & resources
                 </p>
               </div>
-              <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <div className="w-12 h-12 bg-gradient-to-r from-slate-500 to-gray-400 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <Download className="h-6 w-6 text-white" />
               </div>
             </div>
@@ -258,18 +258,18 @@ export default function LearningDashboard() {
       </div>
 
       {/* Current Courses */}
-      <Card className="overflow-hidden bg-gradient-to-br from-slate-50 to-gray-100 border-slate-200">
+      <Card className="overflow-hidden bg-gradient-to-br from-sky-50 to-cyan-100 border-sky-200">
         <CardHeader className="bg-white/50 backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-xl text-gray-900 flex items-center gap-2">
-                <Rocket className="h-5 w-5 text-indigo-600" />
+                <Rocket className="h-5 w-5 text-sky-600" />
                 Continue Learning
               </CardTitle>
               <CardDescription className="text-gray-600">Pick up where you left off and keep growing</CardDescription>
             </div>
             <Link href="/profile/learning/courses">
-              <Button variant="outline" size="sm" className="hover:bg-indigo-50 hover:border-indigo-300 transition-colors duration-200">
+              <Button variant="outline" size="sm" className="hover:bg-sky-50 hover:border-sky-300 transition-colors duration-200">
                 View All Courses
               </Button>
             </Link>
@@ -280,20 +280,20 @@ export default function LearningDashboard() {
             {enrolledCourses.slice(0, 2).map((course, index) => (
               <div
                 key={course.id}
-                className="group relative bg-white border border-gray-200 rounded-xl p-6 space-y-4 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 hover:-translate-y-1"
+                className="group relative bg-white border border-gray-200 rounded-xl p-6 space-y-4 hover:shadow-xl hover:border-sky-300 transition-all duration-300 hover:-translate-y-1"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 {/* Course Header */}
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <h3 className="font-bold text-lg text-gray-900 group-hover:text-indigo-900 transition-colors duration-200">
+                    <h3 className="font-bold text-lg text-gray-900 group-hover:text-sky-900 transition-colors duration-200">
                       {course.title}
                     </h3>
                     <p className="text-sm text-gray-600 mt-1">by {course.instructor}</p>
                     <div className="flex items-center gap-3 mt-3">
                       <Badge
                         variant="secondary"
-                        className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors duration-200"
+                        className="bg-sky-100 text-sky-700 hover:bg-sky-200 transition-colors duration-200"
                       >
                         {course.category}
                       </Badge>
@@ -303,7 +303,7 @@ export default function LearningDashboard() {
                       </div>
                     </div>
                   </div>
-                  <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-12 h-12 bg-gradient-to-br from-sky-500 to-cyan-400 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <Play className="h-6 w-6 text-white" />
                   </div>
                 </div>
@@ -312,11 +312,11 @@ export default function LearningDashboard() {
                 <div className="space-y-3">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600 font-medium">Progress</span>
-                    <span className="text-indigo-600 font-semibold">{course.completedLessons}/{course.totalLessons} lessons</span>
+                    <span className="text-sky-600 font-semibold">{course.completedLessons}/{course.totalLessons} lessons</span>
                   </div>
                   <div className="relative">
                     <Progress value={course.progress} className="h-3 bg-gray-200" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full transition-all duration-500"
+                    <div className="absolute inset-0 bg-gradient-to-r from-sky-500 to-cyan-400 rounded-full transition-all duration-500"
                          style={{ width: `${course.progress}%` }}></div>
                   </div>
                   <div className="flex justify-between items-center">
@@ -324,7 +324,7 @@ export default function LearningDashboard() {
                       <Clock className="h-3 w-3" />
                       {course.estimatedTime}
                     </p>
-                    <span className="text-sm font-bold text-indigo-600">{Math.round(course.progress)}%</span>
+                    <span className="text-sm font-bold text-sky-600">{Math.round(course.progress)}%</span>
                   </div>
                 </div>
 

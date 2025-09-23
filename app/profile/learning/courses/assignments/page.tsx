@@ -131,80 +131,80 @@ export default function AssignmentsQuizzesPage() {
     switch (status) {
       case 'completed':
       case 'submitted':
-        return 'bg-green-100 text-green-800'
+        return 'bg-gradient-to-r from-sky-500 to-cyan-400 text-white shadow-lg'
       case 'pending':
       case 'available':
-        return 'bg-blue-100 text-blue-800'
+        return 'bg-gradient-to-r from-cyan-500 to-blue-400 text-white shadow-lg'
       case 'draft':
-        return 'bg-yellow-100 text-yellow-800'
+        return 'bg-gradient-to-r from-blue-500 to-sky-400 text-white shadow-lg'
       case 'locked':
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-slate-100 text-slate-700 border-slate-300'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-slate-100 text-slate-700 border-slate-300'
     }
   }
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-6 text-white">
+      <div className="bg-gradient-to-r from-sky-500 to-cyan-400 rounded-xl p-6 text-white">
         <h1 className="text-2xl font-bold mb-2">Assignments & Quizzes</h1>
-        <p className="text-indigo-100">Track your progress and complete assessments</p>
+        <p className="text-sky-100">Track your progress and complete assessments</p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+        <Card className="bg-gradient-to-br from-sky-50 to-cyan-100 border-sky-200">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-sky-500 to-cyan-400 rounded-lg flex items-center justify-center">
                 <FileText className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="text-sm text-blue-600">Total Assignments</p>
-                <p className="text-xl font-bold text-blue-900">12</p>
+                <p className="text-sm text-sky-600">Total Assignments</p>
+                <p className="text-xl font-bold text-sky-900">12</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+        <Card className="bg-gradient-to-br from-cyan-50 to-blue-100 border-cyan-200">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-400 rounded-lg flex items-center justify-center">
                 <CheckCircle className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="text-sm text-green-600">Completed</p>
-                <p className="text-xl font-bold text-green-900">8</p>
+                <p className="text-sm text-cyan-600">Completed</p>
+                <p className="text-xl font-bold text-cyan-900">8</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+        <Card className="bg-gradient-to-br from-blue-50 to-sky-100 border-blue-200">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-sky-400 rounded-lg flex items-center justify-center">
                 <Trophy className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="text-sm text-purple-600">Average Score</p>
-                <p className="text-xl font-bold text-purple-900">87%</p>
+                <p className="text-sm text-blue-600">Average Score</p>
+                <p className="text-xl font-bold text-blue-900">87%</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
+        <Card className="bg-gradient-to-br from-slate-50 to-gray-100 border-slate-200">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-slate-500 to-gray-400 rounded-lg flex items-center justify-center">
                 <Target className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="text-sm text-orange-600">Pending</p>
-                <p className="text-xl font-bold text-orange-900">4</p>
+                <p className="text-sm text-slate-600">Pending</p>
+                <p className="text-xl font-bold text-slate-900">4</p>
               </div>
             </div>
           </CardContent>
@@ -227,46 +227,46 @@ export default function AssignmentsQuizzesPage() {
         <TabsContent value="assignments" className="space-y-4">
           <div className="grid gap-4">
             {assignments.map((assignment) => (
-              <Card key={assignment.id} className="hover:shadow-lg transition-all duration-300">
-                <CardHeader>
+              <Card key={assignment.id} className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-gradient-to-br from-sky-50 to-cyan-100 border-sky-200">
+                <CardHeader className="bg-white/50 backdrop-blur-sm">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">{assignment.title}</CardTitle>
+                    <CardTitle className="text-lg group-hover:text-sky-700 transition-colors duration-200">{assignment.title}</CardTitle>
                     <Badge className={getStatusColor(assignment.status)}>
                       {assignment.status.charAt(0).toUpperCase() + assignment.status.slice(1)}
                     </Badge>
                   </div>
-                  <p className="text-sm text-gray-600">{assignment.course}</p>
+                  <p className="text-sm text-sky-600">{assignment.course}</p>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-gray-700 mb-4">{assignment.description}</p>
-                  
+                <CardContent className="bg-white/70 backdrop-blur-sm">
+                  <p className="text-sky-700 mb-4">{assignment.description}</p>
+
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                    <div className="flex items-center gap-4 text-sm text-sky-600">
                       <div className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
                         Due: {assignment.dueDate}
                       </div>
                       {assignment.score && (
                         <div className="flex items-center gap-1">
-                          <Trophy className="h-4 w-4" />
+                          <Trophy className="h-4 w-4 text-yellow-500" />
                           Score: {assignment.score}/{assignment.maxScore}
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="flex gap-2">
                       {assignment.status === 'draft' && (
-                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                        <Button size="sm" className="bg-gradient-to-r from-sky-500 to-cyan-400 hover:from-sky-600 hover:to-cyan-500 text-white shadow-lg">
                           <Upload className="h-4 w-4 mr-2" />
                           Submit
                         </Button>
                       )}
                       {assignment.status === 'pending' && (
-                        <Button size="sm" variant="outline">
+                        <Button size="sm" className="border-cyan-300 text-cyan-700 hover:bg-cyan-50 hover:border-cyan-400" variant="outline">
                           View Submission
                         </Button>
                       )}
-                      <Button size="sm" variant="outline">
+                      <Button size="sm" className="border-sky-300 text-sky-700 hover:bg-sky-50 hover:border-sky-400" variant="outline">
                         View Details
                       </Button>
                     </div>
@@ -281,50 +281,50 @@ export default function AssignmentsQuizzesPage() {
           {currentQuiz === null ? (
             <div className="grid gap-4">
               {quizzes.map((quiz) => (
-                <Card key={quiz.id} className="hover:shadow-lg transition-all duration-300">
-                  <CardHeader>
+                <Card key={quiz.id} className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-gradient-to-br from-cyan-50 to-blue-100 border-cyan-200">
+                  <CardHeader className="bg-white/50 backdrop-blur-sm">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-lg">{quiz.title}</CardTitle>
+                      <CardTitle className="text-lg group-hover:text-cyan-700 transition-colors duration-200">{quiz.title}</CardTitle>
                       <Badge className={getStatusColor(quiz.status)}>
                         {quiz.status.charAt(0).toUpperCase() + quiz.status.slice(1)}
                       </Badge>
                     </div>
-                    <p className="text-sm text-gray-600">{quiz.course}</p>
+                    <p className="text-sm text-cyan-600">{quiz.course}</p>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="bg-white/70 backdrop-blur-sm">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                       <div className="text-center">
-                        <p className="text-sm text-gray-600">Questions</p>
-                        <p className="text-lg font-semibold">{quiz.questions}</p>
+                        <p className="text-sm text-cyan-600">Questions</p>
+                        <p className="text-lg font-semibold text-cyan-800">{quiz.questions}</p>
                       </div>
                       <div className="text-center">
-                        <p className="text-sm text-gray-600">Duration</p>
-                        <p className="text-lg font-semibold">{quiz.duration} min</p>
+                        <p className="text-sm text-cyan-600">Duration</p>
+                        <p className="text-lg font-semibold text-cyan-800">{quiz.duration} min</p>
                       </div>
                       <div className="text-center">
-                        <p className="text-sm text-gray-600">Attempts</p>
-                        <p className="text-lg font-semibold">{quiz.attempts}/{quiz.maxAttempts}</p>
+                        <p className="text-sm text-cyan-600">Attempts</p>
+                        <p className="text-lg font-semibold text-cyan-800">{quiz.attempts}/{quiz.maxAttempts}</p>
                       </div>
                       {quiz.bestScore && (
                         <div className="text-center">
-                          <p className="text-sm text-gray-600">Best Score</p>
+                          <p className="text-sm text-cyan-600">Best Score</p>
                           <p className="text-lg font-semibold text-green-600">{quiz.bestScore}%</p>
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="flex justify-between items-center">
                       {quiz.status === 'locked' && (
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-cyan-600">
                           Unlocks on {quiz.unlockDate}
                         </p>
                       )}
-                      
+
                       <div className="flex gap-2 ml-auto">
                         {quiz.status === 'available' && quiz.attempts < quiz.maxAttempts && (
-                          <Button 
-                            size="sm" 
-                            className="bg-green-600 hover:bg-green-700"
+                          <Button
+                            size="sm"
+                            className="bg-gradient-to-r from-cyan-500 to-blue-400 hover:from-cyan-600 hover:to-blue-500 text-white shadow-lg"
                             onClick={() => setCurrentQuiz(quiz.id)}
                           >
                             <Play className="h-4 w-4 mr-2" />
@@ -332,13 +332,14 @@ export default function AssignmentsQuizzesPage() {
                           </Button>
                         )}
                         {quiz.status === 'completed' && (
-                          <Button size="sm" variant="outline">
+                          <Button size="sm" className="border-blue-300 text-blue-700 hover:bg-blue-50 hover:border-blue-400" variant="outline">
                             View Results
                           </Button>
                         )}
                         {quiz.attempts > 0 && quiz.attempts < quiz.maxAttempts && (
-                          <Button 
-                            size="sm" 
+                          <Button
+                            size="sm"
+                            className="border-cyan-300 text-cyan-700 hover:bg-cyan-50 hover:border-cyan-400"
                             variant="outline"
                             onClick={() => setCurrentQuiz(quiz.id)}
                           >
