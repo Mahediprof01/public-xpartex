@@ -125,10 +125,9 @@ const learningManagementItems = [
 
   {
     title: "Learner Management",
-    href: "/profile/learning/courses",
+    href: "/profile/learning/learners",
     icon: GraduationCap,
   },
-  
 ];
 
 // Learner Dashboard nested items
@@ -155,23 +154,23 @@ const learnerDashboardItems = [
     ],
   },
   {
-    title: "eBooks & Digital Assets",
+    title: "eBooks",
     icon: Folder,
     children: [
       {
-        title: "Manage Assets",
+        title: "Manage eBooks",
         href: "/profile/learning/instructors/assets",
         icon: Folder,
       },
       {
-        title: "Assets Analytics",
+        title: "eBooks Analytics",
         href: "/profile/learning/instructors/assets/analytics",
         icon: BarChart3,
       },
     ],
   },
   {
-    title: "Orders & Transactions",
+    title: "Orders",
     icon: ShoppingBag,
     children: [
       {
