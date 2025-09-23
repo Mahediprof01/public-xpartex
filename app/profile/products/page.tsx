@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
-import { UnifiedLayout } from "../../../components/dashboard/unified-layout"
+
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card"
 import { Button } from "../../../components/ui/button"
 import { Badge } from "../../../components/ui/badge"
@@ -136,9 +136,7 @@ export default function ProductsPage() {
   }
 
   return (
-    <UnifiedLayout>
-      <div className="p-6 bg-gray-50">
-          <div className="space-y-6">
+    <div className="space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
               <div>
@@ -393,8 +391,6 @@ export default function ProductsPage() {
                 </Card>
               </TabsContent>
             </Tabs>
-          </div>
-      </div>
-    </UnifiedLayout>
+    </div>
   )
 }
