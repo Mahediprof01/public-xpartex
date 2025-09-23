@@ -1,6 +1,6 @@
 "use client"
 
-import { UnifiedLayout } from "../../../components/dashboard/unified-layout"
+
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card"
 import { Button } from "../../../components/ui/button"
 import { Badge } from "../../../components/ui/badge"
@@ -32,9 +32,7 @@ import {
 
 export default function StorePage() {
   return (
-    <UnifiedLayout>
-      <div className="p-6 bg-gray-50">
-          <div className="space-y-6">
+    <div className="space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
               <div>
@@ -501,8 +499,6 @@ export default function StorePage() {
                 </Card>
               </TabsContent>
             </Tabs>
-          </div>
-      </div>
-    </UnifiedLayout>
+    </div>
   )
 }
