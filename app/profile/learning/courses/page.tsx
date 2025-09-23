@@ -157,11 +157,11 @@ export default function MyCoursesPage() {
   const getStatusBadge = (status: string, progress: number) => {
     switch (status) {
       case "completed":
-        return <Badge className="bg-green-100 text-green-800">Completed</Badge>;
+        return <Badge className="bg-gradient-to-r from-sky-500 to-cyan-400 text-white shadow-lg">Completed</Badge>;
       case "in-progress":
-        return <Badge className="bg-blue-100 text-blue-800">In Progress</Badge>;
+        return <Badge className="bg-gradient-to-r from-cyan-500 to-blue-400 text-white shadow-lg">In Progress</Badge>;
       case "not-started":
-        return <Badge className="bg-gray-100 text-gray-800">Not Started</Badge>;
+        return <Badge className="bg-sky-100 text-sky-700 border-sky-300">Not Started</Badge>;
       default:
         return null;
     }
@@ -180,13 +180,13 @@ export default function MyCoursesPage() {
   return (
     <div className="space-y-8 animate-in fade-in-50 duration-700">
       {/* Hero Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-2xl p-8 text-white">
+      <div className="relative overflow-hidden bg-gradient-to-br from-sky-500 via-cyan-400 to-blue-500 rounded-2xl p-8 text-white">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative z-10">
           <div className="flex items-center justify-between">
             <div className="space-y-2">
               <h1 className="text-4xl font-bold tracking-tight">My Learning Journey 📚</h1>
-              <p className="text-lg text-blue-100 max-w-2xl">
+              <p className="text-lg text-sky-100 max-w-2xl">
                 Explore your enrolled courses, track progress, and continue building your skills
               </p>
             </div>
@@ -205,7 +205,7 @@ export default function MyCoursesPage() {
                   <BookOpen className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-blue-100">Total Courses</p>
+                  <p className="text-sm text-sky-100">Total Courses</p>
                   <p className="text-2xl font-bold">{courses.length}</p>
                 </div>
               </div>
@@ -216,7 +216,7 @@ export default function MyCoursesPage() {
                   <Clock className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-blue-100">In Progress</p>
+                  <p className="text-sm text-sky-100">In Progress</p>
                   <p className="text-2xl font-bold">{courses.filter(c => c.status === 'in-progress').length}</p>
                 </div>
               </div>
@@ -227,7 +227,7 @@ export default function MyCoursesPage() {
                   <CheckCircle className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-blue-100">Completed</p>
+                  <p className="text-sm text-sky-100">Completed</p>
                   <p className="text-2xl font-bold">{courses.filter(c => c.status === 'completed').length}</p>
                 </div>
               </div>
@@ -238,7 +238,7 @@ export default function MyCoursesPage() {
                   <Award className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-blue-100">Avg Progress</p>
+                  <p className="text-sm text-sky-100">Avg Progress</p>
                   <p className="text-2xl font-bold">{Math.round(courses.reduce((acc, c) => acc + c.progress, 0) / courses.length || 0)}%</p>
                 </div>
               </div>
@@ -298,13 +298,13 @@ export default function MyCoursesPage() {
       {/* Course Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredCourses.map((course) => (
-          <Card key={course.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-            <div className="aspect-video bg-gray-200 relative">
+          <Card key={course.id} className="group overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-gradient-to-br from-sky-50 to-cyan-100 border-sky-200">
+            <div className="aspect-video bg-gradient-to-br from-sky-100 to-cyan-200 relative">
               <Image
                 src={course.thumbnail}
                 alt={course.title}
                 fill
-                className="object-cover"
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.src = "/placeholder-course.jpg";
@@ -313,13 +313,14 @@ export default function MyCoursesPage() {
               <div className="absolute top-2 right-2">
                 {getStatusBadge(course.status, course.progress)}
               </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
 
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-3 bg-white/50 backdrop-blur-sm">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <CardTitle className="text-lg line-clamp-2">{course.title}</CardTitle>
-                  <CardDescription className="flex items-center gap-1 mt-1">
+                  <CardTitle className="text-lg line-clamp-2 group-hover:text-sky-700 transition-colors duration-200">{course.title}</CardTitle>
+                  <CardDescription className="flex items-center gap-1 mt-1 text-sky-600">
                     <User className="h-3 w-3" />
                     {course.instructor}
                   </CardDescription>
@@ -327,15 +328,15 @@ export default function MyCoursesPage() {
               </div>
 
               <div className="flex items-center gap-2 mt-2">
-                <Badge variant="outline">{course.category}</Badge>
-                <Badge variant="outline">{course.level}</Badge>
+                <Badge className="bg-sky-100 text-sky-700 hover:bg-sky-200 border-sky-300">{course.category}</Badge>
+                <Badge className="bg-cyan-100 text-cyan-700 hover:bg-cyan-200 border-cyan-300">{course.level}</Badge>
               </div>
             </CardHeader>
 
-            <CardContent className="space-y-4">
-              <p className="text-sm text-gray-600 line-clamp-2">{course.description}</p>
+            <CardContent className="space-y-4 bg-white/70 backdrop-blur-sm">
+              <p className="text-sm text-sky-700 line-clamp-2">{course.description}</p>
 
-              <div className="flex items-center justify-between text-sm text-gray-500">
+              <div className="flex items-center justify-between text-sm text-sky-600">
                 <div className="flex items-center gap-1">
                   <Clock className="h-3 w-3" />
                   {course.duration}
@@ -348,11 +349,15 @@ export default function MyCoursesPage() {
 
               {course.status !== "not-started" && (
                 <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Progress</span>
-                    <span>{course.completedLessons}/{course.totalLessons} lessons</span>
+                  <div className="flex justify-between text-sm text-sky-600">
+                    <span className="font-medium">Progress</span>
+                    <span className="font-semibold">{course.completedLessons}/{course.totalLessons} lessons</span>
                   </div>
-                  <Progress value={course.progress} />
+                  <div className="relative">
+                    <Progress value={course.progress} className="h-2 bg-sky-200" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-sky-500 to-cyan-400 rounded-full transition-all duration-500"
+                         style={{ width: `${course.progress}%` }}></div>
+                  </div>
                 </div>
               )}
 
@@ -360,13 +365,13 @@ export default function MyCoursesPage() {
                 {course.status === "completed" ? (
                   <>
                     <Link href={`/profile/learning/courses/certificates?courseId=${course.id}`} className="flex-1">
-                      <Button variant="outline" className="w-full" size="sm">
+                      <Button variant="outline" className="w-full border-sky-300 text-sky-700 hover:bg-sky-50 hover:border-sky-400" size="sm">
                         <Award className="h-4 w-4 mr-2" />
                         Certificate
                       </Button>
                     </Link>
                     <Link href={`/profile/learning/courses/reviews?courseId=${course.id}`}>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" className="border-cyan-300 text-cyan-700 hover:bg-cyan-50 hover:border-cyan-400" size="sm">
                         <Star className="h-4 w-4 mr-2" />
                         Review
                       </Button>
@@ -375,13 +380,13 @@ export default function MyCoursesPage() {
                 ) : (
                   <>
                     <Link href={`/profile/learning/courses/viewer?id=${course.id}`} className="flex-1">
-                      <Button className="w-full" size="sm">
+                      <Button className="w-full bg-gradient-to-r from-sky-500 to-cyan-400 hover:from-sky-600 hover:to-cyan-500 text-white shadow-lg" size="sm">
                         <Play className="h-4 w-4 mr-2" />
                         {course.status === "not-started" ? "Start" : "Continue"}
                       </Button>
                     </Link>
                     <Link href={`/profile/learning/courses/${course.id}`}>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" className="border-sky-300 text-sky-700 hover:bg-sky-50 hover:border-sky-400" size="sm">
                         Details
                       </Button>
                     </Link>

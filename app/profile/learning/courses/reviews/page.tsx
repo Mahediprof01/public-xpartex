@@ -141,45 +141,45 @@ export default function CourseReviewsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-orange-600 to-red-600 rounded-xl p-6 text-white">
+      <div className="bg-gradient-to-r from-sky-500 to-cyan-400 rounded-xl p-6 text-white">
         <h1 className="text-2xl font-bold mb-2">Course Reviews</h1>
-        <p className="text-orange-100">Share your experience and read what others say</p>
+        <p className="text-sky-100">Share your experience and read what others say</p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
+        <Card className="bg-gradient-to-br from-sky-50 to-cyan-100 border-sky-200">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-yellow-500 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-sky-500 to-cyan-400 rounded-lg flex items-center justify-center">
                 <Star className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="text-sm text-yellow-600">My Reviews</p>
-                <p className="text-xl font-bold text-yellow-900">{myReviews.length}</p>
+                <p className="text-sm text-sky-600">My Reviews</p>
+                <p className="text-xl font-bold text-sky-900">{myReviews.length}</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+        <Card className="bg-gradient-to-br from-cyan-50 to-blue-100 border-cyan-200">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-400 rounded-lg flex items-center justify-center">
                 <ThumbsUp className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="text-sm text-green-600">Helpful Votes</p>
-                <p className="text-xl font-bold text-green-900">20</p>
+                <p className="text-sm text-cyan-600">Helpful Votes</p>
+                <p className="text-xl font-bold text-cyan-900">20</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+        <Card className="bg-gradient-to-br from-blue-50 to-sky-100 border-blue-200">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-sky-400 rounded-lg flex items-center justify-center">
                 <MessageSquare className="h-5 w-5 text-white" />
               </div>
               <div>
@@ -190,15 +190,15 @@ export default function CourseReviewsPage() {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+        <Card className="bg-gradient-to-br from-slate-50 to-gray-100 border-slate-200">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-slate-500 to-gray-400 rounded-lg flex items-center justify-center">
                 <BookOpen className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="text-sm text-purple-600">Avg Rating</p>
-                <p className="text-xl font-bold text-purple-900">4.5</p>
+                <p className="text-sm text-slate-600">Avg Rating</p>
+                <p className="text-xl font-bold text-slate-900">4.5</p>
               </div>
             </div>
           </CardContent>

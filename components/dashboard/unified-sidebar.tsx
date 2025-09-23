@@ -135,7 +135,7 @@ const learningManagementItems: NavigationItem[] = [
     icon: GraduationCap,
     children: [
       {
-        title: "Dashboard Home",
+        title: "Dashboard",
         href: "/profile/learning/dashboard",
         icon: LayoutDashboard,
       },

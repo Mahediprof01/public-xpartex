@@ -291,13 +291,13 @@ export default function MyAssetsPage() {
   return (
     <div className="space-y-8 animate-in fade-in-50 duration-700">
       {/* Hero Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-600 rounded-2xl p-8 text-white">
+      <div className="relative overflow-hidden bg-gradient-to-br from-sky-500 via-cyan-400 to-blue-500 rounded-2xl p-8 text-white">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative z-10">
           <div className="flex items-center justify-between">
             <div className="space-y-2">
               <h1 className="text-4xl font-bold tracking-tight">My Digital Assets 🎨</h1>
-              <p className="text-lg text-violet-100 max-w-2xl">
+              <p className="text-lg text-sky-100 max-w-2xl">
                 Access your purchased templates, resources, and digital tools to enhance your projects
               </p>
             </div>
@@ -316,7 +316,7 @@ export default function MyAssetsPage() {
                   <Folder className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-violet-100">Total Assets</p>
+                  <p className="text-sm text-sky-100">Total Assets</p>
                   <p className="text-2xl font-bold">{assets.length}</p>
                 </div>
               </div>
@@ -327,7 +327,7 @@ export default function MyAssetsPage() {
                   <FileText className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-violet-100">Templates</p>
+                  <p className="text-sm text-sky-100">Templates</p>
                   <p className="text-2xl font-bold">{assets.filter(a => a.type === "template").length}</p>
                 </div>
               </div>
@@ -338,7 +338,7 @@ export default function MyAssetsPage() {
                   <ImageIcon className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-violet-100">Media</p>
+                  <p className="text-sm text-sky-100">Media</p>
                   <p className="text-2xl font-bold">{assets.filter(a => a.type === "media").length}</p>
                 </div>
               </div>
@@ -349,7 +349,7 @@ export default function MyAssetsPage() {
                   <Archive className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-violet-100">Resources</p>
+                  <p className="text-sm text-sky-100">Resources</p>
                   <p className="text-2xl font-bold">{assets.filter(a => a.type === "resource").length}</p>
                 </div>
               </div>
@@ -360,7 +360,7 @@ export default function MyAssetsPage() {
                   <Download className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-violet-100">Downloads</p>
+                  <p className="text-sm text-sky-100">Downloads</p>
                   <p className="text-2xl font-bold">{assets.reduce((sum, a) => sum + a.downloadCount, 0)}</p>
                 </div>
               </div>

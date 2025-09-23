@@ -54,19 +54,19 @@ export default function CourseViewerPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white">
+      <div className="bg-gradient-to-r from-sky-500 to-cyan-400 rounded-xl p-6 text-white">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold mb-2">{course.title}</h1>
-            <p className="text-blue-100">Instructor: {course.instructor}</p>
+            <p className="text-sky-100">Instructor: {course.instructor}</p>
           </div>
           <div className="text-right">
-            <div className="text-sm text-blue-100">Progress</div>
+            <div className="text-sm text-sky-100">Progress</div>
             <div className="text-2xl font-bold">{course.progress}%</div>
           </div>
         </div>
         <div className="mt-4">
-          <Progress value={course.progress} className="h-2 bg-blue-500/30" />
+          <Progress value={course.progress} className="h-2 bg-sky-500/30" />
         </div>
       </div>
 
