@@ -1,10 +1,1186 @@
-export default function Page() {
+"use client";
+
+import React, { useState } from "react";
+import {
+  Upload,
+  Search,
+  Grid3X3,
+  List,
+  MoreHorizontal,
+  Edit,
+  Eye,
+  Trash2,
+  FileText,
+  BookOpen,
+  Download,
+  Share,
+  Folder,
+  CheckCircle,
+  TrendingUp,
+  Users,
+  Clock,
+  DollarSign,
+  Star,
+  BarChart3,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
+
+// Mock data for eBooks
+const mockEbooks = [
+  {
+    id: "1",
+    title: "Fashion Design Fundamentals",
+    subtitle: "Complete Guide to Fashion Design Principles",
+    thumbnail: "/course-fashion-design.jpg",
+    fileType: "PDF",
+    fileSize: "24.5 MB",
+    status: "Published",
+    course: "Complete Fashion Design Masterclass",
+    module: "Introduction to Fashion Design",
+    lesson: "Welcome to Fashion Design",
+    uploadDate: "2024-01-15",
+    downloads: 1247,
+    pages: 156,
+    description:
+      "A comprehensive guide covering all fundamental aspects of fashion design.",
+  },
+  {
+    id: "2",
+    title: "Color Theory in Fashion",
+    subtitle: "Master Color Application in Design",
+    thumbnail: "/course-fashion-design.jpg",
+    fileType: "PDF",
+    fileSize: "18.2 MB",
+    status: "Draft",
+    course: "Complete Fashion Design Masterclass",
+    module: "Color Theory & Application",
+    lesson: null,
+    uploadDate: "2024-01-20",
+    downloads: 0,
+    pages: 98,
+    description:
+      "An in-depth exploration of color theory and its practical application.",
+  },
+];
+
+const mockCourses = [
+  {
+    id: "1",
+    title: "Complete Fashion Design Masterclass",
+    modules: [
+      {
+        id: "1",
+        title: "Introduction to Fashion Design",
+        lessons: [
+          { id: "1", title: "Welcome to Fashion Design" },
+          { id: "2", title: "Basic Concepts" },
+        ],
+      },
+      {
+        id: "2",
+        title: "Color Theory & Application",
+        lessons: [
+          { id: "3", title: "Understanding Color Theory" },
+          { id: "4", title: "Color Applications" },
+        ],
+      },
+    ],
+  },
+];
+
+export default function ManageEbooksPage() {
+  const [ebooks, setEbooks] = useState(mockEbooks);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedEbooks, setSelectedEbooks] = useState<string[]>([]);
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [filterCourse, setFilterCourse] = useState("all");
+  const [sortBy, setSortBy] = useState("title");
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [isAssignmentModalOpen, setIsAssignmentModalOpen] = useState(false);
+  const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedEbookForAssignment, setSelectedEbookForAssignment] =
+    useState<any>(null);
+  const [selectedEbookForPreview, setSelectedEbookForPreview] =
+    useState<any>(null);
+  const [selectedEbookForEdit, setSelectedEbookForEdit] = useState<any>(null);
+  const [assignmentData, setAssignmentData] = useState({
+    course: "",
+    module: "",
+    lesson: "",
+  });
+  const [editFormData, setEditFormData] = useState({
+    title: "",
+    subtitle: "",
+    description: "",
+    status: "",
+  });
+
+  // Filter and search logic
+  const filteredEbooks = ebooks
+    .filter((ebook) => {
+      const matchesSearch =
+        ebook.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        ebook.subtitle.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStatus =
+        filterStatus === "all" ||
+        ebook.status.toLowerCase() === filterStatus.toLowerCase();
+      const matchesCourse =
+        filterCourse === "all" || ebook.course === filterCourse;
+      return matchesSearch && matchesStatus && matchesCourse;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "title":
+          return a.title.localeCompare(b.title);
+        case "uploadDate":
+          return (
+            new Date(b.uploadDate).getTime() - new Date(a.uploadDate).getTime()
+          );
+        case "downloads":
+          return b.downloads - a.downloads;
+        default:
+          return 0;
+      }
+    });
+
+  const handleSelectEbook = (ebookId: string) => {
+    setSelectedEbooks((prev) =>
+      prev.includes(ebookId)
+        ? prev.filter((id) => id !== ebookId)
+        : [...prev, ebookId]
+    );
+  };
+
+  const handleSelectAll = () => {
+    setSelectedEbooks(
+      selectedEbooks.length === filteredEbooks.length
+        ? []
+        : filteredEbooks.map((ebook) => ebook.id)
+    );
+  };
+
+  const openAssignmentModal = (ebook: any) => {
+    setSelectedEbookForAssignment(ebook);
+    setIsAssignmentModalOpen(true);
+  };
+
+  const handleAssignment = () => {
+    console.log(
+      "Assigning ebook:",
+      selectedEbookForAssignment,
+      "to:",
+      assignmentData
+    );
+    setIsAssignmentModalOpen(false);
+    setAssignmentData({ course: "", module: "", lesson: "" });
+  };
+
+  const openPreviewModal = (ebook: any) => {
+    setSelectedEbookForPreview(ebook);
+    setIsPreviewModalOpen(true);
+  };
+
+  const openEditModal = (ebook: any) => {
+    setSelectedEbookForEdit(ebook);
+    setEditFormData({
+      title: ebook.title,
+      subtitle: ebook.subtitle,
+      description: ebook.description,
+      status: ebook.status,
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditSave = () => {
+    if (selectedEbookForEdit) {
+      setEbooks((prev) =>
+        prev.map((ebook) =>
+          ebook.id === selectedEbookForEdit.id
+            ? { ...ebook, ...editFormData }
+            : ebook
+        )
+      );
+      setIsEditModalOpen(false);
+      setEditFormData({ title: "", subtitle: "", description: "", status: "" });
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "published":
+        return "bg-green-100 text-green-700 border-green-200";
+      case "draft":
+        return "bg-yellow-100 text-yellow-700 border-yellow-200";
+      default:
+        return "bg-gray-100 text-gray-700 border-gray-200";
+    }
+  };
+
+  const getFileTypeIcon = (fileType: string) => {
+    return <FileText className="h-5 w-5 text-red-500" />;
+  };
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold">Manage Assets</h1>
-      <p className="text-gray-600 mt-2">
-        View and manage your eBooks and digital assets.
-      </p>
+    <div className="min-h-screen relative">
+      <div className="relative p-6 space-y-6">
+        <div className="bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 rounded-2xl p-6 border space-y-6">
+          {/* Header */}
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-[#00BFFF] to-blue-500 rounded-xl flex items-center justify-center">
+                  <BookOpen className="h-5 w-5 text-gray-900" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-white">
+                    Manage Ebooks
+                  </h1>
+                  <p className="text-sm text-gray-200">
+                    Upload, organize, and assign eBooks to your courses
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Dialog
+                open={isUploadModalOpen}
+                onOpenChange={setIsUploadModalOpen}
+              >
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="border-gray-300 hover:bg-gray-50"
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload Ebook
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Upload New Ebook</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                      <Upload className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                      <p className="text-sm text-gray-600">
+                        Click to upload or drag and drop
+                      </p>
+                      <p className="text-xs text-gray-900/60">
+                        PDF, EPUB, MOBI up to 100MB
+                      </p>
+                    </div>
+                    <div>
+                      <Label htmlFor="ebook-title">Title</Label>
+                      <Input id="ebook-title" placeholder="Enter ebook title" />
+                    </div>
+                    <div>
+                      <Label htmlFor="ebook-description">Description</Label>
+                      <Textarea
+                        id="ebook-description"
+                        placeholder="Enter description"
+                        rows={3}
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsUploadModalOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button className="bg-[#00BFFF] hover:bg-blue-500 text-gray-900">
+                      Upload Ebook
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl rounded-2xl">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm font-medium">
+                      Total eBooks
+                    </p>
+                    <p className="text-3xl font-bold text-white mt-2">
+                      {ebooks.length}
+                    </p>
+                    <div className="flex items-center mt-2">
+                      <TrendingUp className="h-4 w-4 text-green-400 mr-1" />
+                      <span className="text-green-400 text-sm">
+                        +12% this month
+                      </span>
+                    </div>
+                  </div>
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#00BFFF] to-blue-500 rounded-xl flex items-center justify-center">
+                    <BookOpen className="h-6 w-6 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl rounded-2xl">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm font-medium">
+                      Total Downloads
+                    </p>
+                    <p className="text-3xl font-bold text-white mt-2">
+                      {ebooks
+                        .reduce((sum, ebook) => sum + ebook.downloads, 0)
+                        .toLocaleString()}
+                    </p>
+                    <div className="flex items-center mt-2">
+                      <TrendingUp className="h-4 w-4 text-green-400 mr-1" />
+                      <span className="text-green-400 text-sm">
+                        +8% this week
+                      </span>
+                    </div>
+                  </div>
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
+                    <Download className="h-6 w-6 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl rounded-2xl">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm font-medium">
+                      Published eBooks
+                    </p>
+                    <p className="text-3xl font-bold text-white mt-2">
+                      {
+                        ebooks.filter((ebook) => ebook.status === "Published")
+                          .length
+                      }
+                    </p>
+                    <div className="flex items-center mt-2">
+                      <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+                      <span className="text-white/70 text-sm">Active</span>
+                    </div>
+                  </div>
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                    <CheckCircle className="h-6 w-6 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl rounded-2xl">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm font-medium">
+                      Avg. Rating
+                    </p>
+                    <p className="text-3xl font-bold text-white mt-2">4.8</p>
+                    <div className="flex items-center mt-2">
+                      <Star className="h-4 w-4 text-yellow-400 mr-1 fill-current" />
+                      <span className="text-white/70 text-sm">
+                        Based on 156 reviews
+                      </span>
+                    </div>
+                  </div>
+                  <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center">
+                    <Star className="h-6 w-6 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* Filters and Search */}
+        <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl rounded-2xl">
+          <CardContent className="p-6">
+            <div className="flex flex-col lg:flex-row gap-4">
+              {/* Search */}
+              <div className="flex-1">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input
+                    placeholder="Search ebooks by title or description..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+
+              {/* Filters */}
+              <div className="flex flex-wrap gap-3">
+                <Select value={filterStatus} onValueChange={setFilterStatus}>
+                  <SelectTrigger className="w-32">
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="published">Published</SelectItem>
+                    <SelectItem value="draft">Draft</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Select value={filterCourse} onValueChange={setFilterCourse}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue placeholder="Course" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Courses</SelectItem>
+                    {mockCourses.map((course) => (
+                      <SelectItem key={course.id} value={course.title}>
+                        {course.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-40 bg-white/10 border-white/20 text-gray-900">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="title">Title</SelectItem>
+                    <SelectItem value="uploadDate">Upload Date</SelectItem>
+                    <SelectItem value="downloads">Downloads</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <div className="flex items-center gap-2 border border-white/20 rounded-lg p-2 bg-white/10">
+                  <Button
+                    variant={viewMode === "grid" ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setViewMode("grid")}
+                    className={
+                      viewMode === "grid"
+                        ? "bg-[#00BFFF] hover:bg-blue-500 text-gray-900"
+                        : ""
+                    }
+                  >
+                    <Grid3X3 className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant={viewMode === "list" ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setViewMode("list")}
+                    className={
+                      viewMode === "list"
+                        ? "bg-[#00BFFF] hover:bg-blue-500 text-gray-900"
+                        : ""
+                    }
+                  >
+                    <List className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Bulk Actions */}
+            {selectedEbooks.length > 0 && (
+              <div className="mt-4 p-4 bg-[#00BFFF]/20 border border-[#00BFFF]/30 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-900">
+                    {selectedEbooks.length} ebook
+                    {selectedEbooks.length > 1 ? "s" : ""} selected
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-blue-300 text-blue-700 hover:bg-blue-100"
+                    >
+                      Publish
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-blue-300 text-blue-700 hover:bg-blue-100"
+                    >
+                      Assign
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-red-300 text-red-700 hover:bg-red-100"
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Ebooks Display - Grid View */}
+        {viewMode === "grid" ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredEbooks.map((ebook) => (
+              <Card
+                key={ebook.id}
+                className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl hover:shadow-2xl hover:bg-white/20 transition-all duration-300 group"
+              >
+                <div className="relative">
+                  <img
+                    src={ebook.thumbnail}
+                    alt={ebook.title}
+                    className="w-full h-48 object-cover rounded-t-lg"
+                  />
+                  <div className="absolute top-3 left-3">
+                    <Checkbox
+                      checked={selectedEbooks.includes(ebook.id)}
+                      onCheckedChange={() => handleSelectEbook(ebook.id)}
+                      className="bg-white/90"
+                    />
+                  </div>
+                  <div className="absolute top-3 right-3">
+                    <Badge className={getStatusColor(ebook.status)}>
+                      {ebook.status}
+                    </Badge>
+                  </div>
+                  <div className="absolute bottom-3 right-3">
+                    {getFileTypeIcon(ebook.fileType)}
+                  </div>
+                </div>
+
+                <CardContent className="p-4">
+                  <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2">
+                    {ebook.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                    {ebook.subtitle}
+                  </p>
+
+                  <div className="space-y-2 mb-4">
+                    <div className="flex items-center justify-between text-xs text-gray-900/60">
+                      <span className="flex items-center gap-1">
+                        <Folder className="h-3 w-3" />
+                        {ebook.fileSize}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Download className="h-3 w-3" />
+                        {ebook.downloads}
+                      </span>
+                    </div>
+                    <div className="text-xs text-gray-900/60">
+                      <span className="font-medium">Course:</span>{" "}
+                      {ebook.course}
+                    </div>
+                    {ebook.module && (
+                      <div className="text-xs text-gray-900/60">
+                        <span className="font-medium">Module:</span>{" "}
+                        {ebook.module}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="sm"
+                      className="flex-1 bg-[#00BFFF] hover:bg-blue-500 text-gray-900"
+                      onClick={() => openAssignmentModal(ebook)}
+                    >
+                      <Share className="h-3 w-3 mr-1" />
+                      Assign
+                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm" className="px-2">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={() => openPreviewModal(ebook)}
+                        >
+                          <Eye className="h-4 w-4 mr-2" />
+                          Preview
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => openEditModal(ebook)}>
+                          <Edit className="h-4 w-4 mr-2" />
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Download className="h-4 w-4 mr-2" />
+                          Download
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="text-red-600">
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          /* List View */
+          <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-white/10 border-b border-white/20">
+                    <tr>
+                      <th className="p-4 text-left">
+                        <Checkbox
+                          checked={
+                            selectedEbooks.length === filteredEbooks.length &&
+                            filteredEbooks.length > 0
+                          }
+                          onCheckedChange={handleSelectAll}
+                        />
+                      </th>
+                      <th className="p-4 text-left text-sm font-medium text-gray-900">
+                        Ebook
+                      </th>
+                      <th className="p-4 text-left text-sm font-medium text-gray-900">
+                        Course
+                      </th>
+                      <th className="p-4 text-left text-sm font-medium text-gray-900">
+                        Module
+                      </th>
+                      <th className="p-4 text-left text-sm font-medium text-gray-900">
+                        File Size
+                      </th>
+                      <th className="p-4 text-left text-sm font-medium text-gray-900">
+                        Downloads
+                      </th>
+                      <th className="p-4 text-left text-sm font-medium text-gray-900">
+                        Status
+                      </th>
+                      <th className="p-4 text-left text-sm font-medium text-gray-900">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredEbooks.map((ebook) => (
+                      <tr
+                        key={ebook.id}
+                        className="border-b border-white/10 hover:bg-white/5"
+                      >
+                        <td className="p-4">
+                          <Checkbox
+                            checked={selectedEbooks.includes(ebook.id)}
+                            onCheckedChange={() => handleSelectEbook(ebook.id)}
+                          />
+                        </td>
+                        <td className="p-4">
+                          <div className="flex items-center gap-3">
+                            <img
+                              src={ebook.thumbnail}
+                              alt={ebook.title}
+                              className="w-12 h-16 object-cover rounded"
+                            />
+                            <div>
+                              <h4 className="font-medium text-gray-900">
+                                {ebook.title}
+                              </h4>
+                              <p className="text-sm text-gray-600">
+                                {ebook.subtitle}
+                              </p>
+                              <div className="flex items-center gap-2 mt-1">
+                                {getFileTypeIcon(ebook.fileType)}
+                                <span className="text-xs text-gray-900/60">
+                                  {ebook.fileType}
+                                </span>
+                                <span className="text-xs text-gray-900/60">
+                                  •
+                                </span>
+                                <span className="text-xs text-gray-900/60">
+                                  {ebook.pages} pages
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-4 text-sm text-gray-600">
+                          {ebook.course}
+                        </td>
+                        <td className="p-4 text-sm text-gray-600">
+                          {ebook.module || "-"}
+                        </td>
+                        <td className="p-4 text-sm text-gray-600">
+                          {ebook.fileSize}
+                        </td>
+                        <td className="p-4 text-sm text-gray-600">
+                          {ebook.downloads.toLocaleString()}
+                        </td>
+                        <td className="p-4">
+                          <Badge className={getStatusColor(ebook.status)}>
+                            {ebook.status}
+                          </Badge>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex items-center gap-2">
+                            <Button
+                              size="sm"
+                              className="bg-[#00BFFF] hover:bg-blue-500 text-gray-900"
+                              onClick={() => openAssignmentModal(ebook)}
+                            >
+                              <Share className="h-3 w-3 mr-1" />
+                              Assign
+                            </Button>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="px-2"
+                                >
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem
+                                  onClick={() => openPreviewModal(ebook)}
+                                >
+                                  <Eye className="h-4 w-4 mr-2" />
+                                  Preview
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => openEditModal(ebook)}
+                                >
+                                  <Edit className="h-4 w-4 mr-2" />
+                                  Edit
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                  <Download className="h-4 w-4 mr-2" />
+                                  Download
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem className="text-red-600">
+                                  <Trash2 className="h-4 w-4 mr-2" />
+                                  Delete
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Assignment Modal */}
+        <Dialog
+          open={isAssignmentModalOpen}
+          onOpenChange={setIsAssignmentModalOpen}
+        >
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Assign Ebook to Course</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              {selectedEbookForAssignment && (
+                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <img
+                    src={selectedEbookForAssignment.thumbnail}
+                    alt={selectedEbookForAssignment.title}
+                    className="w-12 h-16 object-cover rounded"
+                  />
+                  <div>
+                    <h4 className="font-medium text-gray-900">
+                      {selectedEbookForAssignment.title}
+                    </h4>
+                    <p className="text-sm text-gray-600">
+                      {selectedEbookForAssignment.subtitle}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <Label htmlFor="course-select">Course</Label>
+                <Select
+                  value={assignmentData.course}
+                  onValueChange={(value) =>
+                    setAssignmentData({
+                      ...assignmentData,
+                      course: value,
+                      module: "",
+                      lesson: "",
+                    })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select course" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {mockCourses.map((course) => (
+                      <SelectItem key={course.id} value={course.title}>
+                        {course.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {assignmentData.course && (
+                <div>
+                  <Label htmlFor="module-select">Module</Label>
+                  <Select
+                    value={assignmentData.module}
+                    onValueChange={(value) =>
+                      setAssignmentData({
+                        ...assignmentData,
+                        module: value,
+                        lesson: "",
+                      })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select module" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {mockCourses
+                        .find((c) => c.title === assignmentData.course)
+                        ?.modules.map((module) => (
+                          <SelectItem key={module.id} value={module.title}>
+                            {module.title}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {assignmentData.module && (
+                <div>
+                  <Label htmlFor="lesson-select">Lesson (Optional)</Label>
+                  <Select
+                    value={assignmentData.lesson}
+                    onValueChange={(value) =>
+                      setAssignmentData({ ...assignmentData, lesson: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select lesson" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">No specific lesson</SelectItem>
+                      {mockCourses
+                        .find((c) => c.title === assignmentData.course)
+                        ?.modules.find((m) => m.title === assignmentData.module)
+                        ?.lessons.map((lesson) => (
+                          <SelectItem key={lesson.id} value={lesson.title}>
+                            {lesson.title}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setIsAssignmentModalOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="bg-[#00BFFF] hover:bg-blue-500 text-gray-900"
+                onClick={handleAssignment}
+                disabled={!assignmentData.course || !assignmentData.module}
+              >
+                Assign Ebook
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Preview Modal */}
+        <Dialog open={isPreviewModalOpen} onOpenChange={setIsPreviewModalOpen}>
+          <DialogContent className="max-w-6xl max-h-[90vh] rounded-2xl">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-gray-900">
+                {selectedEbookForPreview?.title}
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="space-y-4">
+              {selectedEbookForPreview && (
+                <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={selectedEbookForPreview.thumbnail}
+                      alt={selectedEbookForPreview.title}
+                      className="w-20 h-28 object-cover rounded-lg"
+                    />
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900 mb-2">
+                        {selectedEbookForPreview.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-2">
+                        {selectedEbookForPreview.subtitle}
+                      </p>
+                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                        <span>📄 {selectedEbookForPreview.fileType}</span>
+                        <span>📏 {selectedEbookForPreview.fileSize}</span>
+                        <span>📖 {selectedEbookForPreview.pages} pages</span>
+                        <span>
+                          ⬇️ {selectedEbookForPreview.downloads} downloads
+                        </span>
+                      </div>
+                    </div>
+                    <Badge
+                      className={getStatusColor(selectedEbookForPreview.status)}
+                    >
+                      {selectedEbookForPreview.status}
+                    </Badge>
+                  </div>
+                </div>
+              )}
+
+              {/* PDF Preview Area */}
+              <div className="border-2 border-dashed border-gray-300 rounded-lg h-96 flex items-center justify-center bg-gray-50">
+                <div className="text-center">
+                  <FileText className="h-16 w-16 mx-auto mb-4 text-gray-400" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    PDF Preview
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    PDF viewer would be integrated here
+                  </p>
+                  <div className="space-y-2 text-sm text-gray-500">
+                    <p>• Page navigation controls</p>
+                    <p>• Zoom in/out functionality</p>
+                    <p>• Full-screen mode</p>
+                    <p>• Download option</p>
+                  </div>
+                  <div className="mt-6 flex gap-3 justify-center">
+                    <Button variant="outline" className="rounded-xl">
+                      <Download className="h-4 w-4 mr-2" />
+                      Download PDF
+                    </Button>
+                    <Button className="bg-[#00BFFF] hover:bg-blue-500 text-white rounded-xl">
+                      <Share className="h-4 w-4 mr-2" />
+                      Share
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setIsPreviewModalOpen(false)}
+                className="rounded-xl"
+              >
+                Close
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Edit Modal */}
+        <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+          <DialogContent className="max-w-2xl rounded-2xl">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-gray-900">
+                Edit eBook Details
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="space-y-6 py-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label
+                    htmlFor="edit-title"
+                    className="text-sm font-medium text-gray-700"
+                  >
+                    Title *
+                  </Label>
+                  <Input
+                    id="edit-title"
+                    value={editFormData.title}
+                    onChange={(e) =>
+                      setEditFormData({
+                        ...editFormData,
+                        title: e.target.value,
+                      })
+                    }
+                    className="mt-2 rounded-xl"
+                  />
+                </div>
+
+                <div>
+                  <Label
+                    htmlFor="edit-subtitle"
+                    className="text-sm font-medium text-gray-700"
+                  >
+                    Subtitle
+                  </Label>
+                  <Input
+                    id="edit-subtitle"
+                    value={editFormData.subtitle}
+                    onChange={(e) =>
+                      setEditFormData({
+                        ...editFormData,
+                        subtitle: e.target.value,
+                      })
+                    }
+                    className="mt-2 rounded-xl"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label
+                  htmlFor="edit-description"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Description
+                </Label>
+                <Textarea
+                  id="edit-description"
+                  value={editFormData.description}
+                  onChange={(e) =>
+                    setEditFormData({
+                      ...editFormData,
+                      description: e.target.value,
+                    })
+                  }
+                  rows={4}
+                  className="mt-2 rounded-xl"
+                />
+              </div>
+
+              <div>
+                <Label
+                  htmlFor="edit-status"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Status
+                </Label>
+                <Select
+                  value={editFormData.status}
+                  onValueChange={(value) =>
+                    setEditFormData({ ...editFormData, status: value })
+                  }
+                >
+                  <SelectTrigger className="mt-2 rounded-xl">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Draft">Draft</SelectItem>
+                    <SelectItem value="Published">Published</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* File Upload Section */}
+              <div>
+                <Label className="text-sm font-medium text-gray-700">
+                  Replace File (Optional)
+                </Label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center mt-2">
+                  <Upload className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                  <p className="text-sm text-gray-600">
+                    Click to upload new file or drag and drop
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    PDF, EPUB, MOBI up to 100MB
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter className="gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setIsEditModalOpen(false)}
+                className="rounded-xl"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleEditSave}
+                className="bg-[#00BFFF] hover:bg-blue-500 text-white rounded-xl"
+                disabled={!editFormData.title.trim()}
+              >
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Empty State */}
+        {filteredEbooks.length === 0 && (
+          <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
+            <CardContent className="p-12 text-center">
+              <BookOpen className="h-16 w-16 mx-auto mb-4 text-gray-900/40" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No ebooks found
+              </h3>
+              <p className="text-gray-600 mb-6">
+                {searchTerm || filterStatus !== "all" || filterCourse !== "all"
+                  ? "Try adjusting your search or filters"
+                  : "Get started by uploading your first ebook"}
+              </p>
+              {!searchTerm &&
+                filterStatus === "all" &&
+                filterCourse === "all" && (
+                  <Button
+                    className="bg-[#00BFFF] hover:bg-blue-500 text-gray-900"
+                    onClick={() => setIsUploadModalOpen(true)}
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload Your First Ebook
+                  </Button>
+                )}
+            </CardContent>
+          </Card>
+        )}
+      </div>
     </div>
   );
 }
