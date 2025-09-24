@@ -3,10 +3,15 @@
 import { cookies } from "next/headers";
 import { api } from "@/config/fetch-request";
 import { AUTH_ENDPOINTS } from "@/constant/api-path";
-import { RegisterRequest, LoginRequest } from "./type";
+import { RegisterRequest, LoginRequest, VerifyOtpRequest } from "./type";
 
 export async function registerUser(data: RegisterRequest): Promise<{ success: boolean; message: string; error?: string }> {
   const response = await api.post(AUTH_ENDPOINTS.REGISTER, data);
+  return response;
+}
+
+export async function verifyOtp(data: VerifyOtpRequest): Promise<{ success: boolean; message: string; error?: string }> {
+  const response = await api.post(AUTH_ENDPOINTS.VERIFY_OTP, data);
   return response;
 }
 

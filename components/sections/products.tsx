@@ -1,201 +1,62 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import { ProductCard } from "@/components/ui/product-card"
+import { useProductStore } from "@/actions/product/store"
+import { ProductResponse } from "@/actions/product/type"
 import type { Product } from "@/types"
+import { Loader2 } from "lucide-react"
 
 export function Products() {
-  // Mock data for general products
-  const products: Product[] = [
-    {
-      id: "p1",
-      title: "Classic Cotton Shirt",
-      images: ["/cotton-t-shirt.jpg"],
-      supplierId: "supplier-1",
-      supplierName: "Dhaka Fashion Ltd.",
-      price: 650.0,
-      currency: "BDT",
-      moq: 400,
-      badges: ["super"],
-      description: "Classic cotton shirt",
-      specs: [{ key: "Material", value: "100% Cotton" }],
-      availableQuantity: 2000,
-      leadTimeDays: 10,
-      primaryType: "wholesale",
+    const { products: apiProducts, isLoading, fetchProducts } = useProductStore()
+  const [displayProducts, setDisplayProducts] = useState<Product[]>([])
+
+  // Transform API product to ProductCard format
+  const transformProductForCard = (product: ProductResponse): Product => {
+    // Ensure images is always a valid array
+    const mainImage = product.img || "/placeholder.svg?height=240&width=320&query=garment product";
+    const additionalImages = product.additionalImages || [];
+    const allImages = [mainImage, ...additionalImages].filter(Boolean);
+    
+    return {
+      id: product.id,
+      title: product.name || 'Untitled Product',
+      images: allImages.length > 0 ? allImages : ["/placeholder.svg?height=240&width=320&query=garment product"],
+      supplierId: product.seller?.id || 'unknown',
+      supplierName: product.seller?.firstName ? `${product.seller.firstName} ${product.seller.lastName}` : 'Unknown Supplier',
+      price: parseFloat(product.price) || 0,
+      currency: "BDT" as const,
+      moq: (product as any).moq || 1,
+      badges: [] as ("flash" | "super" | "new")[],
+      description: product.productDescription || "",
+      specs: [],
+      availableQuantity: product.stockQuantity || 0,
+      leadTimeDays: 7,
       productTypes: {
-        wholesale: {
+        [product.productType]: {
           enabled: true,
-          price: 650.0,
-          moq: 400
-        },
-        retail: {
-          enabled: true,
-          price: 750.0,
-          maxQuantity: 20
-        },
-        b2b: {
-          enabled: false,
-          rfqOnly: true
+          price: parseFloat(product.price) || 0,
+          moq: (product as any).moq || 1
         }
       },
-    },
-    {
-      id: "p2",
-      title: "Casual Denim Jacket",
-      images: ["/denim-jeans.png"],
-      supplierId: "supplier-2",
-      supplierName: "Bengal Denim Co.",
-      price: 1850.0,
-      currency: "BDT",
-      moq: 150,
-      badges: ["new", "flash"],
-      description: "Durable denim jacket",
-      specs: [{ key: "Material", value: "Denim" }],
-      availableQuantity: 800,
-      leadTimeDays: 14,
-      primaryType: "retail",
-      productTypes: {
-        wholesale: {
-          enabled: false,
-          price: 1650.0,
-          moq: 150
-        },
-        retail: {
-          enabled: true,
-          price: 1850.0,
-          maxQuantity: 10
-        },
-        b2b: {
-          enabled: true,
-          rfqOnly: false,
-          customPricing: true
-        }
-      },
-    },
-    {
-      id: "p3",
-      title: "Formal Blazer",
-      images: ["/classic-polo-shirt.png"],
-      supplierId: "supplier-3",
-      supplierName: "Chittagong Formals",
-      price: 2250.0,
-      currency: "BDT",
-      moq: 100,
-      badges: ["super"],
-      description: "Elegant formal blazer",
-      specs: [{ key: "Fabric", value: "Wool Blend" }],
-      availableQuantity: 300,
-      leadTimeDays: 21,
-      primaryType: "wholesale",
-      productTypes: {
-        wholesale: { enabled: true, price: 2250.0, moq: 100 },
-        retail: { enabled: true, price: 2450.0, maxQuantity: 5 },
-        b2b: { enabled: false, rfqOnly: true }
-      },
-    },
-    {
-      id: "p4",
-      title: "Sports Track Suit",
-      images: ["/cozy-hoodie.png"],
-      supplierId: "supplier-4",
-      supplierName: "Athletic Wear BD",
-      price: 1450.0,
-      currency: "BDT",
-      moq: 250,
-      badges: ["new"],
-      description: "High-performance track suit",
-      specs: [{ key: "Material", value: "Polyester" }],
-      availableQuantity: 1200,
-      leadTimeDays: 12,
-      primaryType: "retail",
-      productTypes: {
-        wholesale: { enabled: false, price: 1350.0, moq: 250 },
-        retail: { enabled: true, price: 1450.0, maxQuantity: 10 },
-        b2b: { enabled: false, rfqOnly: true }
-      },
-    },
-    {
-      id: "p5",
-      title: "Summer Linen Shirt",
-      images: ["/cotton-t-shirt.jpg"],
-      supplierId: "supplier-5",
-      supplierName: "Comfort Textiles",
-      price: 780.0,
-      currency: "BDT",
-      moq: 350,
-      badges: ["flash"],
-      description: "Breathable linen shirt",
-      specs: [{ key: "Material", value: "Linen" }],
-      availableQuantity: 1500,
-      leadTimeDays: 9,
-      primaryType: "wholesale",
-      productTypes: {
-        wholesale: { enabled: true, price: 780.0, moq: 350 },
-        retail: { enabled: true, price: 880.0, maxQuantity: 15 },
-        b2b: { enabled: false, rfqOnly: true }
-      },
-    },
-    {
-      id: "p6",
-      title: "Designer Kurta",
-      images: ["/classic-polo-shirt.png"],
-      supplierId: "supplier-6",
-      supplierName: "Traditional Wear Co.",
-      price: 950.0,
-      currency: "BDT",
-      moq: 200,
-      badges: ["super"],
-      description: "Hand-embroidered designer kurta",
-      specs: [{ key: "Material", value: "Cotton Blend" }],
-      availableQuantity: 600,
-      leadTimeDays: 18,
-      primaryType: "wholesale",
-      productTypes: {
-        wholesale: { enabled: true, price: 950.0, moq: 200 },
-        retail: { enabled: true, price: 1050.0, maxQuantity: 8 },
-        b2b: { enabled: false, rfqOnly: true }
-      },
-    },
-    {
-      id: "p7",
-      title: "Cargo Pants",
-      images: ["/denim-jeans.png"],
-      supplierId: "supplier-7",
-      supplierName: "Urban Fashion",
-      price: 1150.0,
-      currency: "BDT",
-      moq: 300,
-      badges: ["new"],
-      description: "Durable cargo pants",
-      specs: [{ key: "Material", value: "Cotton Twill" }],
-      availableQuantity: 900,
-      leadTimeDays: 11,
-      primaryType: "retail",
-      productTypes: {
-        wholesale: { enabled: false, price: 1050.0, moq: 300 },
-        retail: { enabled: true, price: 1150.0, maxQuantity: 12 },
-        b2b: { enabled: false, rfqOnly: true }
-      },
-    },
-    {
-      id: "p8",
-      title: "Winter Sweater",
-      images: ["/cozy-hoodie.png"],
-      supplierId: "supplier-8",
-      supplierName: "Warm Clothing Ltd.",
-      price: 1650.0,
-      currency: "BDT",
-      moq: 180,
-      badges: ["flash", "super"],
-      description: "Warm knitted sweater",
-      specs: [{ key: "Material", value: "Wool Blend" }],
-      availableQuantity: 700,
-      leadTimeDays: 20,
-      primaryType: "wholesale",
-      productTypes: {
-        wholesale: { enabled: true, price: 1650.0, moq: 180 },
-        retail: { enabled: true, price: 1750.0, maxQuantity: 6 },
-        b2b: { enabled: false, rfqOnly: true }
-      },
-    },
-  ]
+      primaryType: product.productType,
+      category: product.category?.title || 'No Category'
+    }
+  }
+
+  useEffect(() => {
+    fetchProducts()
+  }, [fetchProducts])
+
+  useEffect(() => {
+    if (apiProducts.length > 0) {
+      // Transform and limit to first 8 products for homepage display
+      const transformedProducts = apiProducts
+        .slice(0, 8)
+        .map(transformProductForCard)
+      setDisplayProducts(transformedProducts)
+    }
+  }, [apiProducts])
 
   return (
     <section className="py-16">
@@ -207,11 +68,24 @@ export function Products() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {products.map((product) => (
-            <ProductCard key={product.id} {...product} />
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="flex justify-center items-center min-h-[400px]">
+            <Loader2 className="h-8 w-8 animate-spin text-green-600" />
+          </div>
+        ) : displayProducts.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-500 text-lg">No products available at the moment.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {displayProducts.map((product) => (
+              <ProductCard 
+                key={product.id} 
+                {...product}
+              />
+            ))}
+          </div>
+        )}
 
         <div className="text-center mt-8">
           <button className="text-sky-600 hover:text-sky-700 font-medium">View All Products →</button>

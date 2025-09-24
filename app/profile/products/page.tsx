@@ -8,8 +8,11 @@ import { Badge } from "../../../components/ui/badge"
 import { Input } from "../../../components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui/tabs"
 import { Alert, AlertDescription } from "../../../components/ui/alert"
+import { ProductCard } from "../../../components/ui/product-card"
 import { useProductStore } from "../../../actions/product/store"
 import { formatPrice } from "../../../actions/product/business"
+import { ProductResponse } from "../../../actions/product/type"
+import { Product } from "../../../types"
 import Image from "next/image"
 import Link from "next/link"
 import {
@@ -81,6 +84,34 @@ export default function ProductsPage() {
     clearError,
     clearSuccess
   } = useProductStore()
+
+  // Transform API product to ProductCard format
+  const transformProductForCard = (product: ProductResponse): Product => {
+    return {
+      id: product.id,
+      title: product.name,
+      images: [product.img, ...(product.additionalImages || [])],
+      supplierId: product.seller?.id || 'unknown',
+      supplierName: product.seller?.firstName ? `${product.seller.firstName} ${product.seller.lastName}` : 'Unknown Supplier',
+      price: parseFloat(product.price) || 0,
+      currency: "BDT" as const,
+      moq: (product as any).moq || 1,
+      badges: [] as ("flash" | "super" | "new")[],
+      description: product.productDescription || "",
+      specs: [],
+      availableQuantity: product.stockQuantity || 0,
+      leadTimeDays: 7,
+      productTypes: {
+        [product.productType]: {
+          enabled: true,
+          price: parseFloat(product.price) || 0,
+          moq: (product as any).moq || 1
+        }
+      },
+      primaryType: product.productType,
+      category: product.category?.title || 'No Category'
+    }
+  }
 
   // Helper function to safely render category
   const getCategoryName = (category: any) => {
@@ -235,10 +266,18 @@ export default function ProductsPage() {
             <Tabs defaultValue="all" className="space-y-4">
               <div className="flex items-center justify-between">
                 <TabsList>
-                  <TabsTrigger value="all">All Products (148)</TabsTrigger>
-                  <TabsTrigger value="active">Active (89)</TabsTrigger>
-                  <TabsTrigger value="pending">Pending (15)</TabsTrigger>
-                  <TabsTrigger value="drafts">Drafts (44)</TabsTrigger>
+                  <TabsTrigger value="all">
+                    All Products ({products.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="active">
+                    Active ({products.filter(p => p.stockQuantity > 0).length})
+                  </TabsTrigger>
+                  <TabsTrigger value="pending">
+                    Pending ({products.filter(p => (p as any).productStatus === "pending" || (p as any).productStatus === "draft").length})
+                  </TabsTrigger>
+                  <TabsTrigger value="drafts">
+                    Drafts ({products.filter(p => (p as any).productStatus === "draft").length})
+                  </TabsTrigger>
                 </TabsList>
                 <div className="flex gap-3">
                   <div className="relative">
@@ -256,139 +295,202 @@ export default function ProductsPage() {
               </div>
 
               <TabsContent value="all" className="space-y-4">
-                {/* Product List */}
-                <div className="space-y-4">
+                {/* Product Grid */}
+                <div>
                   {isLoading ? (
                     <div className="flex justify-center py-8">
                       <Loader2 className="h-8 w-8 animate-spin" />
                     </div>
                   ) : products.length === 0 ? (
-                    <div className="text-center py-8">
-                      <Package className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">No products yet</h3>
-                      <p className="text-gray-600 mb-4">Start by adding your first product</p>
+                    <div className="text-center py-12">
+                      <Package className="h-16 w-16 mx-auto text-gray-400 mb-4" />
+                      <h3 className="text-xl font-medium text-gray-900 mb-2">No products yet</h3>
+                      <p className="text-gray-600 mb-6">Start by adding your first product to showcase your inventory</p>
                       <Link href="/profile/products/add">
                         <Button className="gradient-primary text-white">
                           <Plus className="h-4 w-4 mr-2" />
-                          Add Product
+                          Add Your First Product
                         </Button>
                       </Link>
                     </div>
                   ) : (
-                    products.map((product) => (
-                      <Card key={product.id} className="hover:shadow-md transition-shadow">
-                      <CardContent className="p-6">
-                        <div className="flex items-start gap-4">
-                          {/* Product Image */}
-                          <div className="relative w-20 h-20 flex-shrink-0">
-                            <Image
-                              src={product.img}
-                              alt={product.name}
-                              fill
-                              className="object-cover rounded-lg"
-                            />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+                      {products.map((product) => (
+                        <div key={product.id} className="relative group cursor-pointer">
+                          <ProductCard {...transformProductForCard(product)} />
+                          
+                          {/* Action Overlay */}
+                          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                            <div className="flex flex-col gap-1">
+                              <Button variant="outline" size="sm" className="h-8 w-8 p-0 bg-white/95 backdrop-blur-sm hover:bg-white shadow-sm">
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                              <Button variant="outline" size="sm" className="h-8 w-8 p-0 bg-white/95 backdrop-blur-sm hover:bg-white shadow-sm">
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button variant="outline" size="sm" className="h-8 w-8 p-0 bg-white/95 backdrop-blur-sm hover:bg-white shadow-sm">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </div>
                           </div>
 
-                          {/* Product Info */}
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between mb-2">
-                              <div>
-                                <h3 className="text-lg font-semibold text-gray-900 truncate">
-                                  {product.name}
-                                </h3>
-                                <p className="text-sm text-gray-600">
-                                  ID: {product.id} • {getCategoryName(product.category)}
-                                </p>
-                                <Badge variant="outline" className="mt-1">
-                                  {product.productType}
-                                </Badge>
-                              </div>
-                              <Badge className={getStatusColor(product.stockQuantity > 0 ? "active" : "inactive")}>
-                                <span className="flex items-center gap-1">
-                                  {getStatusIcon(product.stockQuantity > 0 ? "active" : "inactive")}
-                                  {product.stockQuantity > 0 ? "Active" : "Out of Stock"}
-                                </span>
-                              </Badge>
-                            </div>
-
-                            <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-4">
-                              <div>
-                                <p className="text-xs text-gray-500">Price</p>
-                                <p className="text-sm font-semibold text-blue-600">{formatPrice(product.price)}</p>
-                              </div>
-                              {(product.productType === "wholesale" || product.productType === "b2b") && (
-                                <div>
-                                  <p className="text-xs text-gray-500">MOQ</p>
-                                  <p className="text-sm font-medium">{safeRender((product as any).moq)} pcs</p>
-                                </div>
-                              )}
-                              <div>
-                                <p className="text-xs text-gray-500">Stock</p>
-                                <p className="text-sm font-medium">{product.stockQuantity}</p>
-                              </div>
-                              <div>
-                                <p className="text-xs text-gray-500">Created</p>
-                                <p className="text-sm font-medium">{new Date(product.createdAt).toLocaleDateString()}</p>
-                              </div>
-                              <div>
-                                <p className="text-xs text-gray-500">Orders</p>
-                                <p className="text-sm font-medium">{safeRender((product as any).orders)}</p>
-                              </div>
-                              <div>
-                                <p className="text-xs text-gray-500">Rating</p>
-                                <p className="text-sm font-medium">⭐ {safeRender((product as any).rating)}</p>
-                              </div>
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                              <p className="text-sm text-gray-500">
-                                Last updated: {safeRender((product as any).lastUpdated, 'Unknown')}
-                              </p>
-                              <div className="flex gap-2">
-                                <Button variant="outline" size="sm">
-                                  <Eye className="h-4 w-4 mr-1" />
-                                  View
-                                </Button>
-                                <Button variant="outline" size="sm">
-                                  <Edit className="h-4 w-4 mr-1" />
-                                  Edit
-                                </Button>
-                                <Button variant="outline" size="sm">
-                                  <MoreHorizontal className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </div>
+                          {/* Status Badge Overlay */}
+                          <div className="absolute top-2 left-2 z-10">
+                            <Badge className={getStatusColor(product.stockQuantity > 0 ? "active" : "inactive")}>
+                              <span className="flex items-center gap-1 text-xs">
+                                {getStatusIcon(product.stockQuantity > 0 ? "active" : "inactive")}
+                                {product.stockQuantity > 0 ? "Active" : "Out of Stock"}
+                              </span>
+                            </Badge>
                           </div>
                         </div>
-                      </CardContent>
-                    </Card>
-                    ))
+                      ))}
+                    </div>
                   )}
                 </div>
               </TabsContent>
 
               <TabsContent value="active">
-                <Card>
-                  <CardContent className="p-6">
-                    <p className="text-gray-600">Active products will be displayed here...</p>
-                  </CardContent>
-                </Card>
+                <div>
+                  {isLoading ? (
+                    <div className="flex justify-center py-8">
+                      <Loader2 className="h-8 w-8 animate-spin" />
+                    </div>
+                  ) : products.filter(product => product.stockQuantity > 0).length === 0 ? (
+                    <div className="text-center py-12">
+                      <CheckCircle className="h-16 w-16 mx-auto text-gray-400 mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No active products</h3>
+                      <p className="text-gray-600">Products with stock will appear here</p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+                      {products
+                        .filter(product => product.stockQuantity > 0)
+                        .map((product) => (
+                          <div key={product.id} className="relative group cursor-pointer">
+                            <ProductCard {...transformProductForCard(product)} />
+                            
+                            {/* Action Overlay */}
+                            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                              <div className="flex flex-col gap-1">
+                                <Button variant="outline" size="sm" className="h-8 w-8 p-0 bg-white/95 backdrop-blur-sm hover:bg-white shadow-sm">
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                                <Button variant="outline" size="sm" className="h-8 w-8 p-0 bg-white/95 backdrop-blur-sm hover:bg-white shadow-sm">
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button variant="outline" size="sm" className="h-8 w-8 p-0 bg-white/95 backdrop-blur-sm hover:bg-white shadow-sm">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                </div>
               </TabsContent>
 
               <TabsContent value="pending">
-                <Card>
-                  <CardContent className="p-6">
-                    <p className="text-gray-600">Pending approval products will be displayed here...</p>
-                  </CardContent>
-                </Card>
+                <div>
+                  {isLoading ? (
+                    <div className="flex justify-center py-8">
+                      <Loader2 className="h-8 w-8 animate-spin" />
+                    </div>
+                  ) : products.filter(product => (product as any).productStatus === "pending" || (product as any).productStatus === "draft").length === 0 ? (
+                    <div className="text-center py-12">
+                      <AlertCircle className="h-16 w-16 mx-auto text-gray-400 mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No pending products</h3>
+                      <p className="text-gray-600">Products waiting for approval will appear here</p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+                      {products
+                        .filter(product => (product as any).productStatus === "pending" || (product as any).productStatus === "draft")
+                        .map((product) => (
+                          <div key={product.id} className="relative group cursor-pointer">
+                            <ProductCard {...transformProductForCard(product)} />
+                            
+                            {/* Action Overlay */}
+                            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                              <div className="flex flex-col gap-1">
+                                <Button variant="outline" size="sm" className="h-8 w-8 p-0 bg-white/95 backdrop-blur-sm hover:bg-white shadow-sm">
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                                <Button variant="outline" size="sm" className="h-8 w-8 p-0 bg-white/95 backdrop-blur-sm hover:bg-white shadow-sm">
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button variant="outline" size="sm" className="h-8 w-8 p-0 bg-white/95 backdrop-blur-sm hover:bg-white shadow-sm">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+
+                            {/* Status Badge Overlay */}
+                            <div className="absolute top-2 left-2 z-10">
+                              <Badge className="bg-yellow-100 text-yellow-800">
+                                <span className="flex items-center gap-1 text-xs">
+                                  <AlertCircle className="h-3 w-3" />
+                                  Pending
+                                </span>
+                              </Badge>
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                </div>
               </TabsContent>
 
               <TabsContent value="drafts">
-                <Card>
-                  <CardContent className="p-6">
-                    <p className="text-gray-600">Draft products will be displayed here...</p>
-                  </CardContent>
-                </Card>
+                <div>
+                  {isLoading ? (
+                    <div className="flex justify-center py-8">
+                      <Loader2 className="h-8 w-8 animate-spin" />
+                    </div>
+                  ) : products.filter(product => (product as any).productStatus === "draft").length === 0 ? (
+                    <div className="text-center py-12">
+                      <Package className="h-16 w-16 mx-auto text-gray-400 mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No draft products</h3>
+                      <p className="text-gray-600">Save products as drafts to continue editing later</p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+                      {products
+                        .filter(product => (product as any).productStatus === "draft")
+                        .map((product) => (
+                          <div key={product.id} className="relative group cursor-pointer">
+                            <ProductCard {...transformProductForCard(product)} />
+                            
+                            {/* Action Overlay */}
+                            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                              <div className="flex flex-col gap-1">
+                                <Button variant="outline" size="sm" className="h-8 w-8 p-0 bg-white/95 backdrop-blur-sm hover:bg-white shadow-sm">
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                                <Button variant="outline" size="sm" className="h-8 w-8 p-0 bg-white/95 backdrop-blur-sm hover:bg-white shadow-sm">
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button variant="outline" size="sm" className="h-8 w-8 p-0 bg-white/95 backdrop-blur-sm hover:bg-white shadow-sm">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+
+                            {/* Status Badge Overlay */}
+                            <div className="absolute top-2 left-2 z-10">
+                              <Badge className="bg-gray-100 text-gray-800">
+                                <span className="flex items-center gap-1 text-xs">
+                                  <Package className="h-3 w-3" />
+                                  Draft
+                                </span>
+                              </Badge>
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                </div>
               </TabsContent>
             </Tabs>
     </div>

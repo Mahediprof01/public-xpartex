@@ -1,94 +1,62 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import { ProductCard } from "@/components/ui/product-card"
+import { useProductStore } from "@/actions/product/store"
+import { ProductResponse } from "@/actions/product/type"
 import type { Product } from "@/types"
+import { Loader2 } from "lucide-react"
 
 export function QuotationProduct() {
-  // Mock data for quotation products
-  const quotationProducts: Product[] = [
-    {
-      id: "1",
-      title: "Premium Cotton T-Shirt",
-      images: ["/cotton-t-shirt.jpg"],
-      supplierId: "supplier-1",
-      supplierName: "Dhaka Textiles Ltd.",
-      price: 450.0,
-      currency: "BDT",
-      moq: 500,
-      badges: ["flash", "super"],
-      description: "Premium cotton t-shirt",
-      specs: [{ key: "Material", value: "100% Cotton" }],
-      availableQuantity: 10000,
-      leadTimeDays: 15,
-      productTypes: {
-        wholesale: { enabled: true, price: 450, moq: 500 },
-        retail: { enabled: true, price: 480 },
-        b2b: { enabled: false }
-      },
-      primaryType: "wholesale",
-    },
-    {
-      id: "2",
-      title: "Denim Jeans - Slim Fit",
-      images: ["/denim-jeans.png"],
-      supplierId: "supplier-2",
-      supplierName: "Bengal Garments",
-      price: 1250.0,
-      currency: "BDT",
-      moq: 200,
-      badges: ["new"],
-      description: "Slim fit denim jeans",
-      specs: [{ key: "Material", value: "Denim" }],
-      availableQuantity: 5000,
-      leadTimeDays: 20,
-      productTypes: {
-        wholesale: { enabled: true, price: 1250, moq: 200 },
-        retail: { enabled: true, price: 1300 },
-        b2b: { enabled: false }
-      },
-      primaryType: "wholesale",
-    },
-    {
-      id: "3",
-      title: "Polo Shirt - Business Casual",
-      images: ["/classic-polo-shirt.png"],
-      supplierId: "supplier-3",
-      supplierName: "Chittagong Apparel",
-      price: 680.0,
-      currency: "BDT",
-      moq: 300,
-      badges: ["super"],
-      description: "Business casual polo shirt",
-      specs: [{ key: "Material", value: "Cotton" }],
-      availableQuantity: 3000,
-      leadTimeDays: 14,
-      productTypes: {
-        wholesale: { enabled: true, price: 680, moq: 300 },
-        retail: { enabled: true, price: 720 },
-        b2b: { enabled: false }
-      },
-      primaryType: "wholesale",
-    },
-    {
-      id: "4",
-      title: "Hoodie - Premium Quality",
-      images: ["/cozy-hoodie.png"],
-      supplierId: "supplier-4",
-      supplierName: "Sylhet Fashion House",
-      price: 1850.0,
-      currency: "BDT",
-      moq: 100,
-      badges: ["flash"],
-      description: "Premium hoodie with fleece lining",
-      specs: [{ key: "Material", value: "Fleece" }],
-      availableQuantity: 1200,
+  const { products, isLoading, fetchProducts } = useProductStore()
+  const [quotationProducts, setQuotationProducts] = useState<Product[]>([])
+
+  // Transform API product to ProductCard format
+  const transformProductForCard = (product: ProductResponse): Product => {
+    // Ensure images is always a valid array
+    const mainImage = product.img || "/placeholder.svg?height=240&width=320&query=garment product";
+    const additionalImages = product.additionalImages || [];
+    const allImages = [mainImage, ...additionalImages].filter(Boolean);
+    
+    return {
+      id: product.id,
+      title: product.name || 'Untitled Product',
+      images: allImages.length > 0 ? allImages : ["/placeholder.svg?height=240&width=320&query=garment product"],
+      supplierId: product.seller?.id || 'unknown',
+      supplierName: product.seller?.firstName ? `${product.seller.firstName} ${product.seller.lastName}` : 'Unknown Supplier',
+      price: parseFloat(product.price) || 0,
+      currency: "BDT" as const,
+      moq: (product as any).moq || 1,
+      badges: [] as ("flash" | "super" | "new")[],
+      description: product.productDescription || "",
+      specs: [],
+      availableQuantity: product.stockQuantity || 0,
       leadTimeDays: 7,
       productTypes: {
-        wholesale: { enabled: true, price: 1850, moq: 100 },
-        retail: { enabled: true, price: 1950 },
-        b2b: { enabled: false }
+        [product.productType]: {
+          enabled: true,
+          price: parseFloat(product.price) || 0,
+          moq: (product as any).moq || 1
+        }
       },
-      primaryType: "wholesale",
-    },
-  ]
+      primaryType: product.productType,
+      category: product.category?.title || 'No Category'
+    }
+  }
+
+  useEffect(() => {
+    fetchProducts()
+  }, [fetchProducts])
+
+  useEffect(() => {
+    if (products.length > 0) {
+      // Transform and limit to first 4 products for quotation display
+      const transformedProducts = products
+        .slice(0, 4)
+        .map(transformProductForCard)
+      setQuotationProducts(transformedProducts)
+    }
+  }, [products])
 
   return (
     <section className="py-16 bg-white">
@@ -100,14 +68,24 @@ export function QuotationProduct() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {quotationProducts.map((product) => (
-            <ProductCard key={product.id} {...product} />
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="flex justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-sky-600" />
+          </div>
+        ) : quotationProducts.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-500">No products available for quotation at the moment.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {quotationProducts.map((product) => (
+              <ProductCard key={product.id} {...product} />
+            ))}
+          </div>
+        )}
 
         <div className="text-center mt-8">
-          <button className="text-sky-600 hover:text-sky-700 font-medium">View More Quotation Products →</button>
+          <a href="/products" className="text-sky-600 hover:text-sky-700 font-medium">View More Products →</a>
         </div>
       </div>
     </section>

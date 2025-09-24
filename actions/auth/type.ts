@@ -16,6 +16,12 @@ export interface LoginRequest {
   password: string;
 }
 
+// OTP verification request matching /auth/verify-otp API
+export interface VerifyOtpRequest {
+  email: string;
+  otp: string;
+}
+
 // User roles
 export type UserRole = "buyer" | "supplier" | "both";
 

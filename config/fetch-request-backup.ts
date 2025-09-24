@@ -85,6 +85,79 @@ export const api = {
     }
   },
 
+  // Public API call without authentication
+  getPublic: async <T = any>(endpoint: string): Promise<ApiResponse<T>> => {
+    try {
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+
+      const response = await fetch(`${HOST}${endpoint}`, {
+        method: "GET",
+        headers,
+        cache: 'no-store', // Prevent caching for public requests
+      });
+
+      let responseData: any;
+      const contentType = response.headers.get("content-type");
+
+      if (contentType && contentType.includes("application/json")) {
+        responseData = await response.json();
+      } else {
+        responseData = await response.text();
+      }
+
+      if (response.ok) {
+        return {
+          success: true,
+          message: "Request successful",
+          data: responseData,
+        };
+      }
+      return {
+        success: false,
+        message: "Request failed",
+        error: typeof responseData === "string" ? responseData : responseData?.message || "Unknown error",
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        message: "Network error",
+        error: error?.message || "Network error occurred",
+      };
+    }
+  },
+
+      let responseData: any;
+      const contentType = response.headers.get("content-type");
+
+      if (contentType && contentType.includes("application/json")) {
+        responseData = await response.json();
+      } else {
+        responseData = await response.text();
+      }
+
+      if (response.ok) {
+        return {
+          success: true,
+          message: "Request successful",
+          data: responseData,
+        };
+      }
+      return {
+        success: false,
+        message: "Request failed",
+        error: typeof responseData === "string" ? responseData : responseData?.message || "Unknown error",
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        message: "Network error",
+        error: error?.message || "Network error occurred",
+      };
+    }
+  },
+
   post: async <T = any>(endpoint: string, body?: any): Promise<ApiResponse<T>> => {
     try {
       // Get auth token (server or client)

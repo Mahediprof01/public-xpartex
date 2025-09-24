@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { ProductFilters } from "@/components/product/product-filters";
 import { ProductGrid } from "@/components/product/product-grid";
 import { Button } from "@/components/ui/button";
-import { Grid, List, SlidersHorizontal } from "lucide-react";
+import { Grid, List, SlidersHorizontal, Loader2 } from "lucide-react";
+import { useProductStore } from "@/actions/product/store";
+import { ProductResponse } from "@/actions/product/type";
 import type { Product } from "@/types";
 
 function ProductsContent() {
@@ -13,254 +15,55 @@ function ProductsContent() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState("relevance");
+  const { products: apiProducts, isLoading, fetchProducts } = useProductStore();
+  const [products, setProducts] = useState<Product[]>([]);
 
   const category = searchParams.get("category");
   const search = searchParams.get("search");
 
-  // Mock product data - in real app this would come from API
-  const products: Product[] = [
-    {
-      id: "1",
-      title: "Premium Cotton T-Shirt - Unisex",
-      images: ["/cotton-t-shirt.jpg"],
-      supplierId: "supplier-1",
-      supplierName: "Dhaka Textiles Ltd.",
-      price: 450.0,
+  // Transform API product to ProductCard format
+  const transformProductForCard = (product: ProductResponse): Product => {
+    // Ensure images is always a valid array
+    const mainImage = product.img || "/placeholder.svg?height=240&width=320&query=garment product";
+    const additionalImages = product.additionalImages || [];
+    const allImages = [mainImage, ...additionalImages].filter(Boolean);
+    
+    return {
+      id: product.id,
+      title: product.name || 'Untitled Product',
+      images: allImages.length > 0 ? allImages : ["/placeholder.svg?height=240&width=320&query=garment product"],
+      supplierId: product.seller?.id || 'unknown',
+      supplierName: product.seller?.firstName ? `${product.seller.firstName} ${product.seller.lastName}` : 'Unknown Supplier',
+      price: parseFloat(product.price) || 0,
       currency: "BDT" as const,
-      moq: 500,
-      badges: ["flash", "super"],
-      description:
-        "High-quality 100% cotton t-shirt with superior comfort and durability",
-      specs: [
-        { key: "Material", value: "100% Cotton" },
-        { key: "Weight", value: "180 GSM" },
-        { key: "Colors", value: "12 Available" },
-      ],
-      availableQuantity: 10000,
-      leadTimeDays: 15,
-      primaryType: "wholesale",
+      moq: (product as any).moq || 1,
+      badges: [] as ("flash" | "super" | "new")[],
+      description: product.productDescription || "",
+      specs: [],
+      availableQuantity: product.stockQuantity || 0,
+      leadTimeDays: 7,
       productTypes: {
-        wholesale: {
+        [product.productType]: {
           enabled: true,
-          price: 450.0,
-          moq: 500,
-          tieredPricing: [
-            { minQuantity: 500, pricePerUnit: 450 },
-            { minQuantity: 1000, pricePerUnit: 420 },
-            { minQuantity: 2000, pricePerUnit: 390 }
-          ]
-        },
-        retail: {
-          enabled: true,
-          price: 650.0,
-          maxQuantity: 50
-        },
-        b2b: {
-          enabled: false,
-          rfqOnly: true
+          price: parseFloat(product.price) || 0,
+          moq: (product as any).moq || 1
         }
       },
-    },
-    {
-      id: "2",
-      title: "Slim Fit Denim Jeans - Premium Quality",
-      images: ["/denim-jeans.png"],
-      supplierId: "supplier-2",
-      supplierName: "Bengal Garments",
-      price: 1250.0,
-      currency: "BDT" as const,
-      moq: 200,
-      badges: ["new"],
-      description:
-        "Modern slim fit jeans with stretch fabric for comfort and style",
-      specs: [
-        { key: "Material", value: "98% Cotton, 2% Elastane" },
-        { key: "Weight", value: "12 oz" },
-        { key: "Sizes", value: "28-42" },
-      ],
-      availableQuantity: 5000,
-      leadTimeDays: 20,
-      primaryType: "retail",
-      productTypes: {
-        wholesale: {
-          enabled: false,
-          price: 1650.0,
-          moq: 200
-        },
-        retail: {
-          enabled: true,
-          price: 1850.0,
-          maxQuantity: 20
-        },
-        b2b: {
-          enabled: true,
-          rfqOnly: false,
-          customPricing: true
-        }
-      },
-    },
-    {
-      id: "3",
-      title: "Business Casual Polo Shirt",
-      images: ["/classic-polo-shirt.png"],
-      supplierId: "supplier-3",
-      supplierName: "Chittagong Apparel",
-      price: 680.0,
-      currency: "BDT" as const,
-      moq: 300,
-      badges: ["super"],
-      description:
-        "Professional polo shirt perfect for business casual environments",
-      specs: [
-        { key: "Material", value: "Cotton Pique" },
-        { key: "Weight", value: "200 GSM" },
-        { key: "Collar", value: "Ribbed" },
-      ],
-      availableQuantity: 8000,
-      leadTimeDays: 12,
-      primaryType: "b2b",
-      productTypes: {
-        wholesale: {
-          enabled: true,
-          price: 580.0,
-          moq: 300
-        },
-        retail: {
-          enabled: true,
-          price: 780.0,
-          maxQuantity: 25
-        },
-        b2b: {
-          enabled: true,
-          rfqOnly: false,
-          customPricing: true
-        }
-      },
-    },
-    {
-      id: "4",
-      title: "Premium Winter Hoodie",
-      images: ["/cozy-hoodie.png"],
-      supplierId: "supplier-4",
-      supplierName: "Sylhet Fashion House",
-      price: 1850.0,
-      currency: "BDT" as const,
-      moq: 100,
-      badges: ["flash"],
-      description: "Warm and comfortable hoodie with premium fleece lining",
-      specs: [
-        { key: "Material", value: "Cotton Fleece" },
-        { key: "Weight", value: "320 GSM" },
-        { key: "Features", value: "Kangaroo Pocket" },
-      ],
-      availableQuantity: 3000,
-      leadTimeDays: 18,
-      primaryType: "wholesale",
-      productTypes: {
-        wholesale: {
-          enabled: true,
-          price: 1850.0,
-          moq: 100,
-          tieredPricing: [
-            { minQuantity: 100, pricePerUnit: 1850 },
-            { minQuantity: 200, pricePerUnit: 1750 },
-            { minQuantity: 500, pricePerUnit: 1650 }
-          ]
-        },
-        retail: {
-          enabled: false,
-          price: 2050.0,
-          maxQuantity: 5
-        },
-        b2b: {
-          enabled: true,
-          rfqOnly: true,
-          customPricing: true
-        }
-      },
-    },
-    // Add more products for pagination demo
-    {
-      id: "5",
-      title: "Sustainable Organic Cotton Tee",
-      images: ["/cotton-t-shirt.jpg"],
-      supplierId: "supplier-5",
-      supplierName: "Eco Garments BD",
-      price: 520.0,
-      currency: "BDT" as const,
-      moq: 300,
-      badges: ["new"],
-      description:
-        "Eco-friendly organic cotton t-shirt with GOTS certification",
-      specs: [
-        { key: "Material", value: "100% Organic Cotton" },
-        { key: "Certification", value: "GOTS Certified" },
-        { key: "Weight", value: "160 GSM" },
-      ],
-      availableQuantity: 6000,
-      leadTimeDays: 14,
-      primaryType: "retail",
-      productTypes: {
-        wholesale: {
-          enabled: true,
-          price: 420.0,
-          moq: 500
-        },
-        retail: {
-          enabled: true,
-          price: 550.0,
-          maxQuantity: 30
-        },
-        b2b: {
-          enabled: false,
-          rfqOnly: true
-        }
-      },
-    },
-    {
-      id: "6",
-      title: "Athletic Performance Wear",
-      images: ["/classic-polo-shirt.png"],
-      supplierId: "supplier-6",
-      supplierName: "Sports Apparel Co.",
-      price: 890.0,
-      currency: "BDT" as const,
-      moq: 250,
-      badges: ["new", "super"],
-      description:
-        "High-performance athletic wear with moisture-wicking technology",
-      specs: [
-        { key: "Material", value: "Polyester Blend" },
-        { key: "Features", value: "Moisture Wicking" },
-        { key: "Fit", value: "Athletic Cut" },
-      ],
-      availableQuantity: 4500,
-      leadTimeDays: 16,
-      primaryType: "wholesale",
-      productTypes: {
-        wholesale: {
-          enabled: true,
-          price: 890.0,
-          moq: 250,
-          tieredPricing: [
-            { minQuantity: 250, pricePerUnit: 890 },
-            { minQuantity: 500, pricePerUnit: 850 },
-            { minQuantity: 1000, pricePerUnit: 800 }
-          ]
-        },
-        retail: {
-          enabled: true,
-          price: 1090.0,
-          maxQuantity: 15
-        },
-        b2b: {
-          enabled: true,
-          rfqOnly: false,
-          customPricing: true
-        }
-      },
-    },
-  ];
+      primaryType: product.productType,
+      category: product.category?.title || 'No Category'
+    }
+  }
+
+  useEffect(() => {
+    fetchProducts()
+  }, [fetchProducts])
+
+  useEffect(() => {
+    if (apiProducts.length > 0) {
+      const transformedProducts = apiProducts.map(transformProductForCard)
+      setProducts(transformedProducts)
+    }
+  }, [apiProducts])
 
   const getPageTitle = () => {
     if (category) {
@@ -346,7 +149,17 @@ function ProductsContent() {
 
           {/* Products Grid */}
           <div className="flex-1">
-            <ProductGrid products={products} viewMode={viewMode} />
+            {isLoading ? (
+              <div className="flex justify-center items-center min-h-[400px]">
+                <Loader2 className="h-8 w-8 animate-spin text-green-600" />
+              </div>
+            ) : products.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-500 text-lg">No products found matching your criteria.</p>
+              </div>
+            ) : (
+              <ProductGrid products={products} viewMode={viewMode} />
+            )}
 
             {/* Pagination */}
             <div className="flex justify-center mt-10">

@@ -1,6 +1,6 @@
 "use client";
 
-import { CreateProductRequest, ProductFormData, ProductType, DescriptionItem } from "./type";
+import { CreateProductRequest, ProductFormData, ProductType, DescriptionItem, SizeItem } from "./type";
 
 /**
  * Business logic for product operations
@@ -21,20 +21,40 @@ export function transformFormDataToApiRequest(
     price: formData.price,
     stockQuantity: formData.stockQuantity,
     productDescription: formData.productDescription,
-    description: formData.description,
+    productStatus: formData.productStatus,
     productType: formData.productType,
+    description: formData.description,
+    size: formData.size,
+    additionalImages: formData.additionalImages,
+    tags: formData.tags,
+    weight: formData.weight,
+    deliveryOptions: formData.deliveryOptions,
+    colorVariants: formData.colorVariants,
+    returnPolicy: formData.returnPolicy,
+    packagingDetails: formData.packagingDetails,
+    leadTime: formData.leadTime,
   };
 
+  // Add discount price if provided
+  if (formData.discountPrice > 0) {
+    baseRequest.discountPrice = formData.discountPrice;
+  }
+
   // Add conditional fields based on product type
-  if (formData.productType === "retail") {
-    // For retail, size is optional, moq is not included
-    if (formData.size) {
-      baseRequest.size = formData.size;
+  if (formData.productType === "wholesale" || formData.productType === "b2b") {
+    // For wholesale and b2b, add MOQ and bidding options
+    if (formData.moq !== undefined) {
+      baseRequest.moq = formData.moq;
     }
-  } else if (formData.productType === "wholesale" || formData.productType === "b2b") {
-    // For wholesale and b2b, both size and moq are required
-    baseRequest.size = formData.size;
-    baseRequest.moq = formData.moq;
+    if (formData.negotiablePrice !== undefined) {
+      baseRequest.negotiablePrice = formData.negotiablePrice;
+    }
+    if (formData.sampleAvailability !== undefined) {
+      baseRequest.sampleAvailability = formData.sampleAvailability;
+    }
+    if (formData.customBiddingOption !== undefined) {
+      baseRequest.customBiddingOption = formData.customBiddingOption;
+    }
   }
 
   return baseRequest;
@@ -79,6 +99,52 @@ export function validateProductFormData(formData: ProductFormData): {
     errors.productDescription = "Product description is required";
   }
 
+  if (!formData.productStatus.trim()) {
+    errors.productStatus = "Product status is required";
+  }
+
+  if (!formData.returnPolicy.trim()) {
+    errors.returnPolicy = "Return policy is required";
+  }
+
+  if (!formData.packagingDetails.trim()) {
+    errors.packagingDetails = "Packaging details are required";
+  }
+
+  if (!formData.leadTime.trim()) {
+    errors.leadTime = "Lead time is required";
+  }
+
+  if (!formData.weight || formData.weight <= 0) {
+    errors.weight = "Weight must be greater than 0";
+  }
+
+  if (!formData.size || formData.size.length === 0) {
+    errors.size = "At least one size is required";
+  } else {
+    // Validate each size item
+    formData.size.forEach((item, index) => {
+      if (!item.productsize.trim()) {
+        errors[`size_${index}_size`] = `Size ${index + 1} name is required`;
+      }
+      if (!item.productQuantity.trim()) {
+        errors[`size_${index}_quantity`] = `Size ${index + 1} quantity is required`;
+      }
+    });
+  }
+
+  if (!formData.tags || formData.tags.length === 0) {
+    errors.tags = "At least one tag is required";
+  }
+
+  if (!formData.deliveryOptions || formData.deliveryOptions.length === 0) {
+    errors.deliveryOptions = "At least one delivery option is required";
+  }
+
+  if (!formData.colorVariants || formData.colorVariants.length === 0) {
+    errors.colorVariants = "At least one color variant is required";
+  }
+
   if (!formData.description || formData.description.length === 0) {
     errors.description = "At least one description item is required";
   } else {
@@ -95,10 +161,6 @@ export function validateProductFormData(formData: ProductFormData): {
 
   // Type-specific validations
   if (formData.productType === "wholesale" || formData.productType === "b2b") {
-    if (!formData.size?.trim()) {
-      errors.size = "Size is required for wholesale and B2B products";
-    }
-
     if (!formData.moq || formData.moq <= 0) {
       errors.moq = "Minimum order quantity must be greater than 0";
     }
@@ -184,16 +246,22 @@ export function getRequiredFieldsForProductType(productType: ProductType): strin
     "price",
     "stockQuantity",
     "productDescription",
+    "productStatus",
     "description",
+    "size",
+    "additionalImages",
+    "tags",
+    "weight",
+    "deliveryOptions",
+    "colorVariants",
+    "returnPolicy",
+    "packagingDetails",
+    "leadTime",
     "productType"
   ];
 
   if (productType === "wholesale" || productType === "b2b") {
-    return [...baseFields, "size", "moq"];
-  }
-
-  if (productType === "retail") {
-    return [...baseFields, "size"];
+    return [...baseFields, "moq", "negotiablePrice", "sampleAvailability", "customBiddingOption"];
   }
 
   return baseFields;
@@ -245,4 +313,37 @@ export function validateDescriptionItem(item: DescriptionItem): {
  */
 export function descriptionItemsToString(items: DescriptionItem[]): string {
   return items.map(item => `${item.title}: ${item.value}`).join(", ");
+}
+
+/**
+ * Create a new empty size item
+ */
+export function createEmptySizeItem(): SizeItem {
+  return {
+    productsize: "",
+    productQuantity: ""
+  };
+}
+
+/**
+ * Validate a single size item
+ */
+export function validateSizeItem(item: SizeItem): {
+  isValid: boolean;
+  errors: { productsize?: string; productQuantity?: string };
+} {
+  const errors: { productsize?: string; productQuantity?: string } = {};
+
+  if (!item.productsize.trim()) {
+    errors.productsize = "Size name is required";
+  }
+
+  if (!item.productQuantity.trim()) {
+    errors.productQuantity = "Quantity is required";
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  };
 }

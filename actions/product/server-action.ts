@@ -40,6 +40,8 @@ export async function getProducts(): Promise<{
   }
 }
 
+
+
 export async function getProductById(id: string): Promise<{
   success: boolean;
   message: string;

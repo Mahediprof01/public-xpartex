@@ -100,9 +100,9 @@ export function RegistrationForm() {
     })
 
     if (response.success) {
-      toast.success("Your account has been created. Please login to continue.")
-      // Redirect to login page directly
-      router.push("/login")
+      toast.success("Registration successful! Please check your email for the verification code.")
+      // Redirect to OTP verification page with email as parameter
+      router.push(`/verify-otp?email=${encodeURIComponent(formData.email.toLowerCase().trim())}`)
     } else {
       toast.error(response.error || "Registration failed. Please try again.")
     }

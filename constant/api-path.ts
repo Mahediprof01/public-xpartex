@@ -4,6 +4,7 @@ export const AUTH_ENDPOINTS = {
   LOGIN: "/auth/signin",
   LOGOUT: "/auth/logout",
   ME: "/auth/me",
+  VERIFY_OTP: "/auth/verify-otp",
 } as const;
 
 // Product management endpoints
