@@ -320,10 +320,10 @@ const mockCourse = {
 export default function CourseDetailPage({
   params,
 }: {
-  // Accept promise-like params similar to Next generated types
-  params: { id?: string } | Promise<{ id?: string }>;
+  // Accept promise-like params to match Next generated PageProps signature.
+  params?: Promise<{ id?: string }>;
 }) {
-  // Resolve sync params (this is a client component so params will be sync)
+  // Resolve sync params (client components receive sync params at runtime)
   const resolvedParams = (params as any)?.id ? params : undefined
   const course = mockCourse;
 

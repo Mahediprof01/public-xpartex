@@ -190,8 +190,8 @@ const mockCourse = {
 export default function CourseBuilderPage({
   params,
 }: {
-  // Client components receive sync params, but allow optional/promise shape to satisfy Next types
-  params: { id?: string } | Promise<{ id?: string }>;
+  // Accept promise-like params to satisfy Next generated PageProps signature.
+  params?: Promise<{ id?: string }>;
 }) {
   const [course, setCourse] = useState(mockCourse);
   const [expandedModules, setExpandedModules] = useState<string[]>(["1"]);
