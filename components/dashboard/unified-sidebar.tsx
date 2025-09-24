@@ -240,20 +240,9 @@ const learningManagementItems: NavigationItem[] = [
         ],
       },
       {
-        title: "Community & Engagement",
+        title: "Community Engagements",
+        href: "/profile/learning/instructors/messages",
         icon: MessageSquare,
-        children: [
-          {
-            title: "Messages",
-            href: "/profile/learning/instructors/messages",
-            icon: MessageSquare,
-          },
-          {
-            title: "Reviews Received",
-            href: "/profile/learning/instructors/reviews",
-            icon: Star,
-          },
-        ],
       },
     ],
   },
@@ -301,24 +290,28 @@ const settingsItem: NavigationItem = {
 
 export function UnifiedSidebar() {
   const [collapsed, setCollapsed] = useState(false);
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+  const [expandedSections, setExpandedSections] = useState<
+    Record<string, boolean>
+  >({
     "Buyer Management": true,
     "Seller Management": true,
     "Learning Management": true,
   });
-  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
+  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(
+    {}
+  );
   const pathname = usePathname();
 
   const toggleSection = (sectionTitle: string) => {
     if (collapsed) return;
-    setExpandedSections(prev => ({
+    setExpandedSections((prev) => ({
       ...prev,
       [sectionTitle]: !prev[sectionTitle],
     }));
   };
 
   const toggleItem = (itemKey: string) => {
-    setExpandedItems(prev => ({
+    setExpandedItems((prev) => ({
       ...prev,
       [itemKey]: !prev[itemKey],
     }));
@@ -333,9 +326,14 @@ export function UnifiedSidebar() {
   // Helper function to check if any child is active
   const isAnyChildActive = (children?: NavigationItem[]): boolean => {
     if (!children) return false;
-    return children.some(child =>
-      isPathActive(child.href) || isAnyChildActive(child.children)
+    return children.some(
+      (child) => isPathActive(child.href) || isAnyChildActive(child.children)
     );
+  };
+
+  // Helper function to get unique key for navigation items
+  const getItemKey = (item: NavigationItem, level: number = 0): string => {
+    return `${item.title}-${level}`;
   };
 
   // Render navigation item
@@ -343,8 +341,11 @@ export function UnifiedSidebar() {
     const hasChildren = item.children && item.children.length > 0;
     const isActive = isPathActive(item.href);
     const isChildActive = isAnyChildActive(item.children);
-    const itemKey = `${item.title}-${level}`;
-    const isExpanded = expandedItems[itemKey] || isChildActive;
+    const itemKey = getItemKey(item, level);
+    const isExpanded =
+      expandedItems[itemKey] !== undefined
+        ? expandedItems[itemKey]
+        : isChildActive && level === 0;
     const Icon = item.icon;
 
     if (hasChildren) {
@@ -355,29 +356,40 @@ export function UnifiedSidebar() {
             className={cn(
               "w-full flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium transition-colors",
               level === 0 ? "text-gray-900" : "text-gray-700",
-              isActive || isChildActive ? "bg-blue-50 text-blue-700" : "hover:bg-gray-100"
+              isActive || isChildActive
+                ? "bg-blue-50 text-blue-700"
+                : "hover:bg-gray-100"
             )}
             onClick={() => toggleItem(itemKey)}
             title={collapsed ? item.title : undefined}
           >
             <span className="flex items-center gap-2">
-              <Icon className={cn(
-                "h-4 w-4",
-                isActive || isChildActive ? "text-blue-600" : "text-gray-500"
-              )} />
+              <Icon
+                className={cn(
+                  "h-4 w-4",
+                  isActive || isChildActive ? "text-blue-600" : "text-gray-500"
+                )}
+              />
               {!collapsed && <span>{item.title}</span>}
             </span>
-            {!collapsed && (
-              isExpanded ? (
+            {!collapsed &&
+              (isExpanded ? (
                 <ChevronUp className="h-4 w-4 text-gray-500" />
               ) : (
                 <ChevronDown className="h-4 w-4 text-gray-500" />
-              )
-            )}
+              ))}
           </button>
           {isExpanded && (
-            <div className={cn("space-y-1", !collapsed && level === 0 && "pl-6", !collapsed && level > 0 && "pl-4")}>
-              {item.children?.map(child => renderNavigationItem(child, level + 1))}
+            <div
+              className={cn(
+                "space-y-1",
+                !collapsed && level === 0 && "pl-6",
+                !collapsed && level > 0 && "pl-4"
+              )}
+            >
+              {item.children?.map((child) =>
+                renderNavigationItem(child, level + 1)
+              )}
             </div>
           )}
         </div>
@@ -398,10 +410,12 @@ export function UnifiedSidebar() {
         )}
         title={collapsed ? item.title : undefined}
       >
-        <Icon className={cn(
-          "h-4 w-4",
-          isActive ? "text-blue-600" : "text-gray-500"
-        )} />
+        <Icon
+          className={cn(
+            "h-4 w-4",
+            isActive ? "text-blue-600" : "text-gray-500"
+          )}
+        />
         {!collapsed && <span className="flex-1">{item.title}</span>}
       </Link>
     );
