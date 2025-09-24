@@ -243,7 +243,7 @@ export function RegistrationForm() {
           {errors.agreeToTerms && <p className="text-sm text-red-500">{errors.agreeToTerms}</p>}
 
           {/* Submit Button */}
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button type="submit" className="w-full cursor-pointer gradient-primary gradient-primary-hover text-white" disabled={isLoading}>
             {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
             Create Account
           </Button>
