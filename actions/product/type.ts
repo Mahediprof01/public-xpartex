@@ -13,29 +13,43 @@ export interface SizeItem {
 // Product creation request matching /product API
 export interface CreateProductRequest {
   name: string;
-  img: string;
+  img: string | File; // Allow both URL string and File object
   sellerId: string;
   categoryId: string;
   price: string;
   stockQuantity: number;
   productDescription: string;
-  productType: "wholesale" | "retail" | "b2b";
+  productType: string;
   productStatus: string;
-  description: DescriptionItem[];
-  size: SizeItem[];
-  moq?: number; // Optional for retail, required for wholesale/b2b
-  additionalImages: string[];
-  tags: string[];
-  weight: number;
-  deliveryOptions: string[];
+  productSubCategory?: string;
+  hsnCode?: string;
+  skuCode?: string;
+  materialType?: string;
+  composition?: string;
+  gsm?: string;
+  yarnCount?: string;
+  pattern?: string;
+  certifications?: string[];
+  unitOfMeasurement: string;
+  availableQuantity: number;
+  manufacturer?: boolean;
+  originCountry?: string;
+  productionCapacity?: string;
+  description?: DescriptionItem[];
+  size?: SizeItem[];
+  moq?: number;
+  additionalImages?: string[];
+  tags?: string[];
+  weight?: number;
+  deliveryOptions?: string[];
   discountPrice?: number;
-  colorVariants: string[];
-  returnPolicy: string;
-  packagingDetails: string;
-  leadTime: string;
-  negotiablePrice?: boolean; // Only for wholesale/b2b
-  sampleAvailability?: boolean; // Only for wholesale/b2b
-  customBiddingOption?: boolean; // Only for wholesale/b2b
+  colorVariants?: string[];
+  returnPolicy?: string;
+  packagingDetails?: string;
+  leadTime?: string;
+  negotiablePrice?: boolean;
+  sampleAvailability?: boolean;
+  customBiddingOption?: boolean;
 }
 
 // Seller information
@@ -68,34 +82,96 @@ export interface ProductResponse {
   price: string;
   stockQuantity: number;
   productDescription: string;
-  productType: "wholesale" | "retail" | "b2b";
+  productType: string;
   productStatus: string;
-  additionalImages: string[];
-  tags: string[];
-  weight: number;
-  deliveryOptions: string[];
+  productSubCategory?: string;
+  hsnCode?: string;
+  skuCode?: string;
+  materialType?: string;
+  composition?: string;
+  gsm?: string;
+  yarnCount?: string;
+  pattern?: string;
+  certifications?: string[];
+  unitOfMeasurement?: string;
+  availableQuantity?: number;
+  manufacturer?: boolean;
+  originCountry?: string;
+  productionCapacity?: string;
+  additionalImages?: string[];
+  tags?: string[];
+  weight?: number;
+  deliveryOptions?: string[];
   discountPrice?: number;
-  colorVariants: string[];
-  returnPolicy: string;
-  packagingDetails: string;
-  leadTime: string;
+  colorVariants?: string[];
+  returnPolicy?: string;
+  packagingDetails?: string;
+  leadTime?: string;
   negotiablePrice?: boolean;
   sampleAvailability?: boolean;
   customBiddingOption?: boolean;
   createdAt: string;
   updatedAt: string;
+  wholesales?: WholesaleItem[];
+  retails?: RetailItem[];
+  b2bs?: B2BItem[];
+}
+
+// Wholesale item structure
+export interface WholesaleItem {
+  id: string;
+  description: DescriptionItem[];
+  size: string;
+  moq: number;
+  createdAt: string;
+  updatedAt: string;
+  productId: string;
+}
+
+// Retail item structure  
+export interface RetailItem {
+  id: string;
+  size: string;
+  product: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// B2B item structure
+export interface B2BItem {
+  id: string;
+  description: DescriptionItem[];
+  size: string;
+  moq: number;
+  createdAt: string;
+  updatedAt: string;
+  productId: string;
 }
 
 // Unified form data interface for all product types
 export interface ProductFormData {
   name: string;
-  img: string;
+  img: string | File; // Allow both URL string and File object
   categoryId: string;
   price: string;
   stockQuantity: number;
   productDescription: string;
   productStatus: string;
   productType: ProductType;
+  productSubCategory?: string;
+  hsnCode?: string;
+  skuCode?: string;
+  materialType?: string;
+  composition?: string;
+  gsm?: string;
+  yarnCount?: string;
+  pattern?: string;
+  certifications: string[];
+  unitOfMeasurement: string;
+  availableQuantity: number;
+  manufacturer?: boolean;
+  originCountry?: string;
+  productionCapacity?: string;
   description: DescriptionItem[];
   size: SizeItem[];
   additionalImages: string[];
@@ -114,8 +190,8 @@ export interface ProductFormData {
   customBiddingOption?: boolean;
 }
 
-// Product types
-export type ProductType = "wholesale" | "retail" | "b2b";
+// Product types - now flexible to support any string
+export type ProductType = "wholesale" | "retail" | "b2b" | string;
 
 // Alert types for UI
 export type AlertType = "success" | "error" | "warning" | "info";

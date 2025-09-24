@@ -7,9 +7,8 @@ import { AuthorReviews } from "@/components/authors/author-reviews"
 import { getAuthorById } from "@/data/authors"
 
 interface AuthorPageProps {
-  params?: {
-    id?: string
-  } | Promise<{ id?: string }>
+  // Next's generated types expect `params` to be a Promise of the segment params.
+  params?: Promise<{ id?: string }>
 }
 
 export default async function AuthorPage({ params }: AuthorPageProps) {

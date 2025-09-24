@@ -39,6 +39,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
+  // Helper function to clear all authentication data
+  const clearAllAuthData = async () => {
+    setUser(null)
+    await removeAuthToken()
+    
+    if (typeof window !== "undefined") {
+      // Clear all possible storage locations
+      localStorage.removeItem('auth_token')
+      sessionStorage.removeItem('auth_token')
+      
+      // Clear any other user-related data if exists
+      localStorage.removeItem('user_data')
+      sessionStorage.removeItem('user_data')
+    }
+  }
+
   // Check for existing session on mount
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -52,8 +68,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         console.log('Checking auth status, token found:', !!token) // Debug log
         if (token) {
-          // Fetch user data from /auth/me endpoint
+          // Always fetch fresh user data from /auth/me endpoint to avoid stale data
           try {
+            // Clear any potentially cached user data before fetching
+            setUser(null)
+            
             const userResponse = await getCurrentUser()
             console.log('Auth check - User data response:', userResponse)
 
@@ -74,18 +93,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
             } else {
               // If /auth/me fails, clear the token as it might be invalid
               console.log('Invalid token, clearing auth state')
-              if (typeof window !== 'undefined') {
-                localStorage.removeItem('auth_token')
-              }
-              await removeAuthToken()
+              await clearAllAuthData()
             }
           } catch (error) {
             console.error('Error fetching user data during auth check:', error)
-            // Clear invalid token
-            if (typeof window !== 'undefined') {
-              localStorage.removeItem('auth_token')
-            }
-            await removeAuthToken()
+            // Clear invalid token and all auth data
+            await clearAllAuthData()
           }
         }
       } catch (error) {
@@ -100,13 +113,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const login = async (email: string, password: string, rememberMe: boolean = false): Promise<boolean> => {
     setIsLoading(true)
 
-    // Clear any existing auth state first to prevent data persistence issues
-    setUser(null)
+    // CRITICAL: Clear ALL existing auth state first to prevent data persistence issues
+    await clearAllAuthData()
+    
+    // Additional cleanup - force clear browser cache for user data
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('auth_token')
-      sessionStorage.removeItem('auth_token')
+      // Clear any cached API responses that might contain user data
+      try {
+        const cacheNames = await caches.keys()
+        await Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)))
+      } catch (error) {
+        console.log('Cache clearing not supported or failed:', error)
+      }
     }
-    await removeAuthToken()
 
     try {
       const response = await loginUser({
@@ -135,12 +154,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
         // Also store in localStorage as fallback for client-side requests
         if (typeof window !== 'undefined') {
           localStorage.setItem('auth_token', token)
+          // Store timestamp to help with cache busting
+          localStorage.setItem('auth_token_timestamp', Date.now().toString())
         }
 
-        // Fetch user data from /auth/me endpoint
+        // CRITICAL: Force fresh fetch of user data with cache busting
         try {
+          // Add small delay to ensure token is properly set
+          await new Promise(resolve => setTimeout(resolve, 100))
+          
           const userResponse = await getCurrentUser()
-          console.log('User data response:', userResponse)
+          console.log('Fresh user data response after login:', userResponse)
 
           if (userResponse.success && userResponse.data) {
             const userData = userResponse.data
@@ -155,10 +179,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
               role: (userData.role as "buyer" | "supplier") || "buyer",
               avatar: userData.avatar
             }
-            setUser(user)
+            
+            // Force re-render by setting to null first, then the new user
+            setUser(null)
+            setTimeout(() => setUser(user), 10)
+            
           } else {
             // Fallback to basic user data if /auth/me fails
-            const user: User = {
+            console.warn('Failed to fetch user data, using fallback')
+            const fallbackUser: User = {
               id: "user-" + Date.now(),
               email: email,
               firstName: email.split("@")[0],
@@ -166,12 +195,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
               fullName: email.split("@")[0] + " User",
               role: "buyer"
             }
-            setUser(user)
+            setUser(null)
+            setTimeout(() => setUser(fallbackUser), 10)
           }
         } catch (error) {
-          console.error('Error fetching user data:', error)
+          console.error('Error fetching user data after login:', error)
           // Fallback to basic user data
-          const user: User = {
+          const fallbackUser: User = {
             id: "user-" + Date.now(),
             email: email,
             firstName: email.split("@")[0],
@@ -179,7 +209,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
             fullName: email.split("@")[0] + " User",
             role: "buyer"
           }
-          setUser(user)
+          setUser(null)
+          setTimeout(() => setUser(fallbackUser), 10)
         }
 
         setIsLoading(false)
@@ -192,23 +223,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     } catch (error) {
       console.error("Login error:", error)
+      await clearAllAuthData()
       setIsLoading(false)
       return false
     }
   }
 
   const logout = async () => {
-    setUser(null)
-    await removeAuthToken()
+    // Clear all authentication data
+    await clearAllAuthData()
 
-    // Also clear localStorage
+    // Additional cleanup - clear browser caches
     if (typeof window !== "undefined") {
-      localStorage.removeItem('auth_token')
-      sessionStorage.removeItem('auth_token')
-    }
+      try {
+        const cacheNames = await caches.keys()
+        await Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)))
+      } catch (error) {
+        console.log('Cache clearing not supported or failed:', error)
+      }
 
-    // Redirect to home page after logout
-    if (typeof window !== "undefined") {
+      // Redirect to home page after logout
       window.location.href = "/"
     }
   }

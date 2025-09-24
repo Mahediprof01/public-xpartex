@@ -80,13 +80,18 @@ export default function ProductsPage() {
     isLoading,
     error,
     successMessage,
-    fetchProducts,
+    fetchUserProducts,
     clearError,
     clearSuccess
   } = useProductStore()
 
   // Transform API product to ProductCard format
   const transformProductForCard = (product: ProductResponse): Product => {
+    const validProductTypes: Array<"wholesale" | "retail" | "b2b"> = ["wholesale", "retail", "b2b"];
+    const productType = validProductTypes.includes(product.productType as any) 
+      ? product.productType as "wholesale" | "retail" | "b2b"
+      : "retail"; // Default fallback
+      
     return {
       id: product.id,
       title: product.name,
@@ -102,13 +107,13 @@ export default function ProductsPage() {
       availableQuantity: product.stockQuantity || 0,
       leadTimeDays: 7,
       productTypes: {
-        [product.productType]: {
+        [productType]: {
           enabled: true,
           price: parseFloat(product.price) || 0,
           moq: (product as any).moq || 1
         }
       },
-      primaryType: product.productType,
+      primaryType: productType,
       category: product.category?.title || 'No Category'
     }
   }
@@ -137,8 +142,8 @@ export default function ProductsPage() {
 
   // Fetch products on component mount
   useEffect(() => {
-    fetchProducts()
-  }, [fetchProducts])
+    fetchUserProducts()
+  }, [fetchUserProducts])
 
   // Clear messages after some time
   useEffect(() => {

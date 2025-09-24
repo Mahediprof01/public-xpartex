@@ -11,7 +11,7 @@ import { useCart } from "@/contexts/cart-context"
 import { cn } from "@/lib/utils"
 
 export function Header() {
-  const { isAuthenticated, isLoading } = useAuth()
+  const { isAuthenticated, isLoading, user } = useAuth()
   const { getCartItemCount } = useCart()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
@@ -183,7 +183,7 @@ export function Header() {
               </Button>
             </Link>
         {isAuthenticated ? (
-              <UserProfileDropdown />
+              <UserProfileDropdown key={`user-${user?.id}-${user?.email}`} />
             ) : (
               <Link href="/login">
                 <Button 
