@@ -15,7 +15,6 @@ import {
   MessageSquare,
   ShoppingCart,
   Heart,
-  History,
   DollarSign,
   Users,
   Globe,
@@ -24,20 +23,40 @@ import {
   BookOpen,
   GraduationCap,
   LayoutDashboard,
-  PlusCircle,
   BarChart3,
-  UploadCloud,
   Folder,
   ShoppingBag,
   Wallet,
-  Undo2,
   Star,
+  Award,
+  Play,
+  FileQuestion,
+  Download,
+  User,
+  Mail,
+  Lock,
+  Eye,
+  Edit,
+  MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+// Navigation structure type definitions
+interface NavigationItem {
+  title: string;
+  href?: string;
+  icon: any;
+  children?: NavigationItem[];
+}
+
+interface NavigationSection {
+  title: string;
+  items: NavigationItem[];
+}
+
 // Seller Management Navigation Items
-const sellerNavigationItems = [
+const sellerNavigationItems: NavigationItem[] = [
   {
     title: "Home",
     href: "/profile",
@@ -61,7 +80,7 @@ const sellerNavigationItems = [
 ];
 
 // Buyer Management Navigation Items
-const buyerNavigationItems = [
+const buyerNavigationItems: NavigationItem[] = [
   {
     title: "Home",
     href: "/profile/buyer",
@@ -109,123 +128,298 @@ const buyerNavigationItems = [
   },
 ];
 
-// Learning Management Navigation Items
-const learningManagementItems = [
-  {
-    title: "Courses",
-    href: "/profile/learning/courses",
-    icon: BookOpen,
-  },
-
-  {
-    title: "Instructor Management",
-    icon: GraduationCap,
-    children: [],
-  },
-
+// Learning Management Navigation Items - Restructured
+const learningManagementItems: NavigationItem[] = [
   {
     title: "Learner Management",
-    href: "/profile/learning/learners",
     icon: GraduationCap,
-  },
-];
-
-// Learner Dashboard nested items
-const learnerDashboardItems = [
-  {
-    title: "Dashboard",
-    href: "/profile/learning/instructors",
-    icon: LayoutDashboard,
-  },
-  {
-    title: "Courses",
-    icon: BookOpen,
     children: [
       {
-        title: "Manage Courses",
-        href: "/profile/learning/instructors/courses",
+        title: "Dashboard",
+        href: "/profile/learning/dashboard",
+        icon: LayoutDashboard,
+      },
+      {
+        title: "My Courses",
+        icon: BookOpen,
+        children: [
+          {
+            title: "Course List",
+            href: "/profile/learning/courses",
+            icon: BookOpen,
+          },
+          {
+            title: "Course Viewer",
+            href: "/profile/learning/courses/viewer",
+            icon: Play,
+          },
+          {
+            title: "Assignments & Quizzes",
+            href: "/profile/learning/courses/assignments",
+            icon: FileQuestion,
+          },
+          {
+            title: "Certificates",
+            href: "/profile/learning/courses/certificates",
+            icon: Award,
+          },
+          {
+            title: "Course Reviews",
+            href: "/profile/learning/courses/reviews",
+            icon: Star,
+          },
+        ],
+      },
+      {
+        title: "My eBooks",
+        href: "/profile/learning/ebooks",
         icon: BookOpen,
       },
       {
-        title: "Course Analytics",
-        href: "/profile/learning/instructors/courses/analytics",
-        icon: BarChart3,
-      },
-    ],
-  },
-  {
-    title: "eBooks",
-    icon: Folder,
-    children: [
-      {
-        title: "Manage eBooks",
-        href: "/profile/learning/instructors/assets",
+        title: "My Assets",
+        href: "/profile/learning/assets",
         icon: Folder,
       },
-      {
-        title: "eBooks Analytics",
-        href: "/profile/learning/instructors/assets/analytics",
-        icon: BarChart3,
-      },
     ],
   },
   {
-    title: "Orders",
-    icon: ShoppingBag,
+    title: "Instructor Management",
+    icon: GraduationCap,
     children: [
       {
-        title: "Orders",
-        href: "/profile/learning/instructors/orders",
+        title: "Dashboard",
+        href: "/profile/learning/instructors",
+        icon: LayoutDashboard,
+      },
+      {
+        title: "Courses",
+        icon: BookOpen,
+        children: [
+          {
+            title: "Manage Courses",
+            href: "/profile/learning/instructors/courses",
+            icon: BookOpen,
+          },
+          {
+            title: "Course Analytics",
+            href: "/profile/learning/instructors/courses/analytics",
+            icon: BarChart3,
+          },
+        ],
+      },
+      {
+        title: "eBooks & Digital Assets",
+        icon: Folder,
+        children: [
+          {
+            title: "Manage Assets",
+            href: "/profile/learning/instructors/assets",
+            icon: Folder,
+          },
+          {
+            title: "Assets Analytics",
+            href: "/profile/learning/instructors/assets/analytics",
+            icon: BarChart3,
+          },
+        ],
+      },
+      {
+        title: "Orders & Transactions",
         icon: ShoppingBag,
+        children: [
+          {
+            title: "Orders",
+            href: "/profile/learning/instructors/orders",
+            icon: ShoppingBag,
+          },
+          {
+            title: "Payouts",
+            href: "/profile/learning/instructors/payouts",
+            icon: Wallet,
+          },
+        ],
       },
       {
-        title: "Payouts",
-        href: "/profile/learning/instructors/payouts",
-        icon: Wallet,
-      },
-      {
-        title: "Refunds & Disputes",
-        href: "/profile/learning/instructors/refunds-disputes",
-        icon: Undo2,
-      },
-    ],
-  },
-  {
-    title: "Community & Engagement",
-    icon: MessageSquare,
-    children: [
-      {
-        title: "Messages",
+        title: "Community Engagements",
         href: "/profile/learning/instructors/messages",
         icon: MessageSquare,
       },
-      {
-        title: "Reviews Received",
-        href: "/profile/learning/instructors/reviews",
-        icon: Star,
-      },
     ],
-  },
-  {
-    title: "Settings",
-    href: "/profile/learning/instructors/settings",
-    icon: Settings,
   },
 ];
 
-// attach learner dashboard items into Instructor Management children
-learningManagementItems[1].children = learnerDashboardItems as any;
+// Navigation sections configuration
+const navigationSections: NavigationSection[] = [
+  {
+    title: "Buyer Management",
+    items: buyerNavigationItems,
+  },
+  {
+    title: "Seller Management",
+    items: sellerNavigationItems,
+  },
+  {
+    title: "Learning Management",
+    items: learningManagementItems,
+  },
+];
+
+// Settings navigation item
+const settingsItem: NavigationItem = {
+  title: "Settings",
+  href: "/profile/settings",
+  icon: Settings,
+  children: [
+    {
+      title: "Profile",
+      href: "/profile/settings/profile",
+      icon: User,
+    },
+    {
+      title: "Email & Notifications",
+      href: "/profile/settings/email",
+      icon: Mail,
+    },
+    {
+      title: "Password & Security",
+      href: "/profile/settings/password",
+      icon: Lock,
+    },
+  ],
+};
 
 export function UnifiedSidebar() {
   const [collapsed, setCollapsed] = useState(false);
-  const [buyerExpanded, setBuyerExpanded] = useState(true);
-  const [sellerExpanded, setSellerExpanded] = useState(true);
-  const [learningExpanded, setLearningExpanded] = useState(true);
-  const [learnerExpanded, setLearnerExpanded] = useState(true);
-  const [learnerGroupOpen, setLearnerGroupOpen] = useState<
+  const [expandedSections, setExpandedSections] = useState<
     Record<string, boolean>
-  >({});
+  >({
+    "Buyer Management": true,
+    "Seller Management": true,
+    "Learning Management": true,
+  });
+  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(
+    {}
+  );
   const pathname = usePathname();
+
+  const toggleSection = (sectionTitle: string) => {
+    if (collapsed) return;
+    setExpandedSections((prev) => ({
+      ...prev,
+      [sectionTitle]: !prev[sectionTitle],
+    }));
+  };
+
+  const toggleItem = (itemKey: string) => {
+    setExpandedItems((prev) => ({
+      ...prev,
+      [itemKey]: !prev[itemKey],
+    }));
+  };
+
+  // Helper function to check if path is active
+  const isPathActive = (href?: string) => {
+    if (!href) return false;
+    return pathname === href || pathname.startsWith(href + "/");
+  };
+
+  // Helper function to check if any child is active
+  const isAnyChildActive = (children?: NavigationItem[]): boolean => {
+    if (!children) return false;
+    return children.some(
+      (child) => isPathActive(child.href) || isAnyChildActive(child.children)
+    );
+  };
+
+  // Helper function to get unique key for navigation items
+  const getItemKey = (item: NavigationItem, level: number = 0): string => {
+    return `${item.title}-${level}`;
+  };
+
+  // Render navigation item
+  const renderNavigationItem = (item: NavigationItem, level: number = 0) => {
+    const hasChildren = item.children && item.children.length > 0;
+    const isActive = isPathActive(item.href);
+    const isChildActive = isAnyChildActive(item.children);
+    const itemKey = getItemKey(item, level);
+    const isExpanded =
+      expandedItems[itemKey] !== undefined
+        ? expandedItems[itemKey]
+        : isChildActive && level === 0;
+    const Icon = item.icon;
+
+    if (hasChildren) {
+      return (
+        <div key={itemKey} className="space-y-1">
+          <button
+            type="button"
+            className={cn(
+              "w-full flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium transition-colors",
+              level === 0 ? "text-gray-900" : "text-gray-700",
+              isActive || isChildActive
+                ? "bg-blue-50 text-blue-700"
+                : "hover:bg-gray-100"
+            )}
+            onClick={() => toggleItem(itemKey)}
+            title={collapsed ? item.title : undefined}
+          >
+            <span className="flex items-center gap-2">
+              <Icon
+                className={cn(
+                  "h-4 w-4",
+                  isActive || isChildActive ? "text-blue-600" : "text-gray-500"
+                )}
+              />
+              {!collapsed && <span>{item.title}</span>}
+            </span>
+            {!collapsed &&
+              (isExpanded ? (
+                <ChevronUp className="h-4 w-4 text-gray-500" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-gray-500" />
+              ))}
+          </button>
+          {isExpanded && (
+            <div
+              className={cn(
+                "space-y-1",
+                !collapsed && level === 0 && "pl-6",
+                !collapsed && level > 0 && "pl-4"
+              )}
+            >
+              {item.children?.map((child) =>
+                renderNavigationItem(child, level + 1)
+              )}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (!item.href) return null;
+
+    return (
+      <Link
+        key={item.href}
+        href={item.href}
+        className={cn(
+          "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+          isActive
+            ? "bg-blue-50 text-blue-700 border border-blue-200"
+            : "text-gray-700 hover:bg-gray-100"
+        )}
+        title={collapsed ? item.title : undefined}
+      >
+        <Icon
+          className={cn(
+            "h-4 w-4",
+            isActive ? "text-blue-600" : "text-gray-500"
+          )}
+        />
+        {!collapsed && <span className="flex-1">{item.title}</span>}
+      </Link>
+    );
+  };
 
   return (
     <div
@@ -275,382 +469,39 @@ export function UnifiedSidebar() {
       {/* Navigation */}
       <nav className="flex-1 p-4 overflow-y-auto">
         <div className="space-y-6">
-          {/* Buyer Management Section */}
-          <div>
-            <div
-              className="flex items-center justify-between cursor-pointer mb-2"
-              onClick={() => !collapsed && setBuyerExpanded(!buyerExpanded)}
-            >
-              {!collapsed && (
-                <>
-                  <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">
-                    Buyer Management
-                  </h3>
-                  {buyerExpanded ? (
-                    <ChevronUp className="h-4 w-4" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4" />
-                  )}
-                </>
+          {navigationSections.map((section) => (
+            <div key={section.title}>
+              <div
+                className="flex items-center justify-between cursor-pointer mb-2"
+                onClick={() => toggleSection(section.title)}
+              >
+                {!collapsed && (
+                  <>
+                    <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">
+                      {section.title}
+                    </h3>
+                    {expandedSections[section.title] ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    )}
+                  </>
+                )}
+              </div>
+
+              {(collapsed || expandedSections[section.title]) && (
+                <div className="space-y-1">
+                  {section.items.map((item) => renderNavigationItem(item))}
+                </div>
               )}
             </div>
-
-            {(collapsed || buyerExpanded) && (
-              <div className="space-y-1">
-                {buyerNavigationItems.map((item) => {
-                  const isActive =
-                    pathname === item.href ||
-                    pathname.startsWith(item.href + "/");
-                  const Icon = item.icon;
-
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={cn(
-                        "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-                        isActive
-                          ? "bg-blue-50 text-blue-700 border border-blue-200"
-                          : "text-gray-700 hover:bg-gray-100"
-                      )}
-                      title={collapsed ? item.title : undefined}
-                    >
-                      <Icon
-                        className={cn(
-                          "h-5 w-5",
-                          isActive ? "text-blue-600" : "text-gray-500"
-                        )}
-                      />
-                      {!collapsed && (
-                        <span className="flex-1">{item.title}</span>
-                      )}
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-
-          {/* Seller Management Section */}
-          <div>
-            <div
-              className="flex items-center justify-between cursor-pointer mb-2"
-              onClick={() => !collapsed && setSellerExpanded(!sellerExpanded)}
-            >
-              {!collapsed && (
-                <>
-                  <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">
-                    Seller Management
-                  </h3>
-                  {sellerExpanded ? (
-                    <ChevronUp className="h-4 w-4" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4" />
-                  )}
-                </>
-              )}
-            </div>
-
-            {(collapsed || sellerExpanded) && (
-              <div className="space-y-1">
-                {sellerNavigationItems.map((item) => {
-                  const isActive =
-                    pathname === item.href ||
-                    pathname.startsWith(item.href + "/");
-                  const Icon = item.icon;
-
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={cn(
-                        "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-                        isActive
-                          ? "bg-blue-50 text-blue-700 border border-blue-200"
-                          : "text-gray-700 hover:bg-gray-100"
-                      )}
-                      title={collapsed ? item.title : undefined}
-                    >
-                      <Icon
-                        className={cn(
-                          "h-5 w-5",
-                          isActive ? "text-blue-600" : "text-gray-500"
-                        )}
-                      />
-                      {!collapsed && (
-                        <span className="flex-1">{item.title}</span>
-                      )}
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-
-          {/* Learning Management Section */}
-          <div>
-            <div
-              className="flex items-center justify-between cursor-pointer mb-2"
-              onClick={() =>
-                !collapsed && setLearningExpanded(!learningExpanded)
-              }
-            >
-              {!collapsed && (
-                <>
-                  <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">
-                    Learning Management
-                  </h3>
-                  {learningExpanded ? (
-                    <ChevronUp className="h-4 w-4" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4" />
-                  )}
-                </>
-              )}
-            </div>
-            {(collapsed || learningExpanded) && (
-              <div className="space-y-1">
-                {learningManagementItems.map((item) => {
-                  const hasChildren = Array.isArray((item as any).children);
-                  const Icon = item.icon as any;
-                  if (hasChildren) {
-                    const isAnyChildActive = (item as any).children.some(
-                      (sub: any) =>
-                        pathname === sub.href ||
-                        pathname.startsWith(sub.href + "/")
-                    );
-                    return (
-                      <div key={item.title} className="space-y-1">
-                        <button
-                          type="button"
-                          className={cn(
-                            "w-full flex items-center justify-between rounded-md px-3 py-2",
-                            isAnyChildActive
-                              ? "bg-blue-50"
-                              : "hover:bg-gray-100"
-                          )}
-                          onClick={() =>
-                            setLearnerGroupOpen((prev) => ({
-                              ...prev,
-                              [item.title]: !prev[item.title],
-                            }))
-                          }
-                          title={collapsed ? item.title : undefined}
-                        >
-                          <span className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                            {Icon && <Icon className="h-5 w-5 text-gray-500" />}
-                            {!collapsed && <span>{item.title}</span>}
-                          </span>
-                          {!collapsed &&
-                            (learnerGroupOpen[item.title] ||
-                            isAnyChildActive ? (
-                              <ChevronUp className="h-4 w-4 text-gray-500" />
-                            ) : (
-                              <ChevronDown className="h-4 w-4 text-gray-500" />
-                            ))}
-                        </button>
-                        {(learnerGroupOpen[item.title] || isAnyChildActive) && (
-                          <div
-                            className={cn("space-y-1", !collapsed && "pl-6")}
-                          >
-                            {(item as any).children.map((sub: any) => {
-                              const subHasChildren = Array.isArray(
-                                sub?.children
-                              );
-                              const SubIcon = sub.icon as any;
-
-                              if (subHasChildren) {
-                                const groupKey = `${item.title}:${sub.title}`;
-                                const isAnyGrandActive = sub.children.some(
-                                  (g: any) =>
-                                    pathname === g.href ||
-                                    pathname.startsWith((g.href ?? "") + "/")
-                                );
-                                return (
-                                  <div key={groupKey} className="space-y-1">
-                                    <button
-                                      type="button"
-                                      className={cn(
-                                        "w-full flex items-center justify-between rounded-md px-3 py-2",
-                                        isAnyGrandActive
-                                          ? "bg-blue-50"
-                                          : "hover:bg-gray-100"
-                                      )}
-                                      onClick={() =>
-                                        setLearnerGroupOpen((prev) => ({
-                                          ...prev,
-                                          [groupKey]: !prev[groupKey],
-                                        }))
-                                      }
-                                      title={collapsed ? sub.title : undefined}
-                                    >
-                                      <span className="flex items-center gap-2 text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                        {SubIcon && (
-                                          <SubIcon className="h-4 w-4 text-gray-500" />
-                                        )}
-                                        {sub.title}
-                                      </span>
-                                      {learnerGroupOpen[groupKey] ||
-                                      isAnyGrandActive ? (
-                                        <ChevronUp className="h-4 w-4 text-gray-500" />
-                                      ) : (
-                                        <ChevronDown className="h-4 w-4 text-gray-500" />
-                                      )}
-                                    </button>
-
-                                    {(learnerGroupOpen[groupKey] ||
-                                      isAnyGrandActive) && (
-                                      <div
-                                        className={cn(
-                                          "space-y-1",
-                                          !collapsed && "pl-4"
-                                        )}
-                                      >
-                                        {sub.children.map((grand: any) => {
-                                          const GrandIcon = grand.icon as any;
-                                          if (!grand?.href) return null;
-                                          const isActive =
-                                            pathname === grand.href ||
-                                            pathname.startsWith(
-                                              grand.href + "/"
-                                            );
-                                          return (
-                                            <Link
-                                              key={grand.href}
-                                              href={grand.href}
-                                              className={cn(
-                                                "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-                                                isActive
-                                                  ? "bg-blue-50 text-blue-700 border border-blue-200"
-                                                  : "text-gray-700 hover:bg-gray-100"
-                                              )}
-                                              title={
-                                                collapsed
-                                                  ? grand.title
-                                                  : undefined
-                                              }
-                                            >
-                                              {GrandIcon ? (
-                                                <GrandIcon
-                                                  className={cn(
-                                                    "h-4 w-4",
-                                                    isActive
-                                                      ? "text-blue-600"
-                                                      : "text-gray-500"
-                                                  )}
-                                                />
-                                              ) : (
-                                                <span className="h-4 w-4" />
-                                              )}
-                                              {!collapsed && (
-                                                <span className="flex-1">
-                                                  {grand.title}
-                                                </span>
-                                              )}
-                                            </Link>
-                                          );
-                                        })}
-                                      </div>
-                                    )}
-                                  </div>
-                                );
-                              }
-
-                              if (!sub?.href) return null;
-                              const isActive =
-                                pathname === sub.href ||
-                                pathname.startsWith(sub.href + "/");
-                              return (
-                                <Link
-                                  key={sub.href}
-                                  href={sub.href}
-                                  className={cn(
-                                    "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-                                    isActive
-                                      ? "bg-blue-50 text-blue-700 border border-blue-200"
-                                      : "text-gray-700 hover:bg-gray-100"
-                                  )}
-                                  title={collapsed ? sub.title : undefined}
-                                >
-                                  {SubIcon ? (
-                                    <SubIcon
-                                      className={cn(
-                                        "h-4 w-4",
-                                        isActive
-                                          ? "text-blue-600"
-                                          : "text-gray-500"
-                                      )}
-                                    />
-                                  ) : (
-                                    <span className="h-4 w-4" />
-                                  )}
-                                  {!collapsed && (
-                                    <span className="flex-1">{sub.title}</span>
-                                  )}
-                                </Link>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  }
-
-                  const isActive =
-                    pathname === (item as any).href ||
-                    pathname.startsWith(((item as any).href ?? "") + "/");
-                  return (
-                    <Link
-                      key={(item as any).href as string}
-                      href={(item as any).href as string}
-                      className={cn(
-                        "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-                        isActive
-                          ? "bg-blue-50 text-blue-700 border border-blue-200"
-                          : "text-gray-700 hover:bg-gray-100"
-                      )}
-                      title={collapsed ? item.title : undefined}
-                    >
-                      <Icon
-                        className={cn(
-                          "h-5 w-5",
-                          isActive ? "text-blue-600" : "text-gray-500"
-                        )}
-                      />
-                      {!collapsed && (
-                        <span className="flex-1">{item.title}</span>
-                      )}
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+          ))}
         </div>
       </nav>
 
       {/* Settings at bottom */}
       <div className="p-4 border-t border-gray-200">
-        <Link
-          href="/profile/settings"
-          className={cn(
-            "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-            pathname === "/profile/settings"
-              ? "bg-blue-50 text-blue-700 border border-blue-200"
-              : "text-gray-700 hover:bg-gray-100"
-          )}
-          title={collapsed ? "Settings" : undefined}
-        >
-          <Settings
-            className={cn(
-              "h-5 w-5",
-              pathname === "/profile/settings"
-                ? "text-blue-600"
-                : "text-gray-500"
-            )}
-          />
-          {!collapsed && <span className="flex-1">Settings</span>}
-        </Link>
+        {renderNavigationItem(settingsItem)}
       </div>
     </div>
   );

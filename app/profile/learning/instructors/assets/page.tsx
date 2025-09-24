@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { UnifiedLayout } from "@/components/dashboard/unified-layout";
 import {
   Upload,
   Search,
@@ -17,6 +16,12 @@ import {
   Share,
   Folder,
   CheckCircle,
+  TrendingUp,
+  Users,
+  Clock,
+  DollarSign,
+  Star,
+  BarChart3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -111,7 +116,7 @@ const mockCourses = [
   },
 ];
 
-export default function Page() {
+export default function ManageEbooksPage() {
   const [ebooks, setEbooks] = useState(mockEbooks);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchTerm, setSearchTerm] = useState("");
@@ -121,12 +126,23 @@ export default function Page() {
   const [sortBy, setSortBy] = useState("title");
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isAssignmentModalOpen, setIsAssignmentModalOpen] = useState(false);
+  const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedEbookForAssignment, setSelectedEbookForAssignment] =
     useState<any>(null);
+  const [selectedEbookForPreview, setSelectedEbookForPreview] =
+    useState<any>(null);
+  const [selectedEbookForEdit, setSelectedEbookForEdit] = useState<any>(null);
   const [assignmentData, setAssignmentData] = useState({
     course: "",
     module: "",
     lesson: "",
+  });
+  const [editFormData, setEditFormData] = useState({
+    title: "",
+    subtitle: "",
+    description: "",
+    status: "",
   });
 
   // Filter and search logic
@@ -189,6 +205,36 @@ export default function Page() {
     setAssignmentData({ course: "", module: "", lesson: "" });
   };
 
+  const openPreviewModal = (ebook: any) => {
+    setSelectedEbookForPreview(ebook);
+    setIsPreviewModalOpen(true);
+  };
+
+  const openEditModal = (ebook: any) => {
+    setSelectedEbookForEdit(ebook);
+    setEditFormData({
+      title: ebook.title,
+      subtitle: ebook.subtitle,
+      description: ebook.description,
+      status: ebook.status,
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditSave = () => {
+    if (selectedEbookForEdit) {
+      setEbooks((prev) =>
+        prev.map((ebook) =>
+          ebook.id === selectedEbookForEdit.id
+            ? { ...ebook, ...editFormData }
+            : ebook
+        )
+      );
+      setIsEditModalOpen(false);
+      setEditFormData({ title: "", subtitle: "", description: "", status: "" });
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "published":
@@ -205,85 +251,187 @@ export default function Page() {
   };
 
   return (
-    <UnifiedLayout>
-      <div className="p-6 space-y-6 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
-        {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div className="flex items-center gap-4">
+    <div className="min-h-screen relative">
+      <div className="relative p-6 space-y-6">
+        <div className="bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 rounded-2xl p-6 border space-y-6">
+          {/* Header */}
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-[#00BFFF] to-blue-500 rounded-xl flex items-center justify-center">
+                  <BookOpen className="h-5 w-5 text-gray-900" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-white">
+                    Manage Ebooks
+                  </h1>
+                  <p className="text-sm text-gray-200">
+                    Upload, organize, and assign eBooks to your courses
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#00BFFF] to-blue-500 rounded-xl flex items-center justify-center">
-                <BookOpen className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">
-                  Manage Ebooks
-                </h1>
-                <p className="text-sm text-gray-600">
-                  Upload, organize, and assign eBooks to your courses
-                </p>
-              </div>
+              <Dialog
+                open={isUploadModalOpen}
+                onOpenChange={setIsUploadModalOpen}
+              >
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="border-gray-300 hover:bg-gray-50"
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload Ebook
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Upload New Ebook</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                      <Upload className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                      <p className="text-sm text-gray-600">
+                        Click to upload or drag and drop
+                      </p>
+                      <p className="text-xs text-gray-900/60">
+                        PDF, EPUB, MOBI up to 100MB
+                      </p>
+                    </div>
+                    <div>
+                      <Label htmlFor="ebook-title">Title</Label>
+                      <Input id="ebook-title" placeholder="Enter ebook title" />
+                    </div>
+                    <div>
+                      <Label htmlFor="ebook-description">Description</Label>
+                      <Textarea
+                        id="ebook-description"
+                        placeholder="Enter description"
+                        rows={3}
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsUploadModalOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button className="bg-[#00BFFF] hover:bg-blue-500 text-gray-900">
+                      Upload Ebook
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <Dialog
-              open={isUploadModalOpen}
-              onOpenChange={setIsUploadModalOpen}
-            >
-              <DialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="border-gray-300 hover:bg-gray-50"
-                >
-                  <Upload className="h-4 w-4 mr-2" />
-                  Upload Ebook
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Upload New Ebook</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                    <Upload className="h-8 w-8 mx-auto mb-2 text-gray-400" />
-                    <p className="text-sm text-gray-600">
-                      Click to upload or drag and drop
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      PDF, EPUB, MOBI up to 100MB
-                    </p>
-                  </div>
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl rounded-2xl">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
                   <div>
-                    <Label htmlFor="ebook-title">Title</Label>
-                    <Input id="ebook-title" placeholder="Enter ebook title" />
+                    <p className="text-white/70 text-sm font-medium">
+                      Total eBooks
+                    </p>
+                    <p className="text-3xl font-bold text-white mt-2">
+                      {ebooks.length}
+                    </p>
+                    <div className="flex items-center mt-2">
+                      <TrendingUp className="h-4 w-4 text-green-400 mr-1" />
+                      <span className="text-green-400 text-sm">
+                        +12% this month
+                      </span>
+                    </div>
                   </div>
-                  <div>
-                    <Label htmlFor="ebook-description">Description</Label>
-                    <Textarea
-                      id="ebook-description"
-                      placeholder="Enter description"
-                      rows={3}
-                    />
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#00BFFF] to-blue-500 rounded-xl flex items-center justify-center">
+                    <BookOpen className="h-6 w-6 text-white" />
                   </div>
                 </div>
-                <DialogFooter>
-                  <Button
-                    variant="outline"
-                    onClick={() => setIsUploadModalOpen(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button className="bg-[#00BFFF] hover:bg-blue-500 text-white">
-                    Upload Ebook
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl rounded-2xl">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm font-medium">
+                      Total Downloads
+                    </p>
+                    <p className="text-3xl font-bold text-white mt-2">
+                      {ebooks
+                        .reduce((sum, ebook) => sum + ebook.downloads, 0)
+                        .toLocaleString()}
+                    </p>
+                    <div className="flex items-center mt-2">
+                      <TrendingUp className="h-4 w-4 text-green-400 mr-1" />
+                      <span className="text-green-400 text-sm">
+                        +8% this week
+                      </span>
+                    </div>
+                  </div>
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
+                    <Download className="h-6 w-6 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl rounded-2xl">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm font-medium">
+                      Published eBooks
+                    </p>
+                    <p className="text-3xl font-bold text-white mt-2">
+                      {
+                        ebooks.filter((ebook) => ebook.status === "Published")
+                          .length
+                      }
+                    </p>
+                    <div className="flex items-center mt-2">
+                      <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+                      <span className="text-white/70 text-sm">Active</span>
+                    </div>
+                  </div>
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                    <CheckCircle className="h-6 w-6 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl rounded-2xl">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm font-medium">
+                      Avg. Rating
+                    </p>
+                    <p className="text-3xl font-bold text-white mt-2">4.8</p>
+                    <div className="flex items-center mt-2">
+                      <Star className="h-4 w-4 text-yellow-400 mr-1 fill-current" />
+                      <span className="text-white/70 text-sm">
+                        Based on 156 reviews
+                      </span>
+                    </div>
+                  </div>
+                  <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center">
+                    <Star className="h-6 w-6 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
         {/* Filters and Search */}
-        <Card className="shadow-lg border-0">
+        <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl rounded-2xl">
           <CardContent className="p-6">
             <div className="flex flex-col lg:flex-row gap-4">
               {/* Search */}
@@ -327,7 +475,7 @@ export default function Page() {
                 </Select>
 
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-40">
+                  <SelectTrigger className="w-40 bg-white/10 border-white/20 text-gray-900">
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
                   <SelectContent>
@@ -337,14 +485,14 @@ export default function Page() {
                   </SelectContent>
                 </Select>
 
-                <div className="flex items-center gap-2 border border-gray-300 rounded-lg p-2">
+                <div className="flex items-center gap-2 border border-white/20 rounded-lg p-2 bg-white/10">
                   <Button
                     variant={viewMode === "grid" ? "default" : "ghost"}
                     size="sm"
                     onClick={() => setViewMode("grid")}
                     className={
                       viewMode === "grid"
-                        ? "bg-[#00BFFF] hover:bg-blue-500 text-white"
+                        ? "bg-[#00BFFF] hover:bg-blue-500 text-gray-900"
                         : ""
                     }
                   >
@@ -356,7 +504,7 @@ export default function Page() {
                     onClick={() => setViewMode("list")}
                     className={
                       viewMode === "list"
-                        ? "bg-[#00BFFF] hover:bg-blue-500 text-white"
+                        ? "bg-[#00BFFF] hover:bg-blue-500 text-gray-900"
                         : ""
                     }
                   >
@@ -368,9 +516,9 @@ export default function Page() {
 
             {/* Bulk Actions */}
             {selectedEbooks.length > 0 && (
-              <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="mt-4 p-4 bg-[#00BFFF]/20 border border-[#00BFFF]/30 rounded-lg">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-blue-900">
+                  <span className="text-sm font-medium text-gray-900">
                     {selectedEbooks.length} ebook
                     {selectedEbooks.length > 1 ? "s" : ""} selected
                   </span>
@@ -409,7 +557,7 @@ export default function Page() {
             {filteredEbooks.map((ebook) => (
               <Card
                 key={ebook.id}
-                className="shadow-lg border-0 hover:shadow-xl transition-shadow group"
+                className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl hover:shadow-2xl hover:bg-white/20 transition-all duration-300 group"
               >
                 <div className="relative">
                   <img
@@ -443,7 +591,7 @@ export default function Page() {
                   </p>
 
                   <div className="space-y-2 mb-4">
-                    <div className="flex items-center justify-between text-xs text-gray-500">
+                    <div className="flex items-center justify-between text-xs text-gray-900/60">
                       <span className="flex items-center gap-1">
                         <Folder className="h-3 w-3" />
                         {ebook.fileSize}
@@ -453,12 +601,12 @@ export default function Page() {
                         {ebook.downloads}
                       </span>
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-gray-900/60">
                       <span className="font-medium">Course:</span>{" "}
                       {ebook.course}
                     </div>
                     {ebook.module && (
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-gray-900/60">
                         <span className="font-medium">Module:</span>{" "}
                         {ebook.module}
                       </div>
@@ -468,7 +616,7 @@ export default function Page() {
                   <div className="flex items-center gap-2">
                     <Button
                       size="sm"
-                      className="flex-1 bg-[#00BFFF] hover:bg-blue-500 text-white"
+                      className="flex-1 bg-[#00BFFF] hover:bg-blue-500 text-gray-900"
                       onClick={() => openAssignmentModal(ebook)}
                     >
                       <Share className="h-3 w-3 mr-1" />
@@ -481,11 +629,13 @@ export default function Page() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => openPreviewModal(ebook)}
+                        >
                           <Eye className="h-4 w-4 mr-2" />
                           Preview
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => openEditModal(ebook)}>
                           <Edit className="h-4 w-4 mr-2" />
                           Edit
                         </DropdownMenuItem>
@@ -507,11 +657,11 @@ export default function Page() {
           </div>
         ) : (
           /* List View */
-          <Card className="shadow-lg border-0">
+          <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
             <CardContent className="p-0">
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-50 border-b border-gray-200">
+                  <thead className="bg-white/10 border-b border-white/20">
                     <tr>
                       <th className="p-4 text-left">
                         <Checkbox
@@ -549,7 +699,7 @@ export default function Page() {
                     {filteredEbooks.map((ebook) => (
                       <tr
                         key={ebook.id}
-                        className="border-b border-gray-100 hover:bg-gray-50"
+                        className="border-b border-white/10 hover:bg-white/5"
                       >
                         <td className="p-4">
                           <Checkbox
@@ -573,11 +723,13 @@ export default function Page() {
                               </p>
                               <div className="flex items-center gap-2 mt-1">
                                 {getFileTypeIcon(ebook.fileType)}
-                                <span className="text-xs text-gray-500">
+                                <span className="text-xs text-gray-900/60">
                                   {ebook.fileType}
                                 </span>
-                                <span className="text-xs text-gray-500">•</span>
-                                <span className="text-xs text-gray-500">
+                                <span className="text-xs text-gray-900/60">
+                                  •
+                                </span>
+                                <span className="text-xs text-gray-900/60">
                                   {ebook.pages} pages
                                 </span>
                               </div>
@@ -605,7 +757,7 @@ export default function Page() {
                           <div className="flex items-center gap-2">
                             <Button
                               size="sm"
-                              className="bg-[#00BFFF] hover:bg-blue-500 text-white"
+                              className="bg-[#00BFFF] hover:bg-blue-500 text-gray-900"
                               onClick={() => openAssignmentModal(ebook)}
                             >
                               <Share className="h-3 w-3 mr-1" />
@@ -622,11 +774,15 @@ export default function Page() {
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
-                                <DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => openPreviewModal(ebook)}
+                                >
                                   <Eye className="h-4 w-4 mr-2" />
                                   Preview
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => openEditModal(ebook)}
+                                >
                                   <Edit className="h-4 w-4 mr-2" />
                                   Edit
                                 </DropdownMenuItem>
@@ -770,7 +926,7 @@ export default function Page() {
                 Cancel
               </Button>
               <Button
-                className="bg-[#00BFFF] hover:bg-blue-500 text-white"
+                className="bg-[#00BFFF] hover:bg-blue-500 text-gray-900"
                 onClick={handleAssignment}
                 disabled={!assignmentData.course || !assignmentData.module}
               >
@@ -780,11 +936,228 @@ export default function Page() {
           </DialogContent>
         </Dialog>
 
+        {/* Preview Modal */}
+        <Dialog open={isPreviewModalOpen} onOpenChange={setIsPreviewModalOpen}>
+          <DialogContent className="max-w-6xl max-h-[90vh] rounded-2xl">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-gray-900">
+                {selectedEbookForPreview?.title}
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="space-y-4">
+              {selectedEbookForPreview && (
+                <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={selectedEbookForPreview.thumbnail}
+                      alt={selectedEbookForPreview.title}
+                      className="w-20 h-28 object-cover rounded-lg"
+                    />
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900 mb-2">
+                        {selectedEbookForPreview.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-2">
+                        {selectedEbookForPreview.subtitle}
+                      </p>
+                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                        <span>📄 {selectedEbookForPreview.fileType}</span>
+                        <span>📏 {selectedEbookForPreview.fileSize}</span>
+                        <span>📖 {selectedEbookForPreview.pages} pages</span>
+                        <span>
+                          ⬇️ {selectedEbookForPreview.downloads} downloads
+                        </span>
+                      </div>
+                    </div>
+                    <Badge
+                      className={getStatusColor(selectedEbookForPreview.status)}
+                    >
+                      {selectedEbookForPreview.status}
+                    </Badge>
+                  </div>
+                </div>
+              )}
+
+              {/* PDF Preview Area */}
+              <div className="border-2 border-dashed border-gray-300 rounded-lg h-96 flex items-center justify-center bg-gray-50">
+                <div className="text-center">
+                  <FileText className="h-16 w-16 mx-auto mb-4 text-gray-400" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    PDF Preview
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    PDF viewer would be integrated here
+                  </p>
+                  <div className="space-y-2 text-sm text-gray-500">
+                    <p>• Page navigation controls</p>
+                    <p>• Zoom in/out functionality</p>
+                    <p>• Full-screen mode</p>
+                    <p>• Download option</p>
+                  </div>
+                  <div className="mt-6 flex gap-3 justify-center">
+                    <Button variant="outline" className="rounded-xl">
+                      <Download className="h-4 w-4 mr-2" />
+                      Download PDF
+                    </Button>
+                    <Button className="bg-[#00BFFF] hover:bg-blue-500 text-white rounded-xl">
+                      <Share className="h-4 w-4 mr-2" />
+                      Share
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setIsPreviewModalOpen(false)}
+                className="rounded-xl"
+              >
+                Close
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Edit Modal */}
+        <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+          <DialogContent className="max-w-2xl rounded-2xl">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-gray-900">
+                Edit eBook Details
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="space-y-6 py-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label
+                    htmlFor="edit-title"
+                    className="text-sm font-medium text-gray-700"
+                  >
+                    Title *
+                  </Label>
+                  <Input
+                    id="edit-title"
+                    value={editFormData.title}
+                    onChange={(e) =>
+                      setEditFormData({
+                        ...editFormData,
+                        title: e.target.value,
+                      })
+                    }
+                    className="mt-2 rounded-xl"
+                  />
+                </div>
+
+                <div>
+                  <Label
+                    htmlFor="edit-subtitle"
+                    className="text-sm font-medium text-gray-700"
+                  >
+                    Subtitle
+                  </Label>
+                  <Input
+                    id="edit-subtitle"
+                    value={editFormData.subtitle}
+                    onChange={(e) =>
+                      setEditFormData({
+                        ...editFormData,
+                        subtitle: e.target.value,
+                      })
+                    }
+                    className="mt-2 rounded-xl"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label
+                  htmlFor="edit-description"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Description
+                </Label>
+                <Textarea
+                  id="edit-description"
+                  value={editFormData.description}
+                  onChange={(e) =>
+                    setEditFormData({
+                      ...editFormData,
+                      description: e.target.value,
+                    })
+                  }
+                  rows={4}
+                  className="mt-2 rounded-xl"
+                />
+              </div>
+
+              <div>
+                <Label
+                  htmlFor="edit-status"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Status
+                </Label>
+                <Select
+                  value={editFormData.status}
+                  onValueChange={(value) =>
+                    setEditFormData({ ...editFormData, status: value })
+                  }
+                >
+                  <SelectTrigger className="mt-2 rounded-xl">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Draft">Draft</SelectItem>
+                    <SelectItem value="Published">Published</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* File Upload Section */}
+              <div>
+                <Label className="text-sm font-medium text-gray-700">
+                  Replace File (Optional)
+                </Label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center mt-2">
+                  <Upload className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                  <p className="text-sm text-gray-600">
+                    Click to upload new file or drag and drop
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    PDF, EPUB, MOBI up to 100MB
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter className="gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setIsEditModalOpen(false)}
+                className="rounded-xl"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleEditSave}
+                className="bg-[#00BFFF] hover:bg-blue-500 text-white rounded-xl"
+                disabled={!editFormData.title.trim()}
+              >
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
         {/* Empty State */}
         {filteredEbooks.length === 0 && (
-          <Card className="shadow-lg border-0">
+          <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
             <CardContent className="p-12 text-center">
-              <BookOpen className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+              <BookOpen className="h-16 w-16 mx-auto mb-4 text-gray-900/40" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">
                 No ebooks found
               </h3>
@@ -797,7 +1170,7 @@ export default function Page() {
                 filterStatus === "all" &&
                 filterCourse === "all" && (
                   <Button
-                    className="bg-[#00BFFF] hover:bg-blue-500 text-white"
+                    className="bg-[#00BFFF] hover:bg-blue-500 text-gray-900"
                     onClick={() => setIsUploadModalOpen(true)}
                   >
                     <Upload className="h-4 w-4 mr-2" />
@@ -808,6 +1181,6 @@ export default function Page() {
           </Card>
         )}
       </div>
-    </UnifiedLayout>
+    </div>
   );
 }

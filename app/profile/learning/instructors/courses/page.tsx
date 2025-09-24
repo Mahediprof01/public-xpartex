@@ -1,6 +1,5 @@
 "use client";
 
-import { UnifiedLayout } from "@/components/dashboard/unified-layout";
 import { useState } from "react";
 import {
   Plus,
@@ -213,13 +212,13 @@ export default function Page() {
   };
 
   return (
-    <UnifiedLayout>
-      <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6">
+      <div className="bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 shadow-xl rounded-2xl p-6 space-y-12">
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Manage Courses</h1>
-            <p className="text-gray-600 mt-1">
+            <h1 className="text-3xl font-bold text-white">Manage Courses</h1>
+            <p className="text-gray-200 mt-1">
               Create, edit, and analyze your course performance
             </p>
           </div>
@@ -315,563 +314,558 @@ export default function Page() {
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Filters and Search */}
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex flex-col lg:flex-row gap-4">
-              {/* Search */}
-              <div className="flex-1">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <Input
-                    placeholder="Search courses..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-
-              {/* Filters */}
-              <div className="flex flex-wrap gap-3">
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-32">
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="published">Published</SelectItem>
-                    <SelectItem value="draft">Draft</SelectItem>
-                    <SelectItem value="archived">Archived</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                <Select
-                  value={categoryFilter}
-                  onValueChange={setCategoryFilter}
-                >
-                  <SelectTrigger className="w-36">
-                    <SelectValue placeholder="Category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Categories</SelectItem>
-                    <SelectItem value="Fashion Design">
-                      Fashion Design
-                    </SelectItem>
-                    <SelectItem value="Textile Production">
-                      Textile Production
-                    </SelectItem>
-                    <SelectItem value="Business">Business</SelectItem>
-                    <SelectItem value="Quality Control">
-                      Quality Control
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-
-                <Select value={levelFilter} onValueChange={setLevelFilter}>
-                  <SelectTrigger className="w-28">
-                    <SelectValue placeholder="Level" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Levels</SelectItem>
-                    <SelectItem value="Beginner">Beginner</SelectItem>
-                    <SelectItem value="Intermediate">Intermediate</SelectItem>
-                    <SelectItem value="Advanced">Advanced</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-32">
-                    <SelectValue placeholder="Sort by" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="recent">Most Recent</SelectItem>
-                    <SelectItem value="popular">Most Popular</SelectItem>
-                    <SelectItem value="revenue">Highest Revenue</SelectItem>
-                    <SelectItem value="rating">Highest Rating</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                {/* View Toggle */}
-                <div className="flex border rounded-lg">
-                  <Button
-                    variant={viewMode === "grid" ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => setViewMode("grid")}
-                    className="rounded-r-none"
-                  >
-                    <Grid3X3 className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant={viewMode === "list" ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => setViewMode("list")}
-                    className="rounded-l-none"
-                  >
-                    <List className="h-4 w-4" />
-                  </Button>
-                </div>
+      {/* Filters and Search */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex flex-col lg:flex-row gap-4">
+            {/* Search */}
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Search courses..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
               </div>
             </div>
 
-            {/* Bulk Actions */}
-            {selectedCourses.length > 0 && (
-              <div className="mt-4 p-3 bg-blue-50 rounded-lg flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-blue-800">
-                    {selectedCourses.length} course
-                    {selectedCourses.length > 1 ? "s" : ""} selected
-                  </span>
-                  <Button
-                    variant="link"
-                    size="sm"
-                    onClick={() => setSelectedCourses([])}
-                  >
-                    Clear selection
-                  </Button>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm">
-                    <Archive className="h-4 w-4 mr-2" />
-                    Archive
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <Copy className="h-4 w-4 mr-2" />
-                    Duplicate
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-red-600 hover:text-red-700"
-                  >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Delete
-                  </Button>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+            {/* Filters */}
+            <div className="flex flex-wrap gap-3">
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-32">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="published">Published</SelectItem>
+                  <SelectItem value="draft">Draft</SelectItem>
+                  <SelectItem value="archived">Archived</SelectItem>
+                </SelectContent>
+              </Select>
 
-        {/* Course Library Grid */}
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-semibold text-gray-900">
-                Your Course Library
-              </h2>
-              <p className="text-sm text-gray-600 mt-1">
-                {filteredCourses.length} course
-                {filteredCourses.length !== 1 ? "s" : ""} found
-              </p>
+              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <SelectTrigger className="w-36">
+                  <SelectValue placeholder="Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  <SelectItem value="Fashion Design">Fashion Design</SelectItem>
+                  <SelectItem value="Textile Production">
+                    Textile Production
+                  </SelectItem>
+                  <SelectItem value="Business">Business</SelectItem>
+                  <SelectItem value="Quality Control">
+                    Quality Control
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={levelFilter} onValueChange={setLevelFilter}>
+                <SelectTrigger className="w-28">
+                  <SelectValue placeholder="Level" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Levels</SelectItem>
+                  <SelectItem value="Beginner">Beginner</SelectItem>
+                  <SelectItem value="Intermediate">Intermediate</SelectItem>
+                  <SelectItem value="Advanced">Advanced</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-32">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="recent">Most Recent</SelectItem>
+                  <SelectItem value="popular">Most Popular</SelectItem>
+                  <SelectItem value="revenue">Highest Revenue</SelectItem>
+                  <SelectItem value="rating">Highest Rating</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* View Toggle */}
+              <div className="flex border rounded-lg">
+                <Button
+                  variant={viewMode === "grid" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("grid")}
+                  className="rounded-r-none"
+                >
+                  <Grid3X3 className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={viewMode === "list" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("list")}
+                  className="rounded-l-none"
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </div>
 
-          {viewMode === "grid" ? (
-            <div className="grid gap-8 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+          {/* Bulk Actions */}
+          {selectedCourses.length > 0 && (
+            <div className="mt-4 p-3 bg-blue-50 rounded-lg flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-blue-800">
+                  {selectedCourses.length} course
+                  {selectedCourses.length > 1 ? "s" : ""} selected
+                </span>
+                <Button
+                  variant="link"
+                  size="sm"
+                  onClick={() => setSelectedCourses([])}
+                >
+                  Clear selection
+                </Button>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm">
+                  <Archive className="h-4 w-4 mr-2" />
+                  Archive
+                </Button>
+                <Button variant="outline" size="sm">
+                  <Copy className="h-4 w-4 mr-2" />
+                  Duplicate
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-red-600 hover:text-red-700"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete
+                </Button>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Course Library Grid */}
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900">
+              Your Course Library
+            </h2>
+            <p className="text-sm text-gray-600 mt-1">
+              {filteredCourses.length} course
+              {filteredCourses.length !== 1 ? "s" : ""} found
+            </p>
+          </div>
+        </div>
+
+        {viewMode === "grid" ? (
+          <div className="grid gap-8 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+            {filteredCourses.map((course) => (
+              <div
+                key={course.id}
+                className="group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden"
+              >
+                {/* Course Thumbnail with Overlay */}
+                <div className="relative h-56 overflow-hidden">
+                  <img
+                    src={course.thumbnail}
+                    alt={course.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+
+                  {/* Course Status & Badges */}
+                  <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+                    <Badge
+                      className={`${getStatusColor(
+                        course.status
+                      )} flex items-center gap-1.5 text-xs px-3 py-1 rounded-full border-0 shadow-sm`}
+                    >
+                      {getStatusIcon(course.status)}
+                      {course.status.charAt(0).toUpperCase() +
+                        course.status.slice(1)}
+                    </Badge>
+                    {course.isFeatured && (
+                      <Badge className="bg-gradient-to-r from-purple-500 to-purple-600 text-white text-xs px-3 py-1 rounded-full border-0 shadow-sm flex items-center gap-1.5">
+                        <Star className="h-3 w-3" />
+                        Featured
+                      </Badge>
+                    )}
+                    {course.hasCertification && (
+                      <Badge className="bg-gradient-to-r from-blue-500 to-blue-600 text-white text-xs px-3 py-1 rounded-full border-0 shadow-sm flex items-center gap-1.5">
+                        <Award className="h-3 w-3" />
+                        Certificate
+                      </Badge>
+                    )}
+                  </div>
+
+                  {/* Selection Checkbox */}
+                  <div className="absolute top-4 right-4">
+                    <input
+                      type="checkbox"
+                      checked={selectedCourses.includes(course.id)}
+                      onChange={() => toggleCourseSelection(course.id)}
+                      className="h-5 w-5 rounded border-2 border-white bg-white/20 backdrop-blur-sm text-blue-600 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  {/* Hover Play Button */}
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <Button
+                      size="lg"
+                      className="bg-white text-gray-900 hover:bg-gray-100 shadow-lg"
+                    >
+                      <Play className="h-5 w-5 mr-2" />
+                      Preview Course
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Course Details (Title, Subtitle, Stats, Category, Level, Last Updated) */}
+                <div className="p-6 pt-4">
+                  {/* Title & Subtitle */}
+                  <h3 className="font-bold text-lg mb-1 line-clamp-2 group-hover:text-blue-700 transition-colors">
+                    {course.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+                    {course.subtitle}
+                  </p>
+
+                  {/* Quick Stats */}
+                  <div className="flex items-center gap-4 text-xs mb-4 flex-wrap">
+                    <div className="flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-full">
+                      <Users className="h-3 w-3 text-blue-600" />
+                      <span className="text-blue-800 font-medium">
+                        {course.stats.enrolledStudents.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-full">
+                      <Star className="h-3 w-3 text-yellow-400 fill-yellow-400" />
+                      <span className="text-yellow-700 font-medium">
+                        {course.stats.rating}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
+                      <Clock className="h-3 w-3 text-gray-500" />
+                      <span className="text-gray-700 font-medium">
+                        {course.stats.duration}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">
+                        {course.category}
+                      </span>
+                    </div>
+
+                    {/* Category & Level Tags */}
+                    <div className="flex items-center gap-2">
+                      <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-medium">
+                        {course.level}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Last Updated */}
+                  <div className="mb-4">
+                    <p className="text-xs text-gray-500">
+                      Last updated{" "}
+                      {new Date(course.updatedAt).toLocaleDateString()}
+                    </p>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="bg-[#00BFFF] hover:bg-blue-500 text-white rounded-full px-2 hover:text-white"
+                        asChild
+                      >
+                        <Link
+                          href={`/profile/learning/instructors/courses/${course.id}`}
+                          className="flex items-center"
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          View Details
+                        </Link>
+                      </Button>
+                    </div>
+
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-8 w-8 p-0"
+                        >
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuItem>
+                          <BarChart3 className="h-4 w-4 mr-2" />
+                          View Analytics
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Users className="h-4 w-4 mr-2" />
+                          Manage Students
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Copy className="h-4 w-4 mr-2" />
+                          Duplicate Course
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Archive className="h-4 w-4 mr-2" />
+                          Archive Course
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="text-red-600 focus:text-red-600">
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Delete Course
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          /* Professional List View */
+          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            {/* Table Header */}
+            <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+              <div className="grid grid-cols-12 gap-4 items-center text-sm font-medium text-gray-700">
+                <div className="col-span-1">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 rounded border-gray-300"
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedCourses(
+                          filteredCourses.map((course) => course.id)
+                        );
+                      } else {
+                        setSelectedCourses([]);
+                      }
+                    }}
+                    checked={
+                      selectedCourses.length === filteredCourses.length &&
+                      filteredCourses.length > 0
+                    }
+                  />
+                </div>
+                <div className="col-span-4">Course</div>
+                <div className="col-span-2">Status</div>
+                <div className="col-span-1">Students</div>
+                <div className="col-span-1">Rating</div>
+                <div className="col-span-1">Revenue</div>
+                <div className="col-span-1">Updated</div>
+                <div className="col-span-1">Actions</div>
+              </div>
+            </div>
+
+            {/* Table Body */}
+            <div className="divide-y divide-gray-200">
               {filteredCourses.map((course) => (
                 <div
                   key={course.id}
-                  className="group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden"
+                  className="px-6 py-4 hover:bg-gray-50 transition-colors duration-150"
                 >
-                  {/* Course Thumbnail with Overlay */}
-                  <div className="relative h-56 overflow-hidden">
-                    <img
-                      src={course.thumbnail}
-                      alt={course.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-
-                    {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-
-                    {/* Course Status & Badges */}
-                    <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-                      <Badge
-                        className={`${getStatusColor(
-                          course.status
-                        )} flex items-center gap-1.5 text-xs px-3 py-1 rounded-full border-0 shadow-sm`}
-                      >
-                        {getStatusIcon(course.status)}
-                        {course.status.charAt(0).toUpperCase() +
-                          course.status.slice(1)}
-                      </Badge>
-                      {course.isFeatured && (
-                        <Badge className="bg-gradient-to-r from-purple-500 to-purple-600 text-white text-xs px-3 py-1 rounded-full border-0 shadow-sm flex items-center gap-1.5">
-                          <Star className="h-3 w-3" />
-                          Featured
-                        </Badge>
-                      )}
-                      {course.hasCertification && (
-                        <Badge className="bg-gradient-to-r from-blue-500 to-blue-600 text-white text-xs px-3 py-1 rounded-full border-0 shadow-sm flex items-center gap-1.5">
-                          <Award className="h-3 w-3" />
-                          Certificate
-                        </Badge>
-                      )}
-                    </div>
-
+                  <div className="grid grid-cols-12 gap-4 items-center">
                     {/* Selection Checkbox */}
-                    <div className="absolute top-4 right-4">
+                    <div className="col-span-1">
                       <input
                         type="checkbox"
                         checked={selectedCourses.includes(course.id)}
                         onChange={() => toggleCourseSelection(course.id)}
-                        className="h-5 w-5 rounded border-2 border-white bg-white/20 backdrop-blur-sm text-blue-600 focus:ring-blue-500"
+                        className="h-4 w-4 rounded border-gray-300"
                       />
                     </div>
 
-                    {/* Hover Play Button */}
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <Button
-                        size="lg"
-                        className="bg-white text-gray-900 hover:bg-gray-100 shadow-lg"
-                      >
-                        <Play className="h-5 w-5 mr-2" />
-                        Preview Course
-                      </Button>
+                    {/* Course Info */}
+                    <div className="col-span-4 flex items-center gap-4">
+                      <div className="relative w-16 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                        <img
+                          src={course.thumbnail}
+                          alt={course.title}
+                          className="w-full h-full object-cover"
+                        />
+                        {course.isFeatured && (
+                          <div className="absolute -top-1 -right-1 bg-purple-500 text-white text-xs px-1 rounded-full">
+                            ⭐
+                          </div>
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-semibold text-gray-900 text-sm truncate">
+                          {course.title}
+                        </h3>
+                        <p className="text-xs text-gray-500 truncate">
+                          {course.subtitle}
+                        </p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs font-medium">
+                            {course.category}
+                          </span>
+                          <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs">
+                            {course.level}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Course Details (Title, Subtitle, Stats, Category, Level, Last Updated) */}
-                  <div className="p-6 pt-4">
-                    {/* Title & Subtitle */}
-                    <h3 className="font-bold text-lg mb-1 line-clamp-2 group-hover:text-blue-700 transition-colors">
-                      {course.title}
-                    </h3>
-                    <p className="text-sm text-gray-600 line-clamp-2 mb-3">
-                      {course.subtitle}
-                    </p>
+                    {/* Status */}
+                    <div className="col-span-2">
+                      <div className="flex items-center gap-2">
+                        <Badge
+                          className={`${getStatusColor(
+                            course.status
+                          )} flex items-center gap-1 text-xs px-2 py-1 rounded-full`}
+                        >
+                          {getStatusIcon(course.status)}
+                          {course.status.charAt(0).toUpperCase() +
+                            course.status.slice(1)}
+                        </Badge>
+                        {course.hasCertification && (
+                          <Award className="h-4 w-4 text-blue-500" />
+                        )}
+                      </div>
+                    </div>
 
-                    {/* Quick Stats */}
-                    <div className="flex items-center gap-4 text-xs mb-4 flex-wrap">
-                      <div className="flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-full">
-                        <Users className="h-3 w-3 text-blue-600" />
-                        <span className="text-blue-800 font-medium">
+                    {/* Students */}
+                    <div className="col-span-1">
+                      <div className="flex items-center gap-1 text-sm text-gray-600">
+                        <Users className="h-4 w-4 text-gray-400" />
+                        <span className="font-medium">
                           {course.stats.enrolledStudents.toLocaleString()}
                         </span>
                       </div>
-                      <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-full">
-                        <Star className="h-3 w-3 text-yellow-400 fill-yellow-400" />
-                        <span className="text-yellow-700 font-medium">
+                    </div>
+
+                    {/* Rating */}
+                    <div className="col-span-1">
+                      <div className="flex items-center gap-1 text-sm text-gray-600">
+                        <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                        <span className="font-medium">
                           {course.stats.rating}
                         </span>
                       </div>
-                      <div className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
-                        <Clock className="h-3 w-3 text-gray-500" />
-                        <span className="text-gray-700 font-medium">
-                          {course.stats.duration}
-                        </span>
-                      </div>
+                    </div>
 
-                      <div className="flex items-center gap-2">
-                        <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">
-                          {course.category}
-                        </span>
-                      </div>
-
-                      {/* Category & Level Tags */}
-                      <div className="flex items-center gap-2">
-                        <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-medium">
-                          {course.level}
-                        </span>
+                    {/* Revenue */}
+                    <div className="col-span-1">
+                      <div className="text-sm font-medium text-emerald-600">
+                        ${course.stats.monthlyRevenue.toLocaleString()}
                       </div>
                     </div>
 
-                    {/* Last Updated */}
-                    <div className="mb-4">
-                      <p className="text-xs text-gray-500">
-                        Last updated{" "}
+                    {/* Updated */}
+                    <div className="col-span-1">
+                      <div className="text-xs text-gray-500">
                         {new Date(course.updatedAt).toLocaleDateString()}
-                      </p>
+                      </div>
                     </div>
 
-                    {/* Action Buttons */}
-                    <div className="flex items-center justify-between">
-                      <div>
+                    {/* Actions */}
+                    <div className="col-span-1">
+                      <div className="flex items-center gap-1">
                         <Button
                           size="sm"
                           variant="outline"
-                          className="bg-[#00BFFF] hover:bg-blue-500 text-white rounded-full px-2 hover:text-white"
-                          asChild
+                          className="h-8 w-8 p-0"
+                          title="Edit Course"
                         >
-                          <Link
-                            href={`/profile/learning/instructors/courses/${course.id}`}
-                            className="flex items-center"
-                          >
-                            <Eye className="h-4 w-4 mr-1" />
-                            View Details
-                          </Link>
+                          <Edit className="h-4 w-4" />
                         </Button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-8 w-8 p-0"
+                            >
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuItem>
+                              <Eye className="h-4 w-4 mr-2" />
+                              View Course
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <BarChart3 className="h-4 w-4 mr-2" />
+                              View Analytics
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Users className="h-4 w-4 mr-2" />
+                              Manage Students
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Copy className="h-4 w-4 mr-2" />
+                              Duplicate Course
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Archive className="h-4 w-4 mr-2" />
+                              Archive Course
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-600 focus:text-red-600">
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Delete Course
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
-
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-8 w-8 p-0"
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48">
-                          <DropdownMenuItem>
-                            <BarChart3 className="h-4 w-4 mr-2" />
-                            View Analytics
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Users className="h-4 w-4 mr-2" />
-                            Manage Students
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Copy className="h-4 w-4 mr-2" />
-                            Duplicate Course
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Archive className="h-4 w-4 mr-2" />
-                            Archive Course
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600 focus:text-red-600">
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Delete Course
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
-          ) : (
-            /* Professional List View */
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-              {/* Table Header */}
-              <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                <div className="grid grid-cols-12 gap-4 items-center text-sm font-medium text-gray-700">
-                  <div className="col-span-1">
-                    <input
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-gray-300"
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedCourses(
-                            filteredCourses.map((course) => course.id)
-                          );
-                        } else {
-                          setSelectedCourses([]);
-                        }
-                      }}
-                      checked={
-                        selectedCourses.length === filteredCourses.length &&
-                        filteredCourses.length > 0
-                      }
-                    />
-                  </div>
-                  <div className="col-span-4">Course</div>
-                  <div className="col-span-2">Status</div>
-                  <div className="col-span-1">Students</div>
-                  <div className="col-span-1">Rating</div>
-                  <div className="col-span-1">Revenue</div>
-                  <div className="col-span-1">Updated</div>
-                  <div className="col-span-1">Actions</div>
-                </div>
-              </div>
-
-              {/* Table Body */}
-              <div className="divide-y divide-gray-200">
-                {filteredCourses.map((course) => (
-                  <div
-                    key={course.id}
-                    className="px-6 py-4 hover:bg-gray-50 transition-colors duration-150"
-                  >
-                    <div className="grid grid-cols-12 gap-4 items-center">
-                      {/* Selection Checkbox */}
-                      <div className="col-span-1">
-                        <input
-                          type="checkbox"
-                          checked={selectedCourses.includes(course.id)}
-                          onChange={() => toggleCourseSelection(course.id)}
-                          className="h-4 w-4 rounded border-gray-300"
-                        />
-                      </div>
-
-                      {/* Course Info */}
-                      <div className="col-span-4 flex items-center gap-4">
-                        <div className="relative w-16 h-12 rounded-lg overflow-hidden flex-shrink-0">
-                          <img
-                            src={course.thumbnail}
-                            alt={course.title}
-                            className="w-full h-full object-cover"
-                          />
-                          {course.isFeatured && (
-                            <div className="absolute -top-1 -right-1 bg-purple-500 text-white text-xs px-1 rounded-full">
-                              ⭐
-                            </div>
-                          )}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <h3 className="font-semibold text-gray-900 text-sm truncate">
-                            {course.title}
-                          </h3>
-                          <p className="text-xs text-gray-500 truncate">
-                            {course.subtitle}
-                          </p>
-                          <div className="flex items-center gap-2 mt-1">
-                            <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs font-medium">
-                              {course.category}
-                            </span>
-                            <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs">
-                              {course.level}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Status */}
-                      <div className="col-span-2">
-                        <div className="flex items-center gap-2">
-                          <Badge
-                            className={`${getStatusColor(
-                              course.status
-                            )} flex items-center gap-1 text-xs px-2 py-1 rounded-full`}
-                          >
-                            {getStatusIcon(course.status)}
-                            {course.status.charAt(0).toUpperCase() +
-                              course.status.slice(1)}
-                          </Badge>
-                          {course.hasCertification && (
-                            <Award className="h-4 w-4 text-blue-500" />
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Students */}
-                      <div className="col-span-1">
-                        <div className="flex items-center gap-1 text-sm text-gray-600">
-                          <Users className="h-4 w-4 text-gray-400" />
-                          <span className="font-medium">
-                            {course.stats.enrolledStudents.toLocaleString()}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Rating */}
-                      <div className="col-span-1">
-                        <div className="flex items-center gap-1 text-sm text-gray-600">
-                          <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                          <span className="font-medium">
-                            {course.stats.rating}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Revenue */}
-                      <div className="col-span-1">
-                        <div className="text-sm font-medium text-emerald-600">
-                          ${course.stats.monthlyRevenue.toLocaleString()}
-                        </div>
-                      </div>
-
-                      {/* Updated */}
-                      <div className="col-span-1">
-                        <div className="text-xs text-gray-500">
-                          {new Date(course.updatedAt).toLocaleDateString()}
-                        </div>
-                      </div>
-
-                      {/* Actions */}
-                      <div className="col-span-1">
-                        <div className="flex items-center gap-1">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="h-8 w-8 p-0"
-                            title="Edit Course"
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="h-8 w-8 p-0"
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48">
-                              <DropdownMenuItem>
-                                <Eye className="h-4 w-4 mr-2" />
-                                View Course
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <BarChart3 className="h-4 w-4 mr-2" />
-                                View Analytics
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <Users className="h-4 w-4 mr-2" />
-                                Manage Students
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <Copy className="h-4 w-4 mr-2" />
-                                Duplicate Course
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <Archive className="h-4 w-4 mr-2" />
-                                Archive Course
-                              </DropdownMenuItem>
-                              <DropdownMenuItem className="text-red-600 focus:text-red-600">
-                                <Trash2 className="h-4 w-4 mr-2" />
-                                Delete Course
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Empty State */}
-        {filteredCourses.length === 0 && (
-          <Card>
-            <CardContent className="p-12 text-center">
-              <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                No courses found
-              </h3>
-              <p className="text-gray-600 mb-4">
-                {searchTerm ||
-                statusFilter !== "all" ||
-                categoryFilter !== "all" ||
-                levelFilter !== "all"
-                  ? "Try adjusting your filters to see more courses."
-                  : "Get started by creating your first course."}
-              </p>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Create Your First Course
-              </Button>
-            </CardContent>
-          </Card>
+          </div>
         )}
-
-        {/* Quick Actions FAB */}
-        <div className="fixed bottom-6 right-6 flex flex-col gap-3">
-          <Button
-            size="lg"
-            className="rounded-full shadow-lg bg-blue-600 hover:bg-blue-700"
-          >
-            <Plus className="h-5 w-5" />
-          </Button>
-        </div>
       </div>
-    </UnifiedLayout>
+
+      {/* Empty State */}
+      {filteredCourses.length === 0 && (
+        <Card>
+          <CardContent className="p-12 text-center">
+            <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              No courses found
+            </h3>
+            <p className="text-gray-600 mb-4">
+              {searchTerm ||
+              statusFilter !== "all" ||
+              categoryFilter !== "all" ||
+              levelFilter !== "all"
+                ? "Try adjusting your filters to see more courses."
+                : "Get started by creating your first course."}
+            </p>
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              Create Your First Course
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Quick Actions FAB */}
+      <div className="fixed bottom-6 right-6 flex flex-col gap-3">
+        <Button
+          size="lg"
+          className="rounded-full shadow-lg bg-blue-600 hover:bg-blue-700"
+        >
+          <Plus className="h-5 w-5" />
+        </Button>
+      </div>
+    </div>
   );
 }
