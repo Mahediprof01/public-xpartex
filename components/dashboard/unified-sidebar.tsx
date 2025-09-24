@@ -208,18 +208,13 @@ const learningManagementItems: NavigationItem[] = [
         ],
       },
       {
-        title: "eBooks & Digital Assets",
+        title: "eBooks",
         icon: Folder,
         children: [
           {
-            title: "Manage Assets",
+            title: "Manage E-Books",
             href: "/profile/learning/instructors/assets",
             icon: Folder,
-          },
-          {
-            title: "Assets Analytics",
-            href: "/profile/learning/instructors/assets/analytics",
-            icon: BarChart3,
           },
         ],
       },
