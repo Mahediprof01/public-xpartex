@@ -1,84 +1,104 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Product } from "@/types";
 import { useParams } from "next/navigation";
+import { useProductStore } from "@/actions/product/store";
+import { ProductResponse } from "@/actions/product/type";
 import { ProductGallery } from "@/components/product/product-gallery";
 import { ProductInfo } from "@/components/product/product-info";
 import { SupplierMiniProfile } from "@/components/supplier/supplier-mini-profile";
 import { RelatedProducts } from "@/components/product/related-products";
 import { ProductReviews } from "@/components/product/product-reviews";
 import { ProductBreadcrumb } from "@/components/ui/breadcrumb";
+import { Loader2 } from "lucide-react";
 
 export default function ProductDetailPage() {
   const params = useParams();
   const productId = params.id as string;
+  const { products, isLoading, fetchProducts } = useProductStore();
+  const [product, setProduct] = useState<Product | null>(null);
+  const [productNotFound, setProductNotFound] = useState(false);
 
-  // Mock product data - in real app this would be fetched based on ID
-  const product: Product = {
-    id: productId,
-    title: "Premium Cotton T-Shirt - Unisex",
-    images: [
-      "/cotton-t-shirt.jpg",
-      "/denim-jeans.png",
-      "/classic-polo-shirt.png",
-      "/cozy-hoodie.png",
-    ],
-    supplierId: "supplier-1",
-    supplierName: "Dhaka Textiles Ltd.",
-    price: 450.0,
-    currency: "BDT",
-    moq: 500,
-    badges: ["flash", "super"],
-    category: "Apparel & Textiles",
-    subcategory: "T-Shirts",
-    sku: "XT-001",
-    primaryType: "wholesale",
-    productTypes: {
-      wholesale: {
-        enabled: true,
-        price: 450.0,
-        moq: 500,
-        tieredPricing: [
-          { minQuantity: 500, pricePerUnit: 450 },
-          { minQuantity: 1000, pricePerUnit: 420 },
-          { minQuantity: 2000, pricePerUnit: 390 },
-          { minQuantity: 5000, pricePerUnit: 360 }
-        ]
+  // Transform API product to ProductCard format
+  const transformProductForDetail = (product: ProductResponse): Product => {
+    // Ensure images is always a valid array
+    const mainImage = product.img || "/placeholder.svg?height=240&width=320&query=garment product";
+    const additionalImages = product.additionalImages || [];
+    const allImages = [mainImage, ...additionalImages].filter(Boolean);
+    
+    return {
+      id: product.id,
+      title: product.name || 'Untitled Product',
+      images: allImages.length > 0 ? allImages : ["/placeholder.svg?height=240&width=320&query=garment product"],
+      supplierId: product.seller?.id || 'unknown',
+      supplierName: product.seller?.firstName ? `${product.seller.firstName} ${product.seller.lastName}` : 'Unknown Supplier',
+      price: parseFloat(product.price) || 0,
+      currency: "BDT" as const,
+      moq: (product as any).moq || 1,
+      badges: [] as ("flash" | "super" | "new")[],
+      description: product.productDescription || "",
+      specs: [],
+      availableQuantity: product.stockQuantity || 0,
+      leadTimeDays: 7,
+      productTypes: {
+        [product.productType]: {
+          enabled: true,
+          price: parseFloat(product.price) || 0,
+          moq: (product as any).moq || 1
+        }
       },
-      retail: {
-        enabled: true,
-        price: 650.0,
-        maxQuantity: 50
-      },
-      b2b: {
-        enabled: false,
-        rfqOnly: true,
-        customPricing: true
+      primaryType: product.productType,
+      category: product.category?.title || 'No Category',
+      subcategory: 'No Subcategory',
+      sku: `SKU-${product.id}`
+    }
+  }
+
+  useEffect(() => {
+    fetchProducts()
+  }, [fetchProducts])
+
+  useEffect(() => {
+    if (products.length > 0 && productId) {
+      const foundProduct = products.find(p => p.id === productId)
+      if (foundProduct) {
+        setProduct(transformProductForDetail(foundProduct))
+        setProductNotFound(false)
+      } else {
+        setProductNotFound(true)
       }
-    },
-    description: `High-quality 100% cotton t-shirt designed for comfort and durability. Perfect for casual wear, 
-    promotional events, or as a base for custom printing. Our premium cotton blend ensures excellent breathability 
-    and long-lasting color retention. Available in multiple sizes and colors to meet your specific requirements.`,
-    specs: [
-      { key: "Material", value: "100% Cotton" },
-      { key: "Weight", value: "180 GSM" },
-      { key: "Colors Available", value: "12 Colors" },
-      { key: "Sizes", value: "XS to 3XL" },
-      { key: "Neck Style", value: "Round Neck" },
-      { key: "Sleeve Type", value: "Short Sleeve" },
-      { key: "Care Instructions", value: "Machine Wash Cold" },
-      { key: "Country of Origin", value: "Bangladesh" },
-    ],
-    availableQuantity: 10000,
-    leadTimeDays: 15,
-    shippingInfo: {
-      freeShipping: true,
-      estimatedDelivery: "15-20 business days",
-      shippingMethods: ["Sea Freight", "Air Freight", "Express"],
-    },
-    certifications: ["OEKO-TEX Standard 100", "WRAP Certified", "ISO 9001"],
-  };
+    }
+  }, [products, productId])
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-green-600" />
+      </div>
+    )
+  }
+
+  if (productNotFound) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Product Not Found</h1>
+          <p className="text-gray-600">The product you're looking for doesn't exist or has been removed.</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-green-600" />
+      </div>
+    )
+  }
+
+
 
   const supplier = {
     id: "supplier-1",

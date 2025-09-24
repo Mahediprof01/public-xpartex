@@ -1,7 +1,6 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-// ...existing imports
 import { Button } from "../../../../components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
@@ -19,7 +18,7 @@ export default function AddProductPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
+    <div className="w-full mx-auto p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -37,7 +36,7 @@ export default function AddProductPage() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl">
+      <div className="w-full">
         <UnifiedProductForm onSuccess={handleSuccess} onCancel={handleCancel} />
       </div>
     </div>

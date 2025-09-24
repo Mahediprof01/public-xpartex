@@ -4,6 +4,12 @@ export interface DescriptionItem {
   value: string;
 }
 
+// Size item structure for the new API
+export interface SizeItem {
+  productsize: string;
+  productQuantity: string;
+}
+
 // Product creation request matching /product API
 export interface CreateProductRequest {
   name: string;
@@ -14,9 +20,42 @@ export interface CreateProductRequest {
   stockQuantity: number;
   productDescription: string;
   productType: "wholesale" | "retail" | "b2b";
+  productStatus: string;
   description: DescriptionItem[];
-  size?: string; // Optional for retail, required for wholesale/b2b
+  size: SizeItem[];
   moq?: number; // Optional for retail, required for wholesale/b2b
+  additionalImages: string[];
+  tags: string[];
+  weight: number;
+  deliveryOptions: string[];
+  discountPrice?: number;
+  colorVariants: string[];
+  returnPolicy: string;
+  packagingDetails: string;
+  leadTime: string;
+  negotiablePrice?: boolean; // Only for wholesale/b2b
+  sampleAvailability?: boolean; // Only for wholesale/b2b
+  customBiddingOption?: boolean; // Only for wholesale/b2b
+}
+
+// Seller information
+export interface Seller {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  role: string;
+  address: string;
+  registrationdate: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Category information
+export interface CategoryInfo {
+  id: string;
+  title: string;
 }
 
 // Product response from API
@@ -24,45 +63,56 @@ export interface ProductResponse {
   id: string;
   name: string;
   img: string;
-  seller: string;
-  category: string;
+  seller: Seller;
+  category: CategoryInfo;
   price: string;
   stockQuantity: number;
   productDescription: string;
   productType: "wholesale" | "retail" | "b2b";
+  productStatus: string;
+  additionalImages: string[];
+  tags: string[];
+  weight: number;
+  deliveryOptions: string[];
+  discountPrice?: number;
+  colorVariants: string[];
+  returnPolicy: string;
+  packagingDetails: string;
+  leadTime: string;
+  negotiablePrice?: boolean;
+  sampleAvailability?: boolean;
+  customBiddingOption?: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
-// Form data interfaces for different product types
-export interface BaseProductFormData {
+// Unified form data interface for all product types
+export interface ProductFormData {
   name: string;
   img: string;
   categoryId: string;
   price: string;
   stockQuantity: number;
   productDescription: string;
+  productStatus: string;
+  productType: ProductType;
   description: DescriptionItem[];
+  size: SizeItem[];
+  additionalImages: string[];
+  tags: string[];
+  weight: number;
+  deliveryOptions: string[];
+  discountPrice: number;
+  colorVariants: string[];
+  returnPolicy: string;
+  packagingDetails: string;
+  leadTime: string;
+  // Optional fields for wholesale/b2b only
+  moq?: number;
+  negotiablePrice?: boolean;
+  sampleAvailability?: boolean;
+  customBiddingOption?: boolean;
 }
-
-export interface RetailProductFormData extends BaseProductFormData {
-  productType: "retail";
-  size?: string;
-}
-
-export interface WholesaleProductFormData extends BaseProductFormData {
-  productType: "wholesale";
-  size: string;
-  moq: number;
-}
-
-export interface B2BProductFormData extends BaseProductFormData {
-  productType: "b2b";
-  size: string;
-  moq: number;
-}
-
-export type ProductFormData = RetailProductFormData | WholesaleProductFormData | B2BProductFormData;
 
 // Product types
 export type ProductType = "wholesale" | "retail" | "b2b";

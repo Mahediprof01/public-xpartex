@@ -7,17 +7,19 @@ import { AuthorReviews } from "@/components/authors/author-reviews"
 import { getAuthorById } from "@/data/authors"
 
 interface AuthorPageProps {
-  params: {
-    id: string
-  }
+  params?: {
+    id?: string
+  } | Promise<{ id?: string }>
 }
 
-export default function AuthorPage({ params }: AuthorPageProps) {
-  const { id } = params
-  
+export default async function AuthorPage({ params }: AuthorPageProps) {
+  // `params` may be a Promise according to Next's generated types. Await if so.
+  const resolvedParams = params ? await params : undefined
+  const id = resolvedParams?.id
+
   // Get author data by ID
-  const author = getAuthorById(id)
-  
+  const author = id ? getAuthorById(id) : null
+
   if (!author) {
     notFound()
   }
