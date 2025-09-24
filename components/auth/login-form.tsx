@@ -74,13 +74,13 @@ export function LoginForm() {
       const success = await authLogin(formData.email, formData.password, formData.rememberMe)
 
       if (success) {
-        toast.success("Welcome back! Redirecting to home page...")
+        toast.success("Welcome back! Redirecting to dashboard...")
         // Small delay to ensure token is stored before redirect
         setTimeout(async () => {
           // Check if token was stored successfully
           const storedToken = await getAuthToken()
           console.log('Token check after login:', !!storedToken)
-          router.push("/")
+          router.push("/profile/buyer")
         }, 100)
       } else {
         toast.error("Invalid email or password. Please try again.")

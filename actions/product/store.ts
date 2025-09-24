@@ -2,7 +2,15 @@
 
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import { createProduct, getProducts, getProductById, updateProduct, deleteProduct, getCategories } from "./server-action";
+import { 
+  createProduct as createProductAction, 
+  getProducts, 
+  getUserProducts,
+  getProductById, 
+  updateProduct, 
+  deleteProduct, 
+  getCategories 
+} from "./server-action";
 import { CreateProductRequest, ProductResponse, ProductFormData, Category } from "./type";
 
 // Product state interface
@@ -23,6 +31,7 @@ interface ProductState {
 interface ProductActions {
   createProduct: (data: CreateProductRequest) => Promise<{ success: boolean; message: string; error?: string; data?: ProductResponse }>;
   fetchProducts: () => Promise<{ success: boolean; message: string; error?: string }>;
+  fetchUserProducts: () => Promise<{ success: boolean; message: string; error?: string }>;
   fetchProductById: (id: string) => Promise<{ success: boolean; message: string; error?: string }>;
   updateProduct: (id: string, data: Partial<CreateProductRequest>) => Promise<{ success: boolean; message: string; error?: string }>;
   deleteProduct: (id: string) => Promise<{ success: boolean; message: string; error?: string }>;
@@ -58,7 +67,7 @@ export const useProductStore = create<ProductStore>()(
         state.successMessage = null;
       });
 
-      const response = await createProduct(data);
+      const response = await createProductAction(data);
 
       set((state) => {
         if (response.success && response.data) {
@@ -86,6 +95,26 @@ export const useProductStore = create<ProductStore>()(
           state.products = response.data;
         } else {
           state.error = response.error || "Failed to fetch products";
+        }
+        state.isLoading = false;
+      });
+
+      return response;
+    },
+
+    fetchUserProducts: async () => {
+      set((state) => {
+        state.isLoading = true;
+        state.error = null;
+      });
+
+      const response = await getUserProducts();
+
+      set((state) => {
+        if (response.success && response.data) {
+          state.products = response.data;
+        } else {
+          state.error = response.error || "Failed to fetch user products";
         }
         state.isLoading = false;
       });

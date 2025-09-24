@@ -7,16 +7,17 @@ import { InstructorReviews } from "@/components/instructors/instructor-reviews"
 import { getInstructorById } from "@/data/instructors"
 
 interface InstructorPageProps {
-  params: {
-    id: string
-  }
+  // Next may provide params as a Promise in the generated types
+  params?: Promise<{ id?: string }>
 }
 
-export default function InstructorPage({ params }: InstructorPageProps) {
-  const { id } = params
-  
+export default async function InstructorPage({ params }: InstructorPageProps) {
+  // Resolve params if it's a Promise (server components can be async)
+  const resolvedParams = params ? await params : undefined
+  const id = resolvedParams?.id
+
   // Get instructor data by ID
-  const instructor = getInstructorById(id)
+  const instructor = id ? getInstructorById(id) : null
   
   if (!instructor) {
     notFound()

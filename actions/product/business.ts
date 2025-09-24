@@ -2,13 +2,7 @@
 
 import { CreateProductRequest, ProductFormData, ProductType, DescriptionItem, SizeItem } from "./type";
 
-/**
- * Business logic for product operations
- */
 
-/**
- * Transform form data to API request format
- */
 export function transformFormDataToApiRequest(
   formData: ProductFormData,
   sellerId: string
@@ -23,26 +17,87 @@ export function transformFormDataToApiRequest(
     productDescription: formData.productDescription,
     productStatus: formData.productStatus,
     productType: formData.productType,
-    description: formData.description,
-    size: formData.size,
-    additionalImages: formData.additionalImages,
-    tags: formData.tags,
+    unitOfMeasurement: formData.unitOfMeasurement,
+    availableQuantity: formData.availableQuantity,
     weight: formData.weight,
-    deliveryOptions: formData.deliveryOptions,
-    colorVariants: formData.colorVariants,
-    returnPolicy: formData.returnPolicy,
-    packagingDetails: formData.packagingDetails,
-    leadTime: formData.leadTime,
   };
+
+  // Add optional fields if they have values
+  if (formData.productSubCategory?.trim()) {
+    baseRequest.productSubCategory = formData.productSubCategory;
+  }
+  if (formData.hsnCode?.trim()) {
+    baseRequest.hsnCode = formData.hsnCode;
+  }
+  if (formData.skuCode?.trim()) {
+    baseRequest.skuCode = formData.skuCode;
+  }
+  if (formData.materialType?.trim()) {
+    baseRequest.materialType = formData.materialType;
+  }
+  if (formData.composition?.trim()) {
+    baseRequest.composition = formData.composition;
+  }
+  if (formData.gsm?.trim()) {
+    baseRequest.gsm = formData.gsm;
+  }
+  if (formData.yarnCount?.trim()) {
+    baseRequest.yarnCount = formData.yarnCount;
+  }
+  if (formData.pattern?.trim()) {
+    baseRequest.pattern = formData.pattern;
+  }
+  if (formData.certifications && Array.isArray(formData.certifications) && formData.certifications.length > 0 && formData.certifications.some(cert => cert.trim())) {
+    baseRequest.certifications = formData.certifications.filter(cert => cert.trim());
+  }
+  if (formData.manufacturer !== undefined) {
+    baseRequest.manufacturer = formData.manufacturer;
+  }
+  if (formData.originCountry?.trim()) {
+    baseRequest.originCountry = formData.originCountry;
+  }
+  if (formData.productionCapacity?.trim()) {
+    baseRequest.productionCapacity = formData.productionCapacity;
+  }
+
+  // Add existing arrays if they have values
+  if (formData.description && Array.isArray(formData.description) && formData.description.length > 0 && formData.description.some(desc => desc.title.trim() || desc.value.trim())) {
+    baseRequest.description = formData.description.filter(desc => desc.title.trim() || desc.value.trim());
+  }
+  if (formData.size && Array.isArray(formData.size) && formData.size.length > 0 && formData.size.some(size => size.productsize.trim() || size.productQuantity.trim())) {
+    baseRequest.size = formData.size.filter(size => size.productsize.trim() || size.productQuantity.trim());
+  }
+  if (formData.additionalImages && Array.isArray(formData.additionalImages) && formData.additionalImages.length > 0 && formData.additionalImages.some(img => img.trim())) {
+    baseRequest.additionalImages = formData.additionalImages.filter(img => img.trim());
+  }
+  if (formData.tags && Array.isArray(formData.tags) && formData.tags.length > 0 && formData.tags.some(tag => tag.trim())) {
+    baseRequest.tags = formData.tags.filter(tag => tag.trim());
+  }
+  if (formData.deliveryOptions && Array.isArray(formData.deliveryOptions) && formData.deliveryOptions.length > 0 && formData.deliveryOptions.some(option => option.trim())) {
+    baseRequest.deliveryOptions = formData.deliveryOptions.filter(option => option.trim());
+  }
+  if (formData.colorVariants && Array.isArray(formData.colorVariants) && formData.colorVariants.length > 0 && formData.colorVariants.some(color => color.trim())) {
+    baseRequest.colorVariants = formData.colorVariants.filter(color => color.trim());
+  }
 
   // Add discount price if provided
   if (formData.discountPrice > 0) {
     baseRequest.discountPrice = formData.discountPrice;
   }
 
+  // Add string fields if they have values
+  if (formData.returnPolicy?.trim()) {
+    baseRequest.returnPolicy = formData.returnPolicy;
+  }
+  if (formData.packagingDetails?.trim()) {
+    baseRequest.packagingDetails = formData.packagingDetails;
+  }
+  if (formData.leadTime?.trim()) {
+    baseRequest.leadTime = formData.leadTime;
+  }
+
   // Add conditional fields based on product type
   if (formData.productType === "wholesale" || formData.productType === "b2b") {
-    // For wholesale and b2b, add MOQ and bidding options
     if (formData.moq !== undefined) {
       baseRequest.moq = formData.moq;
     }
@@ -69,12 +124,12 @@ export function validateProductFormData(formData: ProductFormData): {
 } {
   const errors: Record<string, string> = {};
 
-  // Common validations
+  // Required field validations
   if (!formData.name.trim()) {
     errors.name = "Product name is required";
   }
 
-  if (!formData.img.trim()) {
+  if (!formData.img) {
     errors.img = "Product image is required";
   }
 
@@ -99,76 +154,55 @@ export function validateProductFormData(formData: ProductFormData): {
     errors.productDescription = "Product description is required";
   }
 
+  if (!formData.productType.trim()) {
+    errors.productType = "Product type is required";
+  }
+
   if (!formData.productStatus.trim()) {
     errors.productStatus = "Product status is required";
   }
 
-  if (!formData.returnPolicy.trim()) {
-    errors.returnPolicy = "Return policy is required";
+  if (!formData.unitOfMeasurement.trim()) {
+    errors.unitOfMeasurement = "Unit of measurement is required";
   }
 
-  if (!formData.packagingDetails.trim()) {
-    errors.packagingDetails = "Packaging details are required";
-  }
-
-  if (!formData.leadTime.trim()) {
-    errors.leadTime = "Lead time is required";
+  if (!formData.availableQuantity || formData.availableQuantity <= 0) {
+    errors.availableQuantity = "Available quantity must be greater than 0";
   }
 
   if (!formData.weight || formData.weight <= 0) {
     errors.weight = "Weight must be greater than 0";
   }
 
-  if (!formData.size || formData.size.length === 0) {
-    errors.size = "At least one size is required";
-  } else {
-    // Validate each size item
-    formData.size.forEach((item, index) => {
-      if (!item.productsize.trim()) {
-        errors[`size_${index}_size`] = `Size ${index + 1} name is required`;
-      }
-      if (!item.productQuantity.trim()) {
-        errors[`size_${index}_quantity`] = `Size ${index + 1} quantity is required`;
-      }
-    });
+  // Validate MOQ for wholesale and B2B
+  if ((formData.productType === "wholesale" || formData.productType === "b2b") && 
+      (!formData.moq || formData.moq <= 0)) {
+    errors.moq = "MOQ is required and must be greater than 0 for wholesale/B2B products";
   }
 
-  if (!formData.tags || formData.tags.length === 0) {
-    errors.tags = "At least one tag is required";
-  }
-
-  if (!formData.deliveryOptions || formData.deliveryOptions.length === 0) {
-    errors.deliveryOptions = "At least one delivery option is required";
-  }
-
-  if (!formData.colorVariants || formData.colorVariants.length === 0) {
-    errors.colorVariants = "At least one color variant is required";
-  }
-
-  if (!formData.description || formData.description.length === 0) {
-    errors.description = "At least one description item is required";
-  } else {
-    // Validate each description item
-    formData.description.forEach((item, index) => {
-      if (!item.title.trim()) {
-        errors[`description_${index}_title`] = `Description item ${index + 1} title is required`;
-      }
-      if (!item.value.trim()) {
-        errors[`description_${index}_value`] = `Description item ${index + 1} value is required`;
+  // Validate description items
+  if (formData.description && Array.isArray(formData.description) && formData.description.length > 0) {
+    formData.description.forEach((desc, index) => {
+      const validation = validateDescriptionItem(desc);
+      if (!validation.isValid) {
+        errors[`description_${index}`] = "Description item must have both title and value";
       }
     });
   }
 
-  // Type-specific validations
-  if (formData.productType === "wholesale" || formData.productType === "b2b") {
-    if (!formData.moq || formData.moq <= 0) {
-      errors.moq = "Minimum order quantity must be greater than 0";
-    }
+  // Validate size items
+  if (formData.size && Array.isArray(formData.size) && formData.size.length > 0) {
+    formData.size.forEach((size, index) => {
+      const validation = validateSizeItem(size);
+      if (!validation.isValid) {
+        errors[`size_${index}`] = "Size item must have both size and quantity";
+      }
+    });
   }
 
   return {
     isValid: Object.keys(errors).length === 0,
-    errors,
+    errors
   };
 }
 
@@ -247,21 +281,14 @@ export function getRequiredFieldsForProductType(productType: ProductType): strin
     "stockQuantity",
     "productDescription",
     "productStatus",
-    "description",
-    "size",
-    "additionalImages",
-    "tags",
-    "weight",
-    "deliveryOptions",
-    "colorVariants",
-    "returnPolicy",
-    "packagingDetails",
-    "leadTime",
-    "productType"
+    "productType",
+    "unitOfMeasurement",
+    "availableQuantity",
+    "weight"
   ];
 
   if (productType === "wholesale" || productType === "b2b") {
-    return [...baseFields, "moq", "negotiablePrice", "sampleAvailability", "customBiddingOption"];
+    return [...baseFields, "moq"];
   }
 
   return baseFields;

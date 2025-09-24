@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import React, { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { 
@@ -25,6 +25,11 @@ interface UserProfileDropdownProps {
 export function UserProfileDropdown({ className }: UserProfileDropdownProps) {
   const { user, logout } = useAuth()
   const [isOpen, setIsOpen] = useState(false)
+
+  // Force re-render when user changes by resetting dropdown state
+  React.useEffect(() => {
+    setIsOpen(false)
+  }, [user?.id, user?.email, user?.firstName, user?.lastName])
 
   if (!user) return null
 

@@ -320,9 +320,11 @@ const mockCourse = {
 export default function CourseDetailPage({
   params,
 }: {
-  params: { id: string };
+  // Accept promise-like params similar to Next generated types
+  params: { id?: string } | Promise<{ id?: string }>;
 }) {
-  // In a real app, you would fetch course data based on params.id
+  // Resolve sync params (this is a client component so params will be sync)
+  const resolvedParams = (params as any)?.id ? params : undefined
   const course = mockCourse;
 
   return <ViewCourse course={course} />;

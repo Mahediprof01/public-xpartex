@@ -15,6 +15,7 @@ import { useAuth } from "@/contexts/auth-context"
 import { useProductStore } from "@/actions/product/store"
 import { ProductFormData, ProductType, DescriptionItem, SizeItem } from "@/actions/product/type"
 import { transformFormDataToApiRequest, validateProductFormData, isFieldRequired, createEmptyDescriptionItem, validateDescriptionItem, createEmptySizeItem, validateSizeItem } from "@/actions/product/business"
+import ImageUploadBox from "../common/ImageUploadBox"
 
 interface UnifiedProductFormProps {
   onSuccess?: () => void
@@ -44,6 +45,21 @@ export function UnifiedProductForm({ onSuccess, onCancel }: UnifiedProductFormPr
     stockQuantity: 1,
     productDescription: "",
     productStatus: "publish",
+    productType: "retail", // Default to retail
+    productSubCategory: "",
+    hsnCode: "",
+    skuCode: "",
+    materialType: "",
+    composition: "",
+    gsm: "",
+    yarnCount: "",
+    pattern: "",
+    certifications: [""],
+    unitOfMeasurement: "kg",
+    availableQuantity: 1,
+    manufacturer: false,
+    originCountry: "",
+    productionCapacity: "",
     description: [createEmptyDescriptionItem()],
     size: [createEmptySizeItem()],
     additionalImages: [""],
@@ -55,7 +71,6 @@ export function UnifiedProductForm({ onSuccess, onCancel }: UnifiedProductFormPr
     returnPolicy: "",
     packagingDetails: "",
     leadTime: "",
-    productType: "retail", // Default to retail
     moq: 1,
     negotiablePrice: false,
     sampleAvailability: false,
@@ -63,7 +78,6 @@ export function UnifiedProductForm({ onSuccess, onCancel }: UnifiedProductFormPr
   } as ProductFormData)
 
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
-  const [imagePreview, setImagePreview] = useState<string>("")
 
   // Clear messages when component mounts and fetch categories
   useEffect(() => {
@@ -91,7 +105,7 @@ export function UnifiedProductForm({ onSuccess, onCancel }: UnifiedProductFormPr
     }
   }, [successMessage, clearSuccess, onSuccess, router])
 
-  const handleInputChange = (field: string, value: string | number | boolean) => {
+  const handleInputChange = (field: string, value: string | number | boolean | File) => {
     setFormData(prev => ({ ...prev, [field]: value }))
 
     // Clear validation error for this field
@@ -124,11 +138,6 @@ export function UnifiedProductForm({ onSuccess, onCancel }: UnifiedProductFormPr
       
       return newData
     })
-  }
-
-  const handleImageUrlChange = (url: string) => {
-    handleInputChange("img", url)
-    setImagePreview(url)
   }
 
   const handleDescriptionChange = (index: number, field: 'title' | 'value', value: string) => {
@@ -259,6 +268,20 @@ export function UnifiedProductForm({ onSuccess, onCancel }: UnifiedProductFormPr
       stockQuantity: "Stock Quantity",
       productDescription: "Product Description",
       productStatus: "Product Status",
+      productSubCategory: "Product Sub Category",
+      hsnCode: "HSN Code",
+      skuCode: "SKU Code",
+      materialType: "Material Type",
+      composition: "Composition",
+      gsm: "GSM",
+      yarnCount: "Yarn Count",
+      pattern: "Pattern",
+      certifications: "Certifications",
+      unitOfMeasurement: "Unit of Measurement",
+      availableQuantity: "Available Quantity",
+      manufacturer: "Is Manufacturer",
+      originCountry: "Origin Country",
+      productionCapacity: "Production Capacity",
       description: "Detailed Description",
       size: "Sizes & Quantities",
       moq: "Minimum Order Quantity (MOQ)",
@@ -500,7 +523,7 @@ export function UnifiedProductForm({ onSuccess, onCancel }: UnifiedProductFormPr
       )
     }
 
-    if (field === "tags" || field === "colorVariants" || field === "deliveryOptions" || field === "additionalImages") {
+    if (field === "tags" || field === "colorVariants" || field === "deliveryOptions" || field === "additionalImages" || field === "certifications") {
       const currentArray = formData[field] as string[]
       return (
         <div key={field} className="space-y-2 col-span-2">
@@ -637,28 +660,102 @@ export function UnifiedProductForm({ onSuccess, onCancel }: UnifiedProductFormPr
 
     if (field === "img") {
       return (
+        <div key={field} className="space-y-2 col-span-2">
+          <ImageUploadBox
+            label={label}
+            required={isRequired}
+            value={formData[field]}
+            onChange={(fileOrUrl) => handleInputChange(field, fileOrUrl)}
+            error={error}
+            uploadText="Upload Product Image"
+            buttonText="Choose Image"
+          />
+        </div>
+      )
+    }
+
+    if (field === "unitOfMeasurement") {
+      return (
+        <div key={field} className="space-y-2">
+          <Label htmlFor={field}>
+            {label} {isRequired && <span className="text-red-500">*</span>}
+          </Label>
+          <Select value={formData[field]} onValueChange={(value) => handleInputChange(field, value)}>
+            <SelectTrigger className={error ? "border-red-500" : ""}>
+              <SelectValue placeholder="Select unit" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="kg">Kilogram (kg)</SelectItem>
+              <SelectItem value="g">Gram (g)</SelectItem>
+              <SelectItem value="piece">Piece</SelectItem>
+              <SelectItem value="meter">Meter (m)</SelectItem>
+              <SelectItem value="yard">Yard</SelectItem>
+              <SelectItem value="dozen">Dozen</SelectItem>
+              <SelectItem value="set">Set</SelectItem>
+              <SelectItem value="pack">Pack</SelectItem>
+            </SelectContent>
+          </Select>
+          {error && <p className="text-sm text-red-500">{String(error)}</p>}
+        </div>
+      )
+    }
+
+    if (field === "manufacturer") {
+      return (
+        <div key={field} className="space-y-2">
+          <div className="flex items-center space-x-2">
+            <input
+              id={field}
+              type="checkbox"
+              checked={formData[field] || false}
+              onChange={(e) => handleInputChange(field, e.target.checked)}
+              className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            />
+            <Label htmlFor={field}>
+              {label} {isRequired && <span className="text-red-500">*</span>}
+            </Label>
+          </div>
+          {error && <p className="text-sm text-red-500">{String(error)}</p>}
+        </div>
+      )
+    }
+
+    if (field === "productSubCategory" || field === "hsnCode" || field === "skuCode" || 
+        field === "materialType" || field === "composition" || field === "gsm" || 
+        field === "yarnCount" || field === "pattern" || field === "originCountry" || 
+        field === "productionCapacity") {
+      return (
         <div key={field} className="space-y-2">
           <Label htmlFor={field}>
             {label} {isRequired && <span className="text-red-500">*</span>}
           </Label>
           <Input
             id={field}
-            type="url"
-            value={formData[field]}
-            onChange={(e) => handleImageUrlChange(e.target.value)}
-            placeholder="https://example.com/image.jpg"
+            value={formData[field as keyof ProductFormData] as string || ""}
+            onChange={(e) => handleInputChange(field, e.target.value)}
+            placeholder={`Enter ${label.toLowerCase()}`}
             className={error ? "border-red-500" : ""}
           />
-          {imagePreview && (
-            <div className="mt-2">
-              <img
-                src={imagePreview}
-                alt="Preview"
-                className="w-32 h-32 object-cover rounded-lg border"
-                onError={() => setImagePreview("")}
-              />
-            </div>
-          )}
+          {error && <p className="text-sm text-red-500">{String(error)}</p>}
+        </div>
+      )
+    }
+
+    if (field === "availableQuantity") {
+      return (
+        <div key={field} className="space-y-2">
+          <Label htmlFor={field}>
+            {label} {isRequired && <span className="text-red-500">*</span>}
+          </Label>
+          <Input
+            id={field}
+            type="number"
+            min="1"
+            value={formData[field]}
+            onChange={(e) => handleInputChange(field, parseInt(e.target.value) || 1)}
+            placeholder="Enter available quantity"
+            className={error ? "border-red-500" : ""}
+          />
           {error && <p className="text-sm text-red-500">{String(error)}</p>}
         </div>
       )
@@ -685,20 +782,23 @@ export function UnifiedProductForm({ onSuccess, onCancel }: UnifiedProductFormPr
     // Common fields for all product types
     const commonFields = [
       "name", "img", "categoryId", "price", "discountPrice", "stockQuantity", 
-      "productDescription", "productStatus", "weight", "description", "size", 
+      "productDescription", "productStatus", "productSubCategory", "hsnCode", "skuCode",
+      "materialType", "composition", "gsm", "yarnCount", "pattern", "certifications",
+      "unitOfMeasurement", "availableQuantity", "manufacturer", "originCountry", 
+      "productionCapacity", "weight", "description", "size", 
       "additionalImages", "tags", "deliveryOptions", "colorVariants", 
       "returnPolicy", "packagingDetails", "leadTime"
     ]
 
-    // Always show product type dropdown first, then common fields
+   
     const allFields = ["productType", ...commonFields]
 
-    // Add conditional fields based on product type
+
     if (formData.productType === "wholesale" || formData.productType === "b2b") {
       return [...allFields, "moq", "negotiablePrice", "sampleAvailability", "customBiddingOption"]
     }
 
-    // For retail, don't add the wholesale/B2B specific fields
+
     return allFields
   }
 

@@ -11,6 +11,7 @@ export const AUTH_ENDPOINTS = {
 export const PRODUCT_ENDPOINTS = {
   CREATE: "/product",
   LIST: "/product",
+  USER_PRODUCTS: "/product/userProduct",
   GET_BY_ID: "/product/{id}",
   UPDATE: "/product/{id}",
   DELETE: "/product/{id}",

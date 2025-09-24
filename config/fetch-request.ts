@@ -49,10 +49,16 @@ export const api = {
         headers["Authorization"] = `Bearer ${token}`;
       }
 
-      const response = await fetch(`${HOST}${endpoint}`, {
+      // Add cache busting for auth-related endpoints
+      const isAuthEndpoint = endpoint.includes('/auth/') || endpoint.includes('/user');
+      const cacheBustedUrl = isAuthEndpoint 
+        ? `${HOST}${endpoint}${endpoint.includes('?') ? '&' : '?'}_t=${Date.now()}&_r=${Math.random()}`
+        : `${HOST}${endpoint}`;
+
+      const response = await fetch(cacheBustedUrl, {
         method: "GET",
         headers,
-        cache: 'no-store', // Prevent caching for authentication requests
+        cache: isAuthEndpoint ? 'no-store' : 'default', // Prevent caching for authentication requests
       });
 
       let responseData: any;
@@ -99,11 +105,67 @@ export const api = {
         headers["Authorization"] = `Bearer ${token}`;
       }
 
-      const response = await fetch(`${HOST}${endpoint}`, {
+      // Add cache busting for auth-related endpoints
+      const isAuthEndpoint = endpoint.includes('/auth/') || endpoint.includes('/user');
+      const cacheBustedUrl = isAuthEndpoint 
+        ? `${HOST}${endpoint}${endpoint.includes('?') ? '&' : '?'}_t=${Date.now()}&_r=${Math.random()}`
+        : `${HOST}${endpoint}`;
+
+      const response = await fetch(cacheBustedUrl, {
         method: "POST",
         headers,
         body: JSON.stringify(body),
-        cache: 'no-store', // Prevent caching for authentication requests
+        cache: isAuthEndpoint ? 'no-store' : 'default', // Prevent caching for authentication requests
+      });
+
+      let responseData: any;
+      const contentType = response.headers.get("content-type");
+      
+      if (contentType && contentType.includes("application/json")) {
+        responseData = await response.json();
+      } else {
+        responseData = await response.text();
+      }
+
+      if (response.ok) {
+        return {
+          success: true,
+          message: "Request successful",
+          data: responseData,
+        };
+      }
+      return {
+        success: false,
+        message: "Request failed",
+        error: typeof responseData === "string" ? responseData : responseData?.message || "Unknown error",
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        message: "Network error",
+        error: error?.message || "Network error occurred",
+      };
+    }
+  },
+
+  // New method for multipart/form-data uploads
+  postFormData: async <T = any>(endpoint: string, formData: FormData): Promise<ApiResponse<T>> => {
+    try {
+      // Get auth token (server or client)
+      const token = await getAuthTokenServer() || getAuthTokenClient();
+      
+      const headers: Record<string, string> = {};
+      // Don't set Content-Type for FormData - browser will set it with boundary
+      
+      // Add auth header if token exists
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`${HOST}${endpoint}`, {
+        method: "POST",
+        headers,
+        body: formData,
       });
 
       let responseData: any;
