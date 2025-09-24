@@ -42,14 +42,23 @@ function ProductsContent() {
       specs: [],
       availableQuantity: product.stockQuantity || 0,
       leadTimeDays: 7,
-      productTypes: {
-        [product.productType]: {
-          enabled: true,
-          price: parseFloat(product.price) || 0,
-          moq: (product as any).moq || 1
-        }
-      },
-      primaryType: product.productType,
+      ...(() => {
+        const allowed = ['wholesale', 'retail', 'b2b'] as const;
+        const raw = product.productType as unknown as string;
+        const primaryType = (allowed.includes(raw as any)
+          ? (raw as any)
+          : 'wholesale') as Product['primaryType'];
+
+        const productTypes = {
+          [primaryType]: {
+            enabled: true,
+            price: parseFloat(product.price) || 0,
+            moq: (product as any).moq || 1,
+          },
+        } as unknown as Product['productTypes'];
+
+        return { productTypes, primaryType };
+      })(),
       category: product.category?.title || 'No Category'
     }
   }
