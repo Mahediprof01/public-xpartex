@@ -151,7 +151,7 @@ export function LoginForm() {
           </div>
 
           {/* Submit Button */}
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button type="submit" className="w-full cursor-pointer gradient-primary gradient-primary-hover text-white" disabled={isLoading}>
             {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
             Sign In
           </Button>

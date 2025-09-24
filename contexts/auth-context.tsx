@@ -100,6 +100,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const login = async (email: string, password: string, rememberMe: boolean = false): Promise<boolean> => {
     setIsLoading(true)
 
+    // Clear any existing auth state first to prevent data persistence issues
+    setUser(null)
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('auth_token')
+      sessionStorage.removeItem('auth_token')
+    }
+    await removeAuthToken()
+
     try {
       const response = await loginUser({
         email: email.toLowerCase().trim(),

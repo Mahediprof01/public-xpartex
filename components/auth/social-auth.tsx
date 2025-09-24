@@ -4,7 +4,7 @@ import { useState } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { Loader2 } from "lucide-react"
+import { Loader2, Linkedin } from "lucide-react"
 
 interface SocialAuthButtonProps {
   provider: "google" | "linkedin"
@@ -48,7 +48,7 @@ export function SocialAuthButton({
           bgColor: "bg-[#0077B5] hover:bg-[#0066A0]",
           textColor: "text-white",
           borderColor: "border-[#0077B5]",
-          icon: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIwLjQzNyAyMC40MzdoLTMuNjU0di01LjcyOWMwLTEuMzY2LS4wMjctMy4xMjEtMS45MDItMy4xMjEtMS45MDMgMC0yLjE5NSAxLjQ4Ni0yLjE5NSAzLjAyM3Y1LjgyN2gtMy42NTNWOWgzLjUxdjEuNTYxaC4wNWMuNDg4LS45MjUgMS42ODItMS45NjEgMy40NjEtMS45NjEgMy43MDMgMCA0LjM4NiAyLjQzNyA4LjM4NiA1LjQ0M3Y2LjM5NGgtLjAwM1oiIGZpbGw9IiNGRkYiLz4KPHA+aGQgZD0iTTMuNTU4IDcuNDM5Yy0xLjE3NCAwLTIuMTI1LS45NS0yLjEyNS0yLjEyNVM1Ljk0OSAzLjE4OSA2Ljc3OSAzLjE4OXMyLjEyNS45NSAyLjEyNSAyLjEyNVM3LjcwNiA3LjQzOSA2LjU1OCA3LjQzOVoiIGZpbGw9IiNGRkYiLz4KPHA+aCBkPSJNNC44ODIgMjAuNDM3SDEuMjI4VjlINDg4MnYxMS40MzdaIiBmaWxsPSIjRkZGIi8+Cjwvc3ZnPgo="
+          icon: "linkedin"
         }
       default:
         return {
@@ -81,13 +81,17 @@ export function SocialAuthButton({
       {isLoading ? (
         <Loader2 className="h-4 w-4 animate-spin mr-2" />
       ) : (
-        <Image
-          src={icon}
-          alt={`${name} logo`}
-          width={20}
-          height={20}
-          className="mr-3"
-        />
+        icon === "linkedin" ? (
+          <Linkedin className="h-5 w-5 mr-3 text-white" />
+        ) : (
+          <Image
+            src={icon}
+            alt={`${name} logo`}
+            width={20}
+            height={20}
+            className="mr-3"
+          />
+        )
       )}
       Continue with {name}
     </Button>
