@@ -22,6 +22,10 @@ import {
   DollarSign,
   Star,
   BarChart3,
+  ArrowUpRight,
+  ArrowDownRight,
+  ShoppingBag,
+  Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -113,6 +117,41 @@ const mockCourses = [
         ],
       },
     ],
+  },
+];
+
+const statsData = [
+  {
+    label: "Total eBooks",
+    value: "124",
+    delta: "+4",
+    up: true,
+    icon: FileText,
+    color: "bg-blue-50 text-blue-600",
+  },
+  {
+    label: "Downloads (30d)",
+    value: "3,482",
+    delta: "+6.1%",
+    up: true,
+    icon: Download,
+    color: "bg-emerald-50 text-emerald-600",
+  },
+  {
+    label: "Orders (30d)",
+    value: "972",
+    delta: "+2.3%",
+    up: true,
+    icon: ShoppingBag,
+    color: "bg-amber-50 text-amber-600",
+  },
+  {
+    label: "Earnings (30d)",
+    value: "$12,960",
+    delta: "+3.9%",
+    up: true,
+    icon: Wallet,
+    color: "bg-violet-50 text-violet-600",
   },
 ];
 
@@ -253,7 +292,7 @@ export default function ManageEbooksPage() {
   return (
     <div className="min-h-screen relative">
       <div className="relative p-6 space-y-6">
-        <div className="bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 rounded-2xl p-6 border space-y-6">
+        <div className="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl p-6 border space-y-6">
           {/* Header */}
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div className="flex items-center gap-4">
@@ -330,103 +369,56 @@ export default function ManageEbooksPage() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl rounded-2xl">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-white/70 text-sm font-medium">
-                      Total eBooks
-                    </p>
-                    <p className="text-3xl font-bold text-white mt-2">
-                      {ebooks.length}
-                    </p>
-                    <div className="flex items-center mt-2">
-                      <TrendingUp className="h-4 w-4 text-green-400 mr-1" />
-                      <span className="text-green-400 text-sm">
-                        +12% this month
-                      </span>
-                    </div>
-                  </div>
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#00BFFF] to-blue-500 rounded-xl flex items-center justify-center">
-                    <BookOpen className="h-6 w-6 text-white" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
 
-            <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl rounded-2xl">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-white/70 text-sm font-medium">
-                      Total Downloads
-                    </p>
-                    <p className="text-3xl font-bold text-white mt-2">
-                      {ebooks
-                        .reduce((sum, ebook) => sum + ebook.downloads, 0)
-                        .toLocaleString()}
-                    </p>
-                    <div className="flex items-center mt-2">
-                      <TrendingUp className="h-4 w-4 text-green-400 mr-1" />
-                      <span className="text-green-400 text-sm">
-                        +8% this week
-                      </span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 rounded-2xl mt-4">
+            {statsData.map((s) => {
+              const Icon = s.icon as any;
+              return (
+                <div
+                  key={s.label}
+                  className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/20 p-4 shadow-lg backdrop-blur-md bg-clip-padding"
+                  style={{
+                    background:
+                      "linear-gradient(120deg, rgba(255,255,255,0.18) 60%, rgba(255,255,255,0.10) 100%)",
+                    boxShadow:
+                      "0 4px 32px 0 rgba(31, 38, 135, 0.10), 0 1.5px 4px 0 rgba(0,0,0,0.04)",
+                    border: "1px solid rgba(255,255,255,0.18)",
+                  }}
+                >
+                  {/* Decorative glow */}
+                  <div className="pointer-events-none absolute -top-12 -right-12 h-24 w-24 rounded-full bg-white/30 blur-xl" />
+                  {/* Watermark icon */}
+                  <div className="pointer-events-none absolute -bottom-4 -right-2 opacity-10">
+                    <Icon className="h-20 w-20" />
+                  </div>
+                  <div className="flex items-start justify-between">
+                    <div
+                      className={`h-10 w-10 rounded-2xl flex items-center justify-center bg-white/30 backdrop-blur-sm ring-1 ring-white/30 shadow-sm`}
+                    >
+                      <Icon className="h-5 w-5 text-white/90 drop-shadow" />
+                    </div>
+                    <div
+                      className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full border ${
+                        s.up
+                          ? "bg-emerald-100/60 text-emerald-800 border-emerald-200/60"
+                          : "bg-rose-100/60 text-rose-800 border-rose-200/60"
+                      } backdrop-blur-sm`}
+                    >
+                      {s.up ? (
+                        <ArrowUpRight className="h-3.5 w-3.5" />
+                      ) : (
+                        <ArrowDownRight className="h-3.5 w-3.5" />
+                      )}
+                      <span>{s.delta}</span>
                     </div>
                   </div>
-                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
-                    <Download className="h-6 w-6 text-white" />
-                  </div>
+                  <p className="mt-4 text-2xl font-semibold text-white drop-shadow">
+                    {s.value}
+                  </p>
+                  <p className="text-xs text-white/80 mt-1">{s.label}</p>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl rounded-2xl">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-white/70 text-sm font-medium">
-                      Published eBooks
-                    </p>
-                    <p className="text-3xl font-bold text-white mt-2">
-                      {
-                        ebooks.filter((ebook) => ebook.status === "Published")
-                          .length
-                      }
-                    </p>
-                    <div className="flex items-center mt-2">
-                      <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                      <span className="text-white/70 text-sm">Active</span>
-                    </div>
-                  </div>
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
-                    <CheckCircle className="h-6 w-6 text-white" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl rounded-2xl">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-white/70 text-sm font-medium">
-                      Avg. Rating
-                    </p>
-                    <p className="text-3xl font-bold text-white mt-2">4.8</p>
-                    <div className="flex items-center mt-2">
-                      <Star className="h-4 w-4 text-yellow-400 mr-1 fill-current" />
-                      <span className="text-white/70 text-sm">
-                        Based on 156 reviews
-                      </span>
-                    </div>
-                  </div>
-                  <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center">
-                    <Star className="h-6 w-6 text-white" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+              );
+            })}
           </div>
         </div>
 

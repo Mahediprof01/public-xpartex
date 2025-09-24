@@ -213,7 +213,7 @@ export default function Page() {
 
   return (
     <div className="p-6 space-y-6">
-      <div className="bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 shadow-xl rounded-2xl p-6 space-y-12">
+      <div className="bg-gradient-to-r from-blue-600 to-cyan-500 shadow-xl rounded-2xl p-6 space-y-12">
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
