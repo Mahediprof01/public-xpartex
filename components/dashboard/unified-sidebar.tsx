@@ -38,6 +38,14 @@ import {
   Eye,
   Edit,
   MessageCircle,
+  Search,
+  FileSpreadsheet,
+  ClipboardList,
+  Handshake,
+  TrendingUp,
+  UserCheck,
+  Bell,
+  Briefcase,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -243,6 +251,55 @@ const learningManagementItems: NavigationItem[] = [
   },
 ];
 
+// Freelancer Management Navigation Items
+const freelancerManagementItems: NavigationItem[] = [
+  {
+    title: "Dashboard Home",
+    href: "/profile/freelancer",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "Find Jobs",
+    href: "/profile/freelancer/find-jobs",
+    icon: Search,
+  },
+  {
+    title: "Job Details",
+    href: "/profile/freelancer/job-details",
+    icon: Briefcase,
+  },
+  {
+    title: "My Proposals",
+    href: "/profile/freelancer/proposals",
+    icon: FileSpreadsheet,
+  },
+  {
+    title: "Contracts",
+    href: "/profile/freelancer/contracts",
+    icon: Handshake,
+  },
+  {
+    title: "Messages",
+    href: "/profile/freelancer/messages",
+    icon: MessageCircle,
+  },
+  {
+    title: "Earnings",
+    href: "/profile/freelancer/earnings",
+    icon: TrendingUp,
+  },
+  {
+    title: "Profile",
+    href: "/profile/freelancer/profile",
+    icon: UserCheck,
+  },
+  {
+    title: "Settings",
+    href: "/profile/freelancer/settings",
+    icon: Bell,
+  },
+];
+
 // Navigation sections configuration
 const navigationSections: NavigationSection[] = [
   {
@@ -256,6 +313,10 @@ const navigationSections: NavigationSection[] = [
   {
     title: "Learning Management",
     items: learningManagementItems,
+  },
+  {
+    title: "Freelancer Management",
+    items: freelancerManagementItems,
   },
 ];
 
@@ -291,6 +352,7 @@ export function UnifiedSidebar() {
     "Buyer Management": true,
     "Seller Management": true,
     "Learning Management": true,
+    "Freelancer Management": true,
   });
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(
     {}

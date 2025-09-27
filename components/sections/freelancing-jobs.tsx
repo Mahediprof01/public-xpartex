@@ -1,5 +1,6 @@
 import { Clock, DollarSign, MapPin, Briefcase } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export function FreelancingJobs() {
   const jobs = [
@@ -98,10 +99,25 @@ export function FreelancingJobs() {
           ))}
         </div>
 
-        <div className="text-center mt-12">
-          <Button variant="outline" className="px-8 py-3 bg-transparent">
-            View All Freelance Jobs
-          </Button>
+        <div className="text-center mt-12 space-y-4">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button variant="outline" className="px-8 py-3 bg-transparent" asChild>
+              <Link href="/freelancers/jobs">
+                View All Freelance Jobs
+              </Link>
+            </Button>
+            <Button className="gradient-primary gradient-primary-hover text-white px-8 py-3" asChild>
+              <Link href="/freelancers">
+                Find Freelancers
+              </Link>
+            </Button>
+          </div>
+          <p className="text-sm text-gray-500">
+            New to freelancing?{" "}
+            <Link href="/how-it-works" className="text-sky-600 hover:underline">
+              Learn how it works
+            </Link>
+          </p>
         </div>
       </div>
     </section>

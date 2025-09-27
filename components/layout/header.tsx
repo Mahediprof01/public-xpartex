@@ -118,6 +118,25 @@ export function Header() {
               <div className="absolute top-full left-0 mt-2 w-56 bg-white/80 backdrop-blur-sm shadow-xl border border-white/20 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 overflow-hidden">
                 <div className="py-2">
                   <Link 
+                    href="/freelancers" 
+                    className="flex items-center px-4 py-3 text-sm text-neutral-800 hover:bg-sky-50 hover:text-sky-700 transition-colors duration-200 border-l-2 border-transparent hover:border-sky-500"
+                  >
+                    <div>
+                      <div className="font-medium">Find Freelancers</div>
+                      <div className="text-xs text-neutral-500 mt-0.5">Skilled professionals</div>
+                    </div>
+                  </Link>
+                  <Link 
+                    href="/freelancers/jobs" 
+                    className="flex items-center px-4 py-3 text-sm text-neutral-800 hover:bg-sky-50 hover:text-sky-700 transition-colors duration-200 border-l-2 border-transparent hover:border-sky-500"
+                  >
+                    <div>
+                      <div className="font-medium">Freelance Jobs</div>
+                      <div className="text-xs text-neutral-500 mt-0.5">Browse opportunities</div>
+                    </div>
+                  </Link>
+                  <div className="border-t border-gray-100 my-2"></div>
+                  <Link 
                     href="/customization" 
                     className="flex items-center px-4 py-3 text-sm text-neutral-800 hover:bg-sky-50 hover:text-sky-700 transition-colors duration-200 border-l-2 border-transparent hover:border-sky-500"
                   >
@@ -231,6 +250,8 @@ export function Header() {
               { href: "/products", label: "Products" },
               { href: "/suppliers", label: "Suppliers" },
               { href: "/rfq", label: "RFQ" },
+              { href: "/freelancers", label: "Find Freelancers", indent: true },
+              { href: "/freelancers/jobs", label: "Freelance Jobs", indent: true },
               { href: "/customization", label: "Fast Customizations", indent: true },
               { href: "/logistics", label: "Logistics", indent: true },
               { href: "/hire", label: "Hire Experts", indent: true },

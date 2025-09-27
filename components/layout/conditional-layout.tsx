@@ -13,6 +13,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
     '/register',
     '/reset-password',
     '/forgot-password',
+    '/freelancer-auth',
     // Dashboard/profile routes should render without main site header/footer
     '/profile',
     '/account',
