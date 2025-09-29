@@ -22,15 +22,23 @@ export const CATEGORY_ENDPOINTS = {
   LIST: "/category",
 } as const;
 
+// Inquiry management endpoints
+export const INQUIRY_ENDPOINTS = {
+  CREATE: "/inquiry",
+} as const;
+
 // Helper function to build endpoint with parameters
-export const buildEndpoint = (endpoint: string, params?: Record<string, string | number>) => {
+export const buildEndpoint = (
+  endpoint: string,
+  params?: Record<string, string | number>
+) => {
   if (!params) return endpoint;
-  
+
   let url = endpoint;
   Object.entries(params).forEach(([key, value]) => {
     url = url.replace(`{${key}}`, String(value));
   });
-  
+
   return url;
 };
 
@@ -38,3 +46,4 @@ export const buildEndpoint = (endpoint: string, params?: Record<string, string |
 export type AuthEndpoint = keyof typeof AUTH_ENDPOINTS;
 export type ProductEndpoint = keyof typeof PRODUCT_ENDPOINTS;
 export type CategoryEndpoint = keyof typeof CATEGORY_ENDPOINTS;
+export type InquiryEndpoint = keyof typeof INQUIRY_ENDPOINTS;

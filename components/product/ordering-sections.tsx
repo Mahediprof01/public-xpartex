@@ -1,30 +1,39 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Plus, Minus, ShoppingCart, MessageCircle, FileText, Package } from "lucide-react"
-import { Product, ProductTypeConfig } from "@/types"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Plus,
+  Minus,
+  ShoppingCart,
+  MessageCircle,
+  FileText,
+  Package,
+} from "lucide-react";
+import { Product, ProductTypeConfig } from "@/types";
+import { RequestQuoteModal, QuoteRequestData } from "./request-quote-modal";
 
 interface OrderingSectionProps {
-  product: Product
-  quantity: number
-  onQuantityChange: (quantity: number) => void
-  formatPrice: (price: number, currency: string) => string
+  product: Product;
+  quantity: number;
+  onQuantityChange: (quantity: number) => void;
+  formatPrice: (price: number, currency: string) => string;
 }
 
 interface WholesaleOrderingSectionProps extends OrderingSectionProps {
-  config: NonNullable<ProductTypeConfig["wholesale"]>
-  onAddToCart: () => void
-  isLoading: boolean
+  config: NonNullable<ProductTypeConfig["wholesale"]>;
+  onAddToCart: () => void;
+  isLoading: boolean;
 }
 
 interface RetailOrderingSectionProps extends OrderingSectionProps {
-  config: NonNullable<ProductTypeConfig["retail"]>
-  onAddToCart: () => void
-  isLoading: boolean
+  config: NonNullable<ProductTypeConfig["retail"]>;
+  onAddToCart: () => void;
+  isLoading: boolean;
 }
 
 interface B2BOrderingSectionProps extends OrderingSectionProps {
-  config: NonNullable<ProductTypeConfig["b2b"]>
+  config: NonNullable<ProductTypeConfig["b2b"]>;
 }
 
 export function WholesaleOrderingSection({
@@ -34,9 +43,9 @@ export function WholesaleOrderingSection({
   onQuantityChange,
   onAddToCart,
   isLoading,
-  formatPrice
+  formatPrice,
 }: WholesaleOrderingSectionProps) {
-  const moq = config.moq || product.moq
+  const moq = config.moq || product.moq;
 
   return (
     <div className="space-y-4">
@@ -53,7 +62,8 @@ export function WholesaleOrderingSection({
             <span className="text-blue-700">per piece</span>
           </div>
           <p className="text-sm text-blue-700">
-            MOQ: {moq.toLocaleString()} pieces • Available: {product.availableQuantity.toLocaleString()} pieces
+            MOQ: {moq.toLocaleString()} pieces • Available:{" "}
+            {product.availableQuantity.toLocaleString()} pieces
           </p>
         </div>
       </div>
@@ -92,7 +102,9 @@ export function WholesaleOrderingSection({
             <input
               type="number"
               value={quantity}
-              onChange={(e) => onQuantityChange(parseInt(e.target.value) || moq)}
+              onChange={(e) =>
+                onQuantityChange(parseInt(e.target.value) || moq)
+              }
               className="w-24 px-3 py-2 text-center border-0 focus:ring-0"
               min={moq}
             />
@@ -128,7 +140,7 @@ export function WholesaleOrderingSection({
         )}
       </Button>
     </div>
-  )
+  );
 }
 
 export function RetailOrderingSection({
@@ -138,9 +150,9 @@ export function RetailOrderingSection({
   onQuantityChange,
   onAddToCart,
   isLoading,
-  formatPrice
+  formatPrice,
 }: RetailOrderingSectionProps) {
-  const maxQty = config.maxQuantity || 100
+  const maxQty = config.maxQuantity || 100;
 
   return (
     <div className="space-y-4">
@@ -177,7 +189,11 @@ export function RetailOrderingSection({
             <input
               type="number"
               value={quantity}
-              onChange={(e) => onQuantityChange(Math.min(parseInt(e.target.value) || 1, maxQty))}
+              onChange={(e) =>
+                onQuantityChange(
+                  Math.min(parseInt(e.target.value) || 1, maxQty)
+                )
+              }
               className="w-20 px-3 py-2 text-center border-0 focus:ring-0"
               min={1}
               max={maxQty}
@@ -190,9 +206,7 @@ export function RetailOrderingSection({
               <Plus className="h-4 w-4" />
             </button>
           </div>
-          <span className="text-sm text-gray-600">
-            Max: {maxQty} pieces
-          </span>
+          <span className="text-sm text-gray-600">Max: {maxQty} pieces</span>
         </div>
       </div>
 
@@ -215,7 +229,7 @@ export function RetailOrderingSection({
         )}
       </Button>
     </div>
-  )
+  );
 }
 
 export function B2BOrderingSection({
@@ -223,8 +237,9 @@ export function B2BOrderingSection({
   config,
   quantity,
   onQuantityChange,
-  formatPrice
+  formatPrice,
 }: B2BOrderingSectionProps) {
+  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
   return (
     <div className="space-y-4">
       <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
@@ -233,10 +248,9 @@ export function B2BOrderingSection({
           <h4 className="font-semibold text-purple-900">B2B Ordering</h4>
         </div>
         <p className="text-sm text-purple-700">
-          {config.rfqOnly 
+          {config.rfqOnly
             ? "Request for quotation required for this product"
-            : "Custom pricing available for business orders"
-          }
+            : "Custom pricing available for business orders"}
         </p>
       </div>
 
@@ -244,7 +258,9 @@ export function B2BOrderingSection({
         <>
           {/* Quantity Selector */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Estimated Quantity</label>
+            <label className="text-sm font-medium text-gray-700">
+              Estimated Quantity
+            </label>
             <div className="flex items-center gap-3">
               <div className="flex items-center border border-gray-300 rounded-lg">
                 <button
@@ -257,7 +273,9 @@ export function B2BOrderingSection({
                 <input
                   type="number"
                   value={quantity}
-                  onChange={(e) => onQuantityChange(parseInt(e.target.value) || 1)}
+                  onChange={(e) =>
+                    onQuantityChange(parseInt(e.target.value) || 1)
+                  }
                   className="w-24 px-3 py-2 text-center border-0 focus:ring-0"
                   min={1}
                 />
@@ -276,7 +294,10 @@ export function B2BOrderingSection({
 
       {/* Action Buttons */}
       <div className="space-y-3">
-        <Button className="w-full bg-purple-600 hover:bg-purple-700">
+        <Button
+          className="w-full bg-purple-600 hover:bg-purple-700"
+          onClick={() => setIsQuoteModalOpen(true)}
+        >
           <MessageCircle className="h-4 w-4 mr-2" />
           Request Quote
         </Button>
@@ -296,6 +317,14 @@ export function B2BOrderingSection({
           <li>• Priority support</li>
         </ul>
       </div>
+
+      {/* Request Quote Modal */}
+      <RequestQuoteModal
+        isOpen={isQuoteModalOpen}
+        onClose={() => setIsQuoteModalOpen(false)}
+        productId={product.id}
+        productName={product.title}
+      />
     </div>
-  )
+  );
 }
