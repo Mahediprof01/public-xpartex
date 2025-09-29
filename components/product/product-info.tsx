@@ -1,22 +1,22 @@
 "use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Heart, Share2,Truck, Shield, Clock} from "lucide-react"
-import { useCart } from "@/contexts/cart-context"
-import { Product } from "@/types"
-import { ProductOrderingTabs } from "./product-ordering-tabs"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Heart, Share2, Truck, Shield, Clock } from "lucide-react";
+import { useCart } from "@/contexts/cart-context";
+import { Product } from "@/types";
+import { ProductOrderingTabs } from "./product-ordering-tabs";
 
 interface ProductInfoProps {
-  product: Product
+  product: Product;
 }
 
 export function ProductInfo({ product }: ProductInfoProps) {
-  const { addToCart, calculateTieredPrice } = useCart()
-  const [quantity, setQuantity] = useState(product.moq)
-  const [isFavorited, setIsFavorited] = useState(false)
-  const [addingToCart, setAddingToCart] = useState(false)
+  const { addToCart, calculateTieredPrice } = useCart();
+  const [quantity, setQuantity] = useState(product.moq);
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [addingToCart, setAddingToCart] = useState(false);
 
   const formatPrice = (price: number, currency: string) => {
     return `${currency} ${price.toLocaleString("en-BD", {
@@ -39,17 +39,17 @@ export function ProductInfo({ product }: ProductInfoProps) {
 
   // tiered price is calculated when adding to cart; UI no longer shows a total price here
   // keep calculateTieredPrice available for cart logic or future use
-  const { pricePerUnit } = calculateTieredPrice(product, quantity)
+  const { pricePerUnit } = calculateTieredPrice(product, quantity);
 
   const handleAddToCart = async (cartType: "main" | "sample" = "main") => {
-    setAddingToCart(true)
+    setAddingToCart(true);
     try {
-      addToCart(product, quantity, cartType)
+      addToCart(product, quantity, cartType);
       // Could show success message here
     } finally {
-      setAddingToCart(false)
+      setAddingToCart(false);
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -73,7 +73,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
           {product.title}
         </h1>
-        <p className="text-gray-600">Product ID: {product.id}</p>
+        {/* <p className="text-gray-600">Product ID: {product.id}</p> */}
       </div>
 
       {/* Price - Hidden as requested */}
