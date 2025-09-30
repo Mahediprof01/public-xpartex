@@ -90,16 +90,7 @@ export async function getAllInquiries(): Promise<{success: boolean; message: str
 
     const response = await api.get<InquiryResponse[]>(INQUIRY_ENDPOINTS.LIST);
 
-    console.log('Inquiries fetched successfully:', JSON.stringify(response, null, 2));
-    
-    // Also log individual inquiry details to see full structure
-    if (response.data && Array.isArray(response.data)) {
-      response.data.forEach((inquiry, index) => {
-        console.log(`Inquiry ${index + 1} full details:`, JSON.stringify(inquiry, null, 2));
-        console.log(`Product details:`, JSON.stringify(inquiry.product, null, 2));
-        console.log(`Buyer details:`, JSON.stringify(inquiry.buyer, null, 2));
-      });
-    }
+    console.log('Inquiries fetched successfully');
 
     return {
       success: response.success,

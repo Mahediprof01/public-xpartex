@@ -30,6 +30,14 @@ export const INQUIRY_ENDPOINTS = {
   LIST: "/inquiry",
 } as const;
 
+// RFQ management endpoints
+export const RFQ_ENDPOINTS = {
+  CREATE: "/rfq",
+  LIST: "/rfq",
+  GET_BY_ID: "/rfq/{id}",
+  GET_BY_BUYER: "/rfq/buyer/{buyerId}",
+} as const;
+
 // Helper function to build endpoint with parameters
 export const buildEndpoint = (
   endpoint: string,
@@ -50,3 +58,4 @@ export type AuthEndpoint = keyof typeof AUTH_ENDPOINTS;
 export type ProductEndpoint = keyof typeof PRODUCT_ENDPOINTS;
 export type CategoryEndpoint = keyof typeof CATEGORY_ENDPOINTS;
 export type InquiryEndpoint = keyof typeof INQUIRY_ENDPOINTS;
+export type RFQEndpoint = keyof typeof RFQ_ENDPOINTS;
