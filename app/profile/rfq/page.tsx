@@ -28,6 +28,8 @@ import {
 import { getAllInquiries } from "../../../actions/inquiry";
 import { InquiryResponse } from "../../../actions/inquiry/type";
 import { useAuth } from "../../../contexts/auth-context";
+import { SendQuoteModal } from "../../../components/rfq/send-quote-modal";
+import { useRFQModal } from "../../../actions/rfq";
 
 export default function RFQPage() {
   const { user } = useAuth();
@@ -36,6 +38,9 @@ export default function RFQPage() {
   const [selectedInquiry, setSelectedInquiry] = useState<InquiryResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  
+  // Use RFQ store for modal state management
+  const { isQuoteModalOpen, selectedInquiryForQuote, openQuoteModal, closeQuoteModal } = useRFQModal();
 
   useEffect(() => {
     if (user) {
@@ -95,6 +100,16 @@ export default function RFQPage() {
       style: 'currency',
       currency: 'USD'
     }).format(Number(amount));
+  };
+
+  const handleSendQuote = (inquiry: InquiryResponse) => {
+    openQuoteModal(inquiry);
+  };
+
+  const handleCloseQuoteModal = () => {
+    closeQuoteModal();
+    // Optionally refresh the inquiries to show updated status
+    loadInquiries();
   };
 
   // Filter inquiries based on search term
@@ -342,7 +357,10 @@ export default function RFQPage() {
 
                       {/* Action Buttons */}
                       <div className="flex flex-wrap gap-3 pt-4">
-                        <Button variant="default">
+                        <Button 
+                          variant="default" 
+                          onClick={() => handleSendQuote(selectedInquiry)}
+                        >
                           <MessageSquare className="h-4 w-4 mr-2" />
                           Send Quote
                         </Button>
@@ -433,6 +451,15 @@ export default function RFQPage() {
           )}
         </div>
       </div>
+
+      {/* Send Quote Modal */}
+      {selectedInquiryForQuote && (
+        <SendQuoteModal
+          isOpen={isQuoteModalOpen}
+          onClose={handleCloseQuoteModal}
+          inquiry={selectedInquiryForQuote}
+        />
+      )}
     </div>
   )
 }
