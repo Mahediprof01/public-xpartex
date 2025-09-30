@@ -25,6 +25,9 @@ export const CATEGORY_ENDPOINTS = {
 // Inquiry management endpoints
 export const INQUIRY_ENDPOINTS = {
   CREATE: "/inquiry",
+  GET_BY_ID: "/inquiry/{id}",
+  GET_BY_BUYER: "/inquiry/buyer/{buyerId}",
+  LIST: "/inquiry",
 } as const;
 
 // Helper function to build endpoint with parameters

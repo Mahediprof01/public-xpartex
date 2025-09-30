@@ -41,9 +41,6 @@ export default function ProductDetailPage() {
       specs: [],
       availableQuantity: product.stockQuantity || 0,
       leadTimeDays: 7,
-      // Ensure primaryType matches the narrow ProductType union used in our types
-      // Accept only the known types; default to 'wholesale' when unknown
-      // (ProductResponse.productType comes from API as a plain string)
       ...(() => {
         const allowed = ['wholesale', 'retail', 'b2b'] as const;
         const raw = product.productType as unknown as string;
