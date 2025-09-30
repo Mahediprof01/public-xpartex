@@ -17,9 +17,7 @@ interface InquiryState {
 
 // Inquiry actions interface
 interface InquiryActions {
-  createInquiry: (
-    data: CreateInquiryRequest
-  ) => Promise<{
+  createInquiry: (data: CreateInquiryRequest) => Promise<{
     success: boolean;
     message: string;
     error?: string;

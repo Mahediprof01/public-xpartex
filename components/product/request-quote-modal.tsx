@@ -148,6 +148,14 @@ export function RequestQuoteModal({
     }
 
     try {
+      console.log("Submitting inquiry with data:", {
+        quantity: formData.quantity,
+        description: formData.description.trim(),
+        attachment: formData.attachment,
+        buyerId: user.id,
+        productId: productId,
+      });
+
       const response = await createInquiry({
         quantity: formData.quantity,
         description: formData.description.trim(),
@@ -155,6 +163,8 @@ export function RequestQuoteModal({
         buyerId: user.id,
         productId: productId,
       });
+
+      console.log("Inquiry response:", response);
 
       if (response.success) {
         // Show success message

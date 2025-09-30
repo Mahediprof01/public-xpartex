@@ -251,52 +251,95 @@ const learningManagementItems: NavigationItem[] = [
   },
 ];
 
-// Freelancer Management Navigation Items
+// Freelancer Management Navigation Items - Restructured with Client and Freelancer submodules
 const freelancerManagementItems: NavigationItem[] = [
   {
-    title: "Dashboard Home",
-    href: "/profile/freelancer",
-    icon: LayoutDashboard,
-  },
-  {
-    title: "Find Jobs",
-    href: "/profile/freelancer/find-jobs",
-    icon: Search,
-  },
-  {
-    title: "Job Details",
-    href: "/profile/freelancer/job-details",
-    icon: Briefcase,
-  },
-  {
-    title: "My Proposals",
-    href: "/profile/freelancer/proposals",
-    icon: FileSpreadsheet,
-  },
-  {
-    title: "Contracts",
-    href: "/profile/freelancer/contracts",
-    icon: Handshake,
-  },
-  {
-    title: "Messages",
-    href: "/profile/freelancer/messages",
-    icon: MessageCircle,
-  },
-  {
-    title: "Earnings",
-    href: "/profile/freelancer/earnings",
-    icon: TrendingUp,
-  },
-  {
-    title: "Profile",
-    href: "/profile/freelancer/profile",
+    title: "Client Management",
     icon: UserCheck,
+    children: [
+      {
+        title: "Dashboard Home",
+        href: "/profile/client/dashboard",
+        icon: LayoutDashboard,
+      },
+      {
+        title: "Post a Job",
+        href: "/profile/client/post-job",
+        icon: FileText,
+      },
+      {
+        title: "Manage Jobs",
+        href: "/profile/client/manage-jobs",
+        icon: ClipboardList,
+      },
+
+      {
+        title: "Messages",
+        href: "/profile/client/messages",
+        icon: MessageCircle,
+      },
+      {
+        title: "Payments",
+        href: "/profile/client/payments",
+        icon: DollarSign,
+      },
+      {
+        title: "Profile",
+        href: "/profile/client/profile",
+        icon: Settings,
+      },
+    ],
   },
   {
-    title: "Settings",
-    href: "/profile/freelancer/settings",
-    icon: Bell,
+    title: "Freelancer Management",
+    icon: Briefcase,
+    children: [
+      {
+        title: "Dashboard Home",
+        href: "/profile/freelancer",
+        icon: LayoutDashboard,
+      },
+      {
+        title: "Find Jobs",
+        href: "/profile/freelancer/find-jobs",
+        icon: Search,
+      },
+      {
+        title: "Job Details",
+        href: "/profile/freelancer/job-details",
+        icon: Briefcase,
+      },
+      {
+        title: "My Proposals",
+        href: "/profile/freelancer/proposals",
+        icon: FileSpreadsheet,
+      },
+      {
+        title: "Contracts",
+        href: "/profile/freelancer/contracts",
+        icon: Handshake,
+      },
+      {
+        title: "Messages",
+        href: "/profile/freelancer/messages",
+        icon: MessageCircle,
+      },
+      {
+        title: "Earnings",
+        href: "/profile/freelancer/earnings",
+        icon: TrendingUp,
+      },
+      {
+        title: "Profile",
+        href: "/profile/freelancer/profile",
+        icon: UserCheck,
+      },
+      {
+        title: "Settings",
+        href: "/profile/freelancer/settings",
+        icon: Bell,
+      },
+    ],
   },
 ];
 
