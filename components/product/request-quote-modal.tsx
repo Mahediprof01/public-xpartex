@@ -13,9 +13,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Upload, X, FileText, Loader2 } from "lucide-react";
+import { Loader2, Link } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
-import { useInquiryStore } from "@/actions/inquiry/store";
+import { createInquiry } from "@/actions/inquiry";
 
 interface RequestQuoteModalProps {
   isOpen: boolean;
@@ -27,7 +27,7 @@ interface RequestQuoteModalProps {
 export interface QuoteRequestData {
   quantity: number;
   description: string;
-  attachment: File | null;
+  attachment: string;
   buyerId: string;
   productId: string;
 }
@@ -39,24 +39,18 @@ export function RequestQuoteModal({
   productName,
 }: RequestQuoteModalProps) {
   const { user } = useAuth();
-  const {
-    createInquiry,
-    isCreating,
-    error,
-    successMessage,
-    clearError,
-    clearSuccess,
-  } = useInquiryStore();
+  const [isCreating, setIsCreating] = useState(false);
   const [formData, setFormData] = useState({
     quantity: 1,
     description: "",
-    attachment: null as File | null,
+    attachment: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [successMessage, setSuccessMessage] = useState<string>("");
 
   const handleInputChange = (
     field: string,
-    value: string | number | File | null
+    value: string | number
   ) => {
     setFormData((prev) => ({
       ...prev,
@@ -72,48 +66,15 @@ export function RequestQuoteModal({
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] || null;
-
-    if (file) {
-      // Validate file size (10MB limit)
-      const maxSize = 10 * 1024 * 1024; // 10MB
-      if (file.size > maxSize) {
-        setErrors({ attachment: "File size must be less than 10MB" });
-        return;
-      }
-
-      // Validate file type
-      const allowedTypes = [
-        "application/pdf",
-        "application/msword",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "application/vnd.ms-excel",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        "image/jpeg",
-        "image/jpg",
-        "image/png",
-      ];
-
-      if (!allowedTypes.includes(file.type)) {
-        setErrors({
-          attachment:
-            "Invalid file type. Allowed types: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG",
-        });
-        return;
-      }
-
-      // Clear any previous attachment errors
-      if (errors.attachment) {
-        setErrors((prev) => ({ ...prev, attachment: "" }));
-      }
+  const validateAttachmentUrl = (url: string) => {
+    if (!url.trim()) return true; // Optional field
+    
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
     }
-
-    handleInputChange("attachment", file);
-  };
-
-  const removeAttachment = () => {
-    handleInputChange("attachment", null);
   };
 
   const validateForm = () => {
@@ -129,6 +90,10 @@ export function RequestQuoteModal({
 
     if (formData.description.trim().length < 10) {
       newErrors.description = "Description must be at least 10 characters";
+    }
+
+    if (formData.attachment.trim() && !validateAttachmentUrl(formData.attachment)) {
+      newErrors.attachment = "Please enter a valid URL";
     }
 
     setErrors(newErrors);
@@ -147,7 +112,13 @@ export function RequestQuoteModal({
       return;
     }
 
+    setIsCreating(true);
+
     try {
+<<<<<<< HEAD
+      // Create inquiry
+      const result = await createInquiry({
+=======
       console.log("Submitting inquiry with data:", {
         quantity: formData.quantity,
         description: formData.description.trim(),
@@ -157,31 +128,37 @@ export function RequestQuoteModal({
       });
 
       const response = await createInquiry({
+>>>>>>> 43f1cb62731874a31f19cc6da5417d7d6257cbc0
         quantity: formData.quantity,
-        description: formData.description.trim(),
-        attachment: formData.attachment,
-        buyerId: user.id,
+        description: formData.description,
+        attachment: formData.attachment.trim() || undefined,
         productId: productId,
+        buyerId: user.id,
       });
 
+<<<<<<< HEAD
+      if (result.success) {
+=======
       console.log("Inquiry response:", response);
 
       if (response.success) {
+>>>>>>> 43f1cb62731874a31f19cc6da5417d7d6257cbc0
         // Show success message
-        alert(
-          successMessage ||
-            "Quote request submitted successfully! Our team will contact you soon."
-        );
-        clearSuccess();
-        handleClose(); // Close modal on success
+        setSuccessMessage("Quote request submitted successfully! Our team will contact you soon.");
+        setErrors({}); // Clear any previous errors
+        
+        // Auto-close modal after 2 seconds
+        setTimeout(() => {
+          handleClose();
+        }, 2000);
       } else {
-        // Show error message
-        alert(error || "Failed to submit quote request. Please try again.");
-        clearError();
+        setErrors({ general: result.error || "Failed to submit quote request" });
       }
     } catch (error) {
       console.error("Error submitting quote request:", error);
-      alert("Failed to submit quote request. Please try again.");
+      setErrors({ general: "Failed to submit quote request. Please try again." });
+    } finally {
+      setIsCreating(false);
     }
   };
 
@@ -189,11 +166,10 @@ export function RequestQuoteModal({
     setFormData({
       quantity: 1,
       description: "",
-      attachment: null,
+      attachment: "",
     });
     setErrors({});
-    clearError();
-    clearSuccess();
+    setSuccessMessage("");
     onClose();
   };
 
@@ -248,59 +224,34 @@ export function RequestQuoteModal({
             </p>
           </div>
 
-          {/* Attachment Field */}
+          {/* Attachment URL Field */}
           <div className="space-y-2">
-            <Label htmlFor="attachment">Attachment (Optional)</Label>
-            {formData.attachment ? (
-              <div className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg bg-gray-50">
-                <FileText className="h-5 w-5 text-gray-600" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
-                    {formData.attachment.name}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {(formData.attachment.size / 1024 / 1024).toFixed(2)} MB
-                  </p>
-                </div>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={removeAttachment}
-                  className="h-8 w-8 p-0"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            ) : (
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
-                <div className="text-center">
-                  <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                  <div className="mt-2">
-                    <Label
-                      htmlFor="attachment"
-                      className="cursor-pointer text-sm font-medium text-gray-600 hover:text-gray-500"
-                    >
-                      Upload a file
-                    </Label>
-                    <p className="text-xs text-gray-500">
-                      PDF, DOC, DOCX, XLS, XLSX, JPG, PNG (Max 10MB)
-                    </p>
-                  </div>
-                  <Input
-                    id="attachment"
-                    type="file"
-                    onChange={handleFileChange}
-                    accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
-                    className="hidden"
-                  />
-                </div>
-              </div>
-            )}
+            <Label htmlFor="attachment">Attachment URL (Optional)</Label>
+            <div className="relative">
+              <Link className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                id="attachment"
+                type="url"
+                value={formData.attachment}
+                onChange={(e) => handleInputChange("attachment", e.target.value)}
+                className={`pl-10 ${errors.attachment ? "border-red-500" : ""}`}
+                placeholder="https://example.com/your-file.pdf"
+              />
+            </div>
             {errors.attachment && (
               <p className="text-sm text-red-500">{errors.attachment}</p>
             )}
+            <p className="text-xs text-gray-500">
+              Provide a link to your specification document, drawings, or other relevant files.
+            </p>
           </div>
+
+          {/* Success Message */}
+          {successMessage && (
+            <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+              <p className="text-sm text-green-600">{successMessage}</p>
+            </div>
+          )}
 
           {/* General Error */}
           {errors.general && (

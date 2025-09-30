@@ -110,6 +110,11 @@ const buyerNavigationItems: NavigationItem[] = [
     icon: Package,
   },
   {
+    title: "Quotation",
+    href: "/profile/buyer/quotation",
+    icon: FileText,
+  },
+  {
     title: "Payment",
     href: "/profile/buyer/payment",
     icon: DollarSign,
