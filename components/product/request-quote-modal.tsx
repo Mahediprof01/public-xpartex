@@ -115,20 +115,8 @@ export function RequestQuoteModal({
     setIsCreating(true);
 
     try {
-<<<<<<< HEAD
       // Create inquiry
       const result = await createInquiry({
-=======
-      console.log("Submitting inquiry with data:", {
-        quantity: formData.quantity,
-        description: formData.description.trim(),
-        attachment: formData.attachment,
-        buyerId: user.id,
-        productId: productId,
-      });
-
-      const response = await createInquiry({
->>>>>>> 43f1cb62731874a31f19cc6da5417d7d6257cbc0
         quantity: formData.quantity,
         description: formData.description,
         attachment: formData.attachment.trim() || undefined,
@@ -136,13 +124,7 @@ export function RequestQuoteModal({
         buyerId: user.id,
       });
 
-<<<<<<< HEAD
       if (result.success) {
-=======
-      console.log("Inquiry response:", response);
-
-      if (response.success) {
->>>>>>> 43f1cb62731874a31f19cc6da5417d7d6257cbc0
         // Show success message
         setSuccessMessage("Quote request submitted successfully! Our team will contact you soon.");
         setErrors({}); // Clear any previous errors
